@@ -7,6 +7,7 @@
 
 name: mogakcote ci/cd
 
+# trigger
 on:
   push:
     branches: [ "develop" ]
