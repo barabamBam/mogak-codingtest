@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mogak-codingtest
+  datasource:
+    url:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username:
+    password:
+    hikari:
+      minimum-idle: 15
+      maximum-pool-size: 20

@@ -1,0 +1,33 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/static/
+  application:
+    name: mogak-codingtest
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+    org.springframework.web: debug
+    com.ormi.cookudasse: debug
