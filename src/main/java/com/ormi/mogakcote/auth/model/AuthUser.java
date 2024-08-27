@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AuthUser {
 
-    private final Long id;
+    private final Long id = 1L;
 }

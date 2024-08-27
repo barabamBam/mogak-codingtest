@@ -3,6 +3,9 @@ spring:
     multipart:
       enabled: true
   datasource:
+    url: jdbc:mysql://localhost:3306/mogakcote
+    username: root
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   web:
     resources:
@@ -23,7 +26,7 @@ spring:
     suffix: .html
 
 server:
-  port: 8080
+  port: 8081
 
 logging:
   level:
