@@ -1,11 +1,31 @@
 spring:
   application:
     name: mogak-codingtest
+
+  cache:
+    type: redis
+    host: localhost
+    port: 6379
+
+  security:
+    jwt:
+      issuer: "http://localhost:8081"
+      secretKey: "secretKeysecretKeysecretKeysecretKey"
+      access-token-expiration-second: 1800
+      refresh-token-expiration-second: 10080
+    user:
+      password:
+        secretKey: "secretKeysecretKeysecretKeysecretKey"
+
   datasource:
     url: jdbc:mysql://localhost:3306/mogakcote
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 1234
+    password: root
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
+
+logging:
+  level:
+    web: debug
