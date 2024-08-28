@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.security.model;
+package com.ormi.mogakcote.auth.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

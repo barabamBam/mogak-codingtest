@@ -1,6 +1,6 @@
 package com.ormi.mogakcote.comment.application;
 
-import com.ormi.mogakcote.security.model.AuthUser;
+import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.comment.domain.Comment;
 import com.ormi.mogakcote.comment.dto.request.CommentRequest;
 import com.ormi.mogakcote.comment.dto.response.CommentResponse;

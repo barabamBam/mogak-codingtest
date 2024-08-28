@@ -1,6 +1,6 @@
 package com.ormi.mogakcote.security.argumentResolver;
 
-import com.ormi.mogakcote.security.model.AuthUser;
+import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.security.service.JwtService;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import jakarta.servlet.http.HttpServletRequest;
