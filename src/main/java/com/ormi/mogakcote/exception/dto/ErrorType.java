@@ -28,7 +28,8 @@ public enum ErrorType {
     REFRESH_ACCESS_TOKEN_NOT_MATCH_ERROR(HttpStatus.FORBIDDEN, "엑세스 토큰이 일치하지 않습니다"),
 
     // user 예외
-    USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다");
+    USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
+    PASSWORD_NOT(HttpStatus.BAD_REQUEST, "패스워드가 확인 패스워드랑 일치 X");
 
     private final HttpStatus status;
     private final String message;
