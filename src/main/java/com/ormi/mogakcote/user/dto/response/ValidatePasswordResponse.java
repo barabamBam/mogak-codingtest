@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.RegisterUser.dto;
+package com.ormi.mogakcote.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
