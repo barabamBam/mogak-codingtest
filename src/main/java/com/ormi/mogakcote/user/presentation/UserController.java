@@ -1,32 +1,33 @@
-package com.ormi.mogakcote.RegisterUser.Controller;
+package com.ormi.mogakcote.user.presentation;
 
-import com.ormi.mogakcote.RegisterUser.dto.*;
-import com.ormi.mogakcote.RegisterUser.entity.User;
-import com.ormi.mogakcote.RegisterUser.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ormi.mogakcote.common.model.ResponseDto;
+import com.ormi.mogakcote.user.application.UserService;
+import com.ormi.mogakcote.user.dto.request.PasswordRequest;
+import com.ormi.mogakcote.user.dto.request.RegisterRequest;
+
+import com.ormi.mogakcote.user.dto.response.ValidatePasswordResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    // 반환 타입 ResponseDto 로 바꾸기.
     @GetMapping("/users/check-nickname")
-    public ResponseEntity<CheckResponse> checkNickname(@RequestParam String username) {
-        boolean available = userService.checkNickname(username);
-        return ResponseEntity.ok(new CheckResponse(available));
+    public ResponseEntity<?> checkNickname(@RequestParam String username) {
+        var response = userService.checkNickname(username);
+        return ResponseDto.ok(response);
     }
 
     @GetMapping("/users/check-email")
-    public ResponseEntity<CheckResponse> checkEmail(@RequestParam String email) {
-        boolean available = userService.checkEmail(email);
-        return ResponseEntity.ok(new CheckResponse(available));
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        var response = userService.checkEmail(email);
+        return ResponseDto.ok(response);
+
     }
 
     @PostMapping("/signup/validate-password")
