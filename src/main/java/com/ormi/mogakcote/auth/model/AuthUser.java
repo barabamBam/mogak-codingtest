@@ -1,11 +1,13 @@
 package com.ormi.mogakcote.auth.model;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthUser {
 
-    private final Long id = 1L;
+    @NotNull
+    private final Long id;
 }
