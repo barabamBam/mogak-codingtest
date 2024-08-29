@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     private final Environment env;
     private final LogoutHandler logoutHandler;
 
