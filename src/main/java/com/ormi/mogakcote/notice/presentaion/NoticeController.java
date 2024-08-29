@@ -5,6 +5,7 @@ import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.notice.application.NoticeService;
 import com.ormi.mogakcote.notice.dto.request.NoticeRequest;
 
+import com.ormi.mogakcote.notice.dto.request.NoticeUpdateRequest;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
-    // 공지사항 생성
+//     공지사항 생성
     @PostMapping
     public ResponseEntity<?> createNotice(
             AuthUser user,
@@ -27,7 +28,7 @@ public class NoticeController {
         return ResponseDto.created(response);
     }
 
-    // 공지사항 상세보기
+//     공지사항 상세보기
     @GetMapping("/{noticeId}")
     public ResponseEntity<?> getNotice(
             AuthUser user,
@@ -41,22 +42,20 @@ public class NoticeController {
     @PutMapping("/{noticeId}")
     public ResponseEntity<?> updateNotice(
             AuthUser user,
-            @PathVariable("adminId") Long adminId,
+//            @PathVariable("adminId") Long adminId,
             @PathVariable("noticeId") Long noticeId,
-            @RequestBody @Valid NoticeRequest request
+            @RequestBody @Valid NoticeUpdateRequest request
     ) {
-        var response = noticeService.updateNotice(adminId, noticeId, request);
+        var response = noticeService.updateNotice(noticeId, request);
         return ResponseDto.ok(response);
     }
 
     // 공지사항 삭제
     @DeleteMapping("/{noticeId}")
     public ResponseEntity<?> deleteNotice(
-            AuthUser user,
-            @PathVariable("adminId") Long adminId,
             @PathVariable("noticeId") Long noticeId
     ) {
-        var response = noticeService.deleteNotice(adminId, noticeId);
+        var response = noticeService.deleteNotice(noticeId);
         return ResponseDto.ok(response);
     }
 

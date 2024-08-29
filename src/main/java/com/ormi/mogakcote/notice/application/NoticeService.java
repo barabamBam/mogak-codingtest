@@ -6,8 +6,10 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.notice.NoticeInvalidException;
 import com.ormi.mogakcote.notice.domain.Notice;
 import com.ormi.mogakcote.notice.dto.request.NoticeRequest;
+import com.ormi.mogakcote.notice.dto.request.NoticeUpdateRequest;
 import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,13 +63,13 @@ public class NoticeService {
      * 공지사항 수정
      */
     @Transactional
-    public NoticeResponse updateNotice(Long adminId, Long noticeId, NoticeRequest request) {
+    public NoticeResponse updateNotice(Long noticeId, @Valid NoticeUpdateRequest updateRequest) {
         throwsIfNoticeNotExist(noticeId);
         Notice findNotice = getNoticeById(noticeId);
 
-        validateSameUser(findNotice.getAdminId(), adminId);
+//        validateSameUser(findNotice.getAdminId(), adminId);
 
-        findNotice.update(findNotice.getContent());
+        findNotice.update(updateRequest.getTitle(), updateRequest.getContent());
 
         return NoticeResponse.toResponse(
                 findNotice.getNoticeId(),
@@ -83,10 +85,12 @@ public class NoticeService {
      * 공지사항 삭제
      */
     @Transactional
-    public SuccessResponse deleteNotice (Long adminId, Long noticeId) {
+    public SuccessResponse deleteNotice (
+            Long noticeId
+    ) {
         Notice findNotice = getNoticeById(noticeId);
 
-        validateSameUser(findNotice.getAdminId(), adminId);
+//        validateSameUser(findNotice.getAdminId(), user.getId());
 
         noticeRepository.deleteById(findNotice.getNoticeId());
 
@@ -129,8 +133,8 @@ public class NoticeService {
         );
     }
 
-    private static void validateSameUser(Long noticeUserId, Long userId) {
-        if (!noticeUserId.equals(userId)) {
+    private static void validateSameUser(Long noticeId, Long userId) {
+        if (!noticeId.equals(userId)) {
             throw new AuthInvalidException(ErrorType.NON_IDENTICAL_USER_ERROR);
         }
     }

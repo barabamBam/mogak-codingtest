@@ -42,7 +42,9 @@ public class Notice extends BaseEntity {
     @Column(nullable = false)
     private Long adminId;
 
-    public void update(String content){
+    public void update(String title, String content){
+        this.title = title;
         this.content = content;
+        this.updatedAt = LocalDateTime.now();
     }
 }
