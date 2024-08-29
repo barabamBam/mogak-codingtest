@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-
     private final UserService userService;
 
     @Autowired
@@ -38,13 +37,10 @@ public class UserController {
     }
 
     @PostMapping("/users/register")
-    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest request) {
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body(new RegisterResponse(null, "비밀번호가 일치하지 않습니다."));
-        }
-
-        User user = userService.registerUser(request.getName(), request.getUsername(),
-                request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(new RegisterResponse(user.getId().toString(), "회원가입 성공"));
+    public ResponseEntity<?> registerUser(
+            @RequestBody RegisterRequest request
+    ) {
+        var response = userService.registerUser(request);
+        return ResponseDto.created(response);
     }
 }
