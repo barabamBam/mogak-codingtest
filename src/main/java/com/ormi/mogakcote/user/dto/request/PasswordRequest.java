@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.RegisterUser.dto;
+package com.ormi.mogakcote.user.dto.request;
 
 public class PasswordRequest {
     private String password;
