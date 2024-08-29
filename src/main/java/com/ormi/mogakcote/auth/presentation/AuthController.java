@@ -42,7 +42,7 @@ public class AuthController {
 
     @SneakyThrows
     @PostMapping("/refresh")
-    public void refresh(@RequestBody AccessTokenWrapper accessToken, @RequestHeader(name = TokenConstants.REFRESH_TOKEN_COOKIE_NAME) String refreshToken, HttpServletResponse response) {
+    public void refresh(@RequestBody AccessTokenWrapper accessToken, @CookieValue(name = TokenConstants.REFRESH_TOKEN_COOKIE_NAME) String refreshToken, HttpServletResponse response) {
         AuthorizeToken oldAuthorizeToken = new AuthorizeToken(accessToken.getAccessToken(), refreshToken);
         String newAccessToken = jwtService.refresh(oldAuthorizeToken);
         String newRefreshToken = jwtService.getRefreshToken();
