@@ -62,7 +62,7 @@ public class NoticeService {
      */
     @Transactional
     public NoticeResponse updateNotice(Long adminId, Long noticeId, NoticeRequest request) {
-
+        throwsIfNoticeNotExist(noticeId);
         Notice findNotice = getNoticeById(noticeId);
 
         validateSameUser(findNotice.getAdminId(), adminId);
@@ -99,9 +99,7 @@ public class NoticeService {
     @Transactional(readOnly = true)
     public List<NoticeResponse> getNoticeList() {
         List<NoticeResponse> noticeResponses = new ArrayList<>();
-        List<Notice> findNotices = noticeRepository.findAllByOrderByCreatedAtDesc();
-
-        String nickname = "admin"; // TODO: user 정보 등록
+        List<Notice> findNotices = noticeRepository.findTop5ByOrderByCreatedAtDesc();
 
         findNotices.forEach(findNotice -> {
             noticeResponses.add(NoticeResponse.toResponse(
@@ -117,11 +115,11 @@ public class NoticeService {
         return noticeResponses;
     }
 
-    private static Notice buildNotice(NoticeRequest request, Long userId) {
+    private static Notice buildNotice(NoticeRequest request, Long adminId) {
         return Notice.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .adminId(userId)
+                .adminId(adminId)
                 .build();
     }
 

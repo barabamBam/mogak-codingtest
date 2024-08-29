@@ -12,5 +12,5 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Optional<Notice> findByNoticeId(Long noticeId);
-    List<Notice> findAllByOrderByCreatedAtDesc();
+    List<Notice> findTop5ByOrderByCreatedAtDesc();
 }

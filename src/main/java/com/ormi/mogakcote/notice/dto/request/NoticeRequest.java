@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class NoticeRequest {
 
+    private Long adminId;
+
     @NotBlank(message = "공지사항 제목은 필수입니다")
     private String title;
 

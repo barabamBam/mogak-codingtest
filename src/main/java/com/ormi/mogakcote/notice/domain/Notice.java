@@ -16,7 +16,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
 @Builder
@@ -43,10 +42,6 @@ public class Notice extends BaseEntity {
     @Column(nullable = false)
     private Long adminId;
 
-    @PrePersist
-    protected void onCreate(){
-        createdAt = LocalDateTime.now();
-    }
     public void update(String content){
         this.content = content;
     }
