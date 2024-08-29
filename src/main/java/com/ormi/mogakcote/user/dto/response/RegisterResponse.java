@@ -14,6 +14,7 @@ public class RegisterResponse {
     private String email;
     private String password;
 
+
     public static RegisterResponse toResponse(
             Long userId, String username, String nickname, String email, String password
             ) {
