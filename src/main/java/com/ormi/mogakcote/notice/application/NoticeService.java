@@ -36,7 +36,7 @@ public class NoticeService {
                 savedNotice.getTitle(),
                 savedNotice.getContent(),
                 savedNotice.getCreatedAt(),
-                savedNotice.getUpdatedAt(),
+                savedNotice.getModifiedAt(),
                 savedNotice.getAdminId()
         );
     }
@@ -54,7 +54,7 @@ public class NoticeService {
                 findNotice.getTitle(),
                 findNotice.getContent(),
                 findNotice.getCreatedAt(),
-                findNotice.getUpdatedAt(),
+                findNotice.getModifiedAt(),
                 findNotice.getAdminId()
         );
     }
@@ -76,7 +76,7 @@ public class NoticeService {
                 findNotice.getTitle(),
                 findNotice.getContent(),
                 findNotice.getCreatedAt(),
-                findNotice.getUpdatedAt(),
+                findNotice.getModifiedAt(),
                 findNotice.getAdminId()
         );
     }
@@ -113,7 +113,7 @@ public class NoticeService {
                     findNotice.getTitle(),
                     findNotice.getContent(),
                     findNotice.getCreatedAt(),
-                    findNotice.getUpdatedAt(),
+                    findNotice.getModifiedAt(),
                     findNotice.getAdminId()
             ));
         });

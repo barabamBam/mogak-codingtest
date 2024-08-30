@@ -14,10 +14,10 @@ public class NoticeResponse {
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime modifiedAt;
     private Long adminId;
 
-    public static NoticeResponse toResponse(Long noticeId, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, Long adminId) {
-        return new NoticeResponse(noticeId, title, content, createdAt, updatedAt, adminId);
+    public static NoticeResponse toResponse(Long noticeId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt, Long adminId) {
+        return new NoticeResponse(noticeId, title, content, createdAt, modifiedAt, adminId);
     }
 }
