@@ -11,12 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    // 반환 타입 ResponseDto 로 바꾸기.
+
     @GetMapping("/users/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String username) {
         var response = userService.checkNickname(username);
