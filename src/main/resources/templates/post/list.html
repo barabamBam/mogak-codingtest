@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title class="postTitle">Title</title>
+    <link rel="stylesheet" href="./../../static/css/post/list.css">
+
+</head>
+<body>
+<div id="content-wrapper">
+    <section id="notice-container">
+        <h3 class="notice-container-title">공지사항</h3>
+        <article class="notice-item" th:each="notice: ${notice}">
+            <a class="notice-item-link" th:href="@{}">
+                <p class="notice-title" th:text="${notice.title}">title</p>
+                <p class="notice-date" th:text="${notice.date}">date</p>
+            </a>
+        </article>
+    </section>
+    <button th:href="@{}" class="create-post-btn">게시글 작성</button>
+    <form class="post-search">
+        <label for="search-input"></label>
+        <input class="post-search-keyword" id="search-input" type="text" name="keyword" placeholder="검색"
+               th:value="${SearchData.keyword != null} ? ${SearchData.keyword}">
+    </form>
+    <div id="post-selector">
+        <div class="selector-options">
+            <label for="algorithm"></label>
+            <select class="selector-option" id="algorithm" name="algorithm">
+                <option>알고리즘</option>
+                <option value="Bellman-ford">Bellman-ford</option>
+                <option value="BFS+DFS">BFS / DFS</option>
+                <option value="BruteForce">BruteForce</option>
+                <option value="DP">DP</option>
+                <option value="Dijkstra's">Dijkstra's</option>
+                <option value="Graph">Graph</option>
+                <option value="Greedy">Greedy</option>
+                <option value="Hash">Hash</option>
+                <option value="Heap">Heap</option>
+                <option value="Stack+Queue">Stack / Queue</option>
+                <option value="String">String</option>
+                <option value="Sort">Sort</option>
+                <option value="SQL">SQL</option>
+                <option value="Tree">Tree</option>
+                <option value="Recursion">Recursion</option>
+            </select>
+            <label for="language"></label>
+            <select class="selector-option" id="language" name="language">
+                <option>작성 언어</option>
+                <option value="Java">Java</option>
+                <option value="Python">Python</option>
+                <option value="C">C</option>
+                <option value="C++">C++</option>
+                <option value="C#">C#</option>
+                <option value="Go">Go</option>
+                <option value="JavaScript">Javascript</option>
+                <option value="Kotlin">Kotlin</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Swift">Switf</option>
+                <option value="SQL">SQL</option>
+            </select>
+            <label for="checkSuccess"></label>
+            <select class="selector-option" id="checkSuccess" name="isSuccess">
+                <option>코드 결과</option>
+                <option value="false">무관</option>
+                <option value="true">성공</option>
+            </select>
+        </div>
+        <div class="pagination-sort">
+            <div class="page-container" th:object="${page}" th:value="${page.firstBlock} + '-' + ${page.lastBlock}">
+                <a>
+                    <span class="arrow page_prev"></span>
+                </a>
+                <a>
+                    <span class="arrow page_next"></span>
+                </a>
+            </div>
+            <label for="sortBy"></label>
+            <select class="sort-option" id="sortBy" name="sortBy">
+                <option value="latest">최신 순</option>
+                <option value="oldest">오래된 순</option>
+                <option value="views">조회수 순</option>
+                <option value="recommendations">추천 순</option>
+            </select>
+        </div>
+    </div>
+    <main id="post-list">
+        <article class="post-item" th:each="post: ${posts}">
+            <a th:href="@{}">
+                <h2 class="post-title" th:text="${post.title}">title</h2>
+                <!-- user nickname 받아오기 -->
+                <p class="post-author" th:text="${user.nickname}">nickname</p>
+                <time class="post-date" th:text="${post.created_at}">date</time>
+                <p class="post-content" th:text="${post.content}">content</p>
+                <!-- 문제 내용 받아오기 -->
+                <div class="post-algorithm">
+                    <span class="post-algorithm-hashtag">#Algorithm</span>
+                    <span class="post-algorithm-hashtag" th:text="'#'+${algorithm.name}"></span>
+                </div>
+                <p class="view-count" th:text="${post.view_cnt}+' views'">29 views</p>
+            </a>
+        </article>
+    </main>
+</div>
+<script>
+
+</script>
+</body>
