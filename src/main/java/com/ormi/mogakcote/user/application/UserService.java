@@ -23,4 +23,22 @@ public class UserService {
     public User getByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
     }
+
+    @Transactional(readOnly = true)
+    public String getEmailByNameAndNickname(String name, String nickname) {
+        return userRepository.findEmailByNameAndNickname(name, nickname).orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Transactional
+    public void updatePassword(String email, String newPassword) {
+        int result = userRepository.updatePasswordByEmail(email, newPassword);
+        if (result <= 0) {
+            throw new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR);
+        }
+    }
 }

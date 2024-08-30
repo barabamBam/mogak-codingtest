@@ -12,6 +12,19 @@ spring:
       static-locations: classpath:/static/
   application:
     name: mogak-codingtest
+  mail:
+    host: ${mail.host}
+    port: ${mail.port}
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
 
   jpa:
     open-in-view: true

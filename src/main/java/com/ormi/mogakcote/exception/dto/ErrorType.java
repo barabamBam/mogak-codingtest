@@ -26,6 +26,7 @@ public enum ErrorType {
     USED_ACCESS_TOKEN_ERROR(HttpStatus.FORBIDDEN, "이미 사용된 엑세스 토큰입니다"),
     USED_REFRESH_TOKEN_ERROR(HttpStatus.FORBIDDEN, "이미 사용된 리프레시 토큰입니다"),
     REFRESH_ACCESS_TOKEN_NOT_MATCH_ERROR(HttpStatus.FORBIDDEN, "엑세스 토큰이 일치하지 않습니다"),
+    RESET_PASSWORD_CODE_NOT_MATCH_ERROR(HttpStatus.BAD_REQUEST, "초기화 코드가 일치하지 않습니다"),
 
     // user 예외
     USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다");
