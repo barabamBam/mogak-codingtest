@@ -10,5 +10,5 @@ public class NoticeUpdateRequest {
     private Long adminId;
     private String title;
     private String content;
-    private LocalDateTime updatedAt;
+    private LocalDateTime modifiedAt;
 }
