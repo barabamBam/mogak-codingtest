@@ -88,6 +88,8 @@ public class NoticeService {
     public SuccessResponse deleteNotice (
             Long noticeId
     ) {
+        throwsIfNoticeNotExist(noticeId);
+
         Notice findNotice = getNoticeById(noticeId);
 
 //        validateSameUser(findNotice.getAdminId(), user.getId());
