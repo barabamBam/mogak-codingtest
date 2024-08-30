@@ -34,17 +34,10 @@ public class Notice extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
     private Long adminId;
 
     public void update(String title, String content){
         this.title = title;
         this.content = content;
-        this.updatedAt = LocalDateTime.now();
     }
 }
