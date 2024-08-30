@@ -21,7 +21,7 @@ spring:
     url: jdbc:mysql://localhost:3306/mogakcote
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: 1234
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
