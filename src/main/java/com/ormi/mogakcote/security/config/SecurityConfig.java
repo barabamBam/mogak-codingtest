@@ -1,12 +1,10 @@
 package com.ormi.mogakcote.security.config;
 
 import com.ormi.mogakcote.security.jwt.JwtFilter;
-import com.ormi.mogakcote.security.jwt.JwtFilterImpl;
-import com.ormi.mogakcote.security.service.JwtService;
 import jakarta.servlet.DispatcherType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -22,21 +20,13 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final Environment env;
-    private final LogoutHandler logoutHandler;
-
-    public SecurityConfig(Environment env, LogoutHandler logoutHandler) {
-        this.env = env;
-        this.logoutHandler = logoutHandler;
-    }
+    @Value("${spring.security.user.password.secretKey}")
+    private String secretKey;
 
     @Bean
-    public JwtFilter jwtFilter(JwtService jwtService) {
-        return new JwtFilterImpl(jwtService);
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           JwtFilter jwtFilter,
+                                           LogoutHandler logoutHandler) throws Exception {
         http.csrf(cnf -> cnf.ignoringRequestMatchers("/api/**"));
 
         http.logout(cnf -> {
@@ -47,7 +37,11 @@ public class SecurityConfig {
         });
 
         http.authorizeHttpRequests(auth -> {
+
             auth.dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.FORWARD).permitAll();
+
+            // 회원가입 관련 엔드포인트 허용
+            auth.requestMatchers("/api/users/register", "/api/signup/**", "/api/users/**").permitAll();
 
             // 메인
             auth.requestMatchers(HttpMethod.GET, "/api/*/post/**").permitAll();
@@ -82,6 +76,8 @@ public class SecurityConfig {
 
             // 마이페이지
             auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("User");
+            // 나머지 요청은 인증 필요
+            auth.anyRequest().authenticated();
         });
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -90,7 +86,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String secretKey = env.getProperty("spring.security.user.password.secretKey");
         return new Pbkdf2PasswordEncoder(
             secretKey,
             16,
