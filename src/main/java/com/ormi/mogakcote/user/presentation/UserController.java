@@ -30,11 +30,11 @@ public class UserController {
 
     }
 
-    @PostMapping("/signup/validate-password")
-    public ResponseEntity<ValidatePasswordResponse> validatePassword(@RequestBody PasswordRequest request) {
-        boolean isValid = userService.validatePassword(request.getPassword());
-        String error = isValid ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
-        return ResponseEntity.ok(new ValidatePasswordResponse(isValid, error));
+   @PostMapping("/signup/validate-password")
+    public ResponseEntity<?> validatePassword(@RequestBody String password) {
+        var response = userService.validatePassword(password);
+        String error = response ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
+        return ResponseEntity.ok(new ValidatePasswordResponse(response, error));
     }
 
     @PostMapping("/users/register")
