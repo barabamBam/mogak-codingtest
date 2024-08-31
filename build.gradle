@@ -16,6 +16,10 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// 기타 의존성...
+}
 
 repositories {
 	mavenCentral()

@@ -37,7 +37,11 @@ public class SecurityConfig {
         });
 
         http.authorizeHttpRequests(auth -> {
+
             auth.dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.FORWARD).permitAll();
+
+            // 회원가입 관련 엔드포인트 허용
+            auth.requestMatchers("/api/users/register", "/api/signup/**", "/api/users/**").permitAll();
 
             // 메인
             auth.requestMatchers(HttpMethod.GET, "/api/*/post/**").permitAll();
@@ -72,6 +76,8 @@ public class SecurityConfig {
 
             // 마이페이지
             auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("User");
+            // 나머지 요청은 인증 필요
+            auth.anyRequest().authenticated();
         });
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -81,10 +87,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new Pbkdf2PasswordEncoder(
-                secretKey,
-                16,
-                310000,
-                Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+            secretKey,
+            16,
+            310000,
+            Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
     }
 
     @Bean
