@@ -9,8 +9,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorType {
     CONFLICT_ERROR(HttpStatus.BAD_REQUEST, "예기치 못한 에러가 발생했습니다."),
 
-//     report 예외
-    PROBLEM_NOT_FOUND_ERROR(HttpStatus.BAD_REQUEST, "요구에 맞는 문제가 존재하지 않습니다. 플랫폼과 문제 번호를 확인해주세요."),
+    // problem 예외
+    LANGUAGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 언어가 존재하지 않습니다."),
+    ALGORITHM_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 알고리즘이 존재하지 않습니다."),
+    PLATFORM_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 플랫폼이 존재하지 않습니다."),
+    PROBLEM_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "요구에 맞는 문제가 존재하지 않습니다. 플랫폼과 문제 번호를 확인해주세요."),
 
     // post 예외
     POST_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
@@ -31,6 +34,7 @@ public enum ErrorType {
 
     // user 예외
     USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
+    SYSTEM_USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "시스템 유저를 찾을 수 없습니다.");
     PASSWORD_NOT(HttpStatus.BAD_REQUEST, "패스워드가 확인 패스워드랑 일치 X");
 
     private final HttpStatus status;

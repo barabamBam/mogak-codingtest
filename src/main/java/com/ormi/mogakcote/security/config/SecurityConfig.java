@@ -64,6 +64,9 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*/comments/**").permitAll();
             auth.requestMatchers("/api/*/posts/*/comments", "/api/*/posts/*/comments/**").hasRole("User");
 
+            // 시스템 댓글
+            auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*/system-comments").permitAll();
+
             // 게시글
             auth.requestMatchers(HttpMethod.GET, "/api/*/post/*").permitAll();
             auth.requestMatchers("/api/*/post", "/api/*/post/*").hasRole("User");
