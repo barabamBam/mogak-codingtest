@@ -34,7 +34,10 @@ public enum ErrorType {
     PASSWORD_NOT(HttpStatus.BAD_REQUEST, "패스워드가 확인 패스워드랑 일치 X"),
 
     // algorithm 예외
-    ALGORITHM_NOTFOUND_ERROR(HttpStatus.NOT_FOUND, "알고리즘을 찾을 수 없습니다.");
+    ALGORITHM_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "알고리즘을 찾을 수 없습니다."),
+
+    // language 예외
+    LANGUAGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "작성 언어를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;

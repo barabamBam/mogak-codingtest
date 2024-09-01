@@ -21,7 +21,9 @@ public class AlgorithmService {
     private final AlgorithmRepository algorithmRepository;
 
     @Transactional
-    public AlgorithmResponse createAlgorithm(Long id, AlgorithmRequest request) {
+    public AlgorithmResponse createAlgorithm(
+            Long id, AlgorithmRequest request
+    ) {
         Algorithm algorithm = buildAlgorithm(request, id);
         Algorithm savedAlgorithm = algorithmRepository.save(algorithm);
 
@@ -77,13 +79,13 @@ public class AlgorithmService {
 
     private Algorithm getAlgorithmById(Integer algorithmId) {
         return  algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
-                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOTFOUND_ERROR)
+                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR)
         );
     }
 
 
     private void throwsIfAlgorithmNotExist(Integer algorithmId) {
         algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
-                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOTFOUND_ERROR));
+                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR));
     }
 }

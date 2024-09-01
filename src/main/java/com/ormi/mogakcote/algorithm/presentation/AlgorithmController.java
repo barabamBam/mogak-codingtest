@@ -26,7 +26,7 @@ public class AlgorithmController {
     }
 
     //알고리즘 수정
-    @PutMapping("{algorithmId}")
+    @PutMapping("/{algorithmId}")
     public ResponseEntity<?> updateAlgorithm(
             @PathVariable Integer algorithmId,
             @RequestBody @Valid AlgorithmRequest request
@@ -36,7 +36,7 @@ public class AlgorithmController {
     }
 
     //알고리즘 삭제
-    @DeleteMapping("{algorithmId}")
+    @DeleteMapping("/{algorithmId}")
     public ResponseEntity<?> deleteAlgorithm(
             @PathVariable Integer algorithmId
     ) {
