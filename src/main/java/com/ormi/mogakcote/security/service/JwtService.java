@@ -10,11 +10,11 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.user.application.UserService;
 import com.ormi.mogakcote.user.domain.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class JwtService {
 
     private final UserService userService;
     private final RedisService<String> redisService;
-    private final SecretKey secretKey;
+    private final String secretKey;
     private final JwtParser secretParser;
     private final JwtParser claimParser;
     private final ObjectMapper objectMapper;
@@ -48,16 +48,15 @@ public class JwtService {
     private int accessTokenExpirationSecond;
 
     @Value("${spring.security.jwt.refresh-token-expiration-second}")
-    @Getter
     private int refreshTokenExpirationSecond;
 
     @Autowired
     public JwtService(UserService userService, RedisService<String> redisService, @Value("${spring.security.jwt.secretKey}") String secretKey, ObjectMapper objectMapper) {
         this.userService = userService;
         this.redisService = redisService;
-        this.secretKey = Keys.password(secretKey.toCharArray());
+        this.secretKey = secretKey;
         this.objectMapper = objectMapper;
-        this.secretParser = Jwts.parser().verifyWith(this.secretKey).build();
+        this.secretParser = Jwts.parser().verifyWith(getSignedKey()).build();
         this.claimParser = Jwts.parser().build();
     }
 
@@ -88,8 +87,7 @@ public class JwtService {
         claimsBuilder.issuer(issuerUrl);
         claimsBuilder.expiration(Date.from(expiredAt));
         Claims claims = claimsBuilder.build();
-
-        return Jwts.builder().claims(claims).signWith(secretKey).compact();
+        return Jwts.builder().claims(claims).signWith(getSignedKey()).compact();
     }
 
     public String getRefreshToken() {
@@ -149,7 +147,7 @@ public class JwtService {
         Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, authorizeToken.getRefreshToken());
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(getRefreshTokenExpirationSecond());
+        cookie.setMaxAge(refreshTokenExpirationSecond);
         response.addCookie(cookie);
 
         AccessTokenWrapper wrapper = new AccessTokenWrapper(authorizeToken.getAccessToken());
@@ -200,5 +198,10 @@ public class JwtService {
 
     private String getPairTokenKey(String refreshToken) {
         return "pair_" + refreshToken;
+    }
+
+    private SecretKey getSignedKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(this.secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
