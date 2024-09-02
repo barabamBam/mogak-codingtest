@@ -22,6 +22,6 @@ public class Language {
     private String languageName;
 
     public void update(String languageName) {
-        this.languageId = languageId;
+        this.languageName = languageName;
     }
 }

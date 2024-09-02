@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/v1/admin/algorithm")
+@RequestMapping(path = "/api/v1/admin/algorithms")
 @RequiredArgsConstructor
 public class AlgorithmController {
 
@@ -38,7 +38,7 @@ public class AlgorithmController {
     //알고리즘 삭제
     @DeleteMapping("/{algorithmId}")
     public ResponseEntity<?> deleteAlgorithm(
-            @PathVariable Long algorithmId
+            @PathVariable(name = "algorithmId")Long algorithmId
     ) {
         var response = algorithmService.deleteAlgorithm(algorithmId);
         return ResponseDto.ok(response);
