@@ -1,9 +1,9 @@
 package com.ormi.mogakcote.profile.presentation;
 
 import com.ormi.mogakcote.profile.application.UserProfileService;
-import com.ormi.mogakcote.profile.entity.Post;
-import com.ormi.mogakcote.profile.entity.Users;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ormi.mogakcote.profile.vote.Post;
+import com.ormi.mogakcote.user.domain.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +21,7 @@ public class UserProfileController {
 
     @GetMapping("/profile/{nickname}")
     public ResponseEntity<?> getUserProfile(@PathVariable String nickname) {
-        Users user = userProfileService.getUserProfile(nickname);
+        User user = userProfileService.getUserProfile(nickname);
         if (user == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "User not found");

@@ -1,7 +1,7 @@
 package com.ormi.mogakcote.profile.infrastructure;
 
-import com.ormi.mogakcote.profile.entity.Post;
-import com.ormi.mogakcote.profile.entity.Users;
+import com.ormi.mogakcote.profile.vote.Post;
+import com.ormi.mogakcote.user.domain.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,10 +10,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByUserOrderByCreatedAtDesc(Users user);
+    List<Post> findByUserOrderByCreatedAtDesc(User user);
 
     @Query("SELECT p FROM Post p WHERE p.user = :user ORDER BY SIZE(p.likes) DESC")
-    List<Post> findTop3ByUserOrderByLikesDesc(@Param("user") Users user, Pageable pageable);
+    List<Post> findTop3ByUserOrderByLikesDesc(@Param("user") User user, Pageable pageable);
 
-    long countByUser(Users user);
+    long countByUser(User user);
 }

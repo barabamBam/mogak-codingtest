@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.profile.entity;
+package com.ormi.mogakcote.profile.vote;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,15 +7,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "likes")
+@Table(name = "vote")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")

@@ -1,7 +1,6 @@
 package com.ormi.mogakcote.profile.application;
 
-import com.ormi.mogakcote.profile.entity.Post;
-import com.ormi.mogakcote.profile.entity.Users;
+import com.ormi.mogakcote.profile.vote.Post;
 import com.ormi.mogakcote.profile.infrastructure.PostRepository;
 import com.ormi.mogakcote.profile.infrastructure.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +18,19 @@ public class UserProfileService {
     @Autowired
     private PostRepository postRepository;
 
-    public Users getUserProfile(String nickname) {
+    public User getUserProfile(String nickname) {
         return userRepository.findByNickname(nickname);
     }
 
-    public List<Post> getUserPosts(Users user) {
+    public List<Post> getUserPosts(User user) {
         return postRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
-    public long getTotalPostCount(Users user) {
+    public long getTotalPostCount(User user) {
         return postRepository.countByUser(user);
     }
 
-    public List<Post> getTopLikedPosts(Users user) {
+    public List<Post> getTopLikedPosts(User user) {
         return postRepository.findTop3ByUserOrderByLikesDesc(user, PageRequest.of(0, 3));
     }
 }

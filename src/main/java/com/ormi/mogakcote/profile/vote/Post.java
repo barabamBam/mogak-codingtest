@@ -1,5 +1,6 @@
-package com.ormi.mogakcote.profile.entity;
+package com.ormi.mogakcote.profile.vote;
 
+import com.ormi.mogakcote.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @OneToMany(mappedBy = "post")
     private Set<Like> likes;
