@@ -1,7 +1,7 @@
 package com.ormi.mogakcote.profile.presentation;
 
+import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.profile.application.UserProfileService;
-import com.ormi.mogakcote.profile.vote.Post;
 import com.ormi.mogakcote.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

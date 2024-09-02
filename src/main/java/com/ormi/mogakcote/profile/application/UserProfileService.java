@@ -1,7 +1,8 @@
 package com.ormi.mogakcote.profile.application;
 
-import com.ormi.mogakcote.profile.vote.Post;
-import com.ormi.mogakcote.profile.infrastructure.PostRepository;
+
+import com.ormi.mogakcote.post.domain.Post;
+import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class UserProfileService {
     private PostRepository postRepository;
 
     public User getUserProfile(String nickname) {
+
         return userRepository.findByNickname(nickname);
     }
 
@@ -26,6 +28,7 @@ public class UserProfileService {
     }
 
     public long getTotalPostCount(User user) {
+
         return postRepository.countByUser(user);
     }
 
