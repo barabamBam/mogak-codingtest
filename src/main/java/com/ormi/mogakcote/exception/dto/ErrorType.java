@@ -31,7 +31,10 @@ public enum ErrorType {
 
     // user 예외
     USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
-    PASSWORD_NOT(HttpStatus.BAD_REQUEST, "패스워드가 확인 패스워드랑 일치 X");
+    PASSWORD_NOT(HttpStatus.BAD_REQUEST, "패스워드가 확인 패스워드랑 일치 X"),
+
+    // badge 예외
+    BADGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "뱃지를 찾을 수 없습니다");
 
     private final HttpStatus status;
     private final String message;
