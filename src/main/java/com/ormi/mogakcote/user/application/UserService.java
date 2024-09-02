@@ -21,13 +21,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional
     public RegisterResponse registerUser(RegisterRequest request) {
         validatePassword(request.getPassword());
 
 
-        if(!request.getPassword().equals(request.getConfirmPassword())) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new UserInvalidException(ErrorType.PASSWORD_NOT);
         }
 
@@ -50,20 +49,32 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
-
-
     }
 
     public boolean checkNickname(String nickname) {
         return !userRepository.existsByNickname(nickname);
     }
 
-    public boolean checkEmail(String email) {
-        return !userRepository.existsByEmail(email);
+    @Transactional(readOnly = true)
+    public String getEmailByNameAndNickname(String name, String nickname) {
+        return userRepository.findEmailByNameAndNickname(name, nickname).orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public boolean validatePassword(String password) {
         return password.matches("^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,}$");
+    }
+
+    @Transactional
+    public void updatePassword(String email, String newPassword) {
+        int result = userRepository.updatePasswordByEmail(email, newPassword);
+        if (result <= 0) {
+            throw new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR);
+        }
     }
 
     private User buildAndSaveUser(RegisterRequest request) {
@@ -77,7 +88,6 @@ public class UserService {
                 .build();
         return userRepository.save(user);
     }
-
 
 
 }
