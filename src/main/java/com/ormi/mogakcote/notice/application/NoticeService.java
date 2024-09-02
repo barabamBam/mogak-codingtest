@@ -11,6 +11,7 @@ import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NoticeService {
 
@@ -27,10 +29,11 @@ public class NoticeService {
      * 공지사항 생성
      */
     @Transactional
-    public NoticeResponse createNotice(Long adminId, NoticeRequest request) {
+    public NoticeResponse createNotice(
+            Long adminId, NoticeRequest request
+    ) {
         Notice notice = buildNotice(request, adminId);
         Notice savedNotice = noticeRepository.save(notice);
-
         return NoticeResponse.toResponse(
                 savedNotice.getNoticeId(),
                 savedNotice.getTitle(),
