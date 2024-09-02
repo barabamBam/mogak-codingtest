@@ -38,7 +38,6 @@ public class JwtService {
     private final RedisService<String> redisService;
     private final String secretKey;
     private final JwtParser secretParser;
-    private final JwtParser claimParser;
     private final ObjectMapper objectMapper;
 
     @Value("${spring.security.jwt.issuer}")
@@ -57,13 +56,12 @@ public class JwtService {
         this.secretKey = secretKey;
         this.objectMapper = objectMapper;
         this.secretParser = Jwts.parser().verifyWith(getSignedKey()).build();
-        this.claimParser = Jwts.parser().build();
     }
 
     @Nullable
     public Long getUserId(String accessToken) {
         try {
-            Jws<Claims> claims = claimParser.parseSignedClaims(accessToken);
+            Jws<Claims> claims = secretParser.parseSignedClaims(accessToken);
             return claims.getPayload().get(USER_ID_CLAIM, Long.class);
         } catch (JwtException e) {
             return null;

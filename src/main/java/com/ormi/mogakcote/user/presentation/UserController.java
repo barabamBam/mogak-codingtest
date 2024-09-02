@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping("/users/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        var response = userService.checkEmail(email);
+        var response = userService.existsByEmail(email);
         return ResponseDto.ok(response);
 
     }
