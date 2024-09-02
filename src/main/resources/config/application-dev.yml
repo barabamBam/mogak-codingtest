@@ -16,6 +16,8 @@ spring:
     user:
       password:
         secretKey: "secretKeysecretKeysecretKeysecretKey"
+        reset:
+          registerTimeoutSecond: 1800
 
   datasource:
     url: jdbc:mysql://localhost:3306/mogakcote
