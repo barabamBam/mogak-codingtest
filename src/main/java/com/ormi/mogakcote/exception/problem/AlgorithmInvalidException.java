@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.exception.algorithm;
+package com.ormi.mogakcote.exception.problem;
 
 import com.ormi.mogakcote.exception.BusinessException;
 import com.ormi.mogakcote.exception.dto.ErrorType;

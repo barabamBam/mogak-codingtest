@@ -1,11 +1,11 @@
-package com.ormi.mogakcote.algorithm.application;
+package com.ormi.mogakcote.problem.application;
 
-import com.ormi.mogakcote.algorithm.domain.Algorithm;
-import com.ormi.mogakcote.algorithm.dto.request.AlgorithmRequest;
-import com.ormi.mogakcote.algorithm.dto.response.AlgorithmResponse;
-import com.ormi.mogakcote.algorithm.infrastructure.AlgorithmRepository;
+import com.ormi.mogakcote.problem.domain.Algorithm;
+import com.ormi.mogakcote.problem.dto.request.AlgorithmRequest;
+import com.ormi.mogakcote.problem.dto.response.AlgorithmResponse;
+import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
-import com.ormi.mogakcote.exception.algorithm.AlgorithmInvalidException;
+import com.ormi.mogakcote.exception.problem.AlgorithmInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ public class AlgorithmService {
 
     @Transactional
     public AlgorithmResponse createAlgorithm(
-            Long id, AlgorithmRequest request
+            Long userId, AlgorithmRequest request
     ) {
-        Algorithm algorithm = buildAlgorithm(request, id);
+        Algorithm algorithm = buildAlgorithm(request, userId);
         Algorithm savedAlgorithm = algorithmRepository.save(algorithm);
 
         return AlgorithmResponse.toResponse(
@@ -34,11 +34,10 @@ public class AlgorithmService {
     }
 
     @Transactional
-    public AlgorithmResponse updateAlgorithm(Integer algorithmId, AlgorithmRequest request) {
-        throwsIfAlgorithmNotExist(algorithmId);
-        Algorithm findAlgorithm = getAlgorithmById(algorithmId);
+    public AlgorithmResponse updateAlgorithm(Long algorithmId, AlgorithmRequest request) {
+        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(algorithmId);
 
-        findAlgorithm.update(request.getAlgorithmId(), request.getAlgorithmName());
+        findAlgorithm.update(request.getAlgorithmName());
 
         return AlgorithmResponse.toResponse(
                 findAlgorithm.getAlgorithmId(),
@@ -48,9 +47,8 @@ public class AlgorithmService {
 
 
     @Transactional
-    public SuccessResponse deleteAlgorithm(Integer algorithmId) {
-        throwsIfAlgorithmNotExist(algorithmId);
-        Algorithm findAlgorithm = getAlgorithmById(algorithmId);
+    public SuccessResponse deleteAlgorithm(Long algorithmId) {
+        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(algorithmId);
         algorithmRepository.deleteByAlgorithmId(findAlgorithm.getAlgorithmId());
 
         return new SuccessResponse("알고리즘 삭제를 성공했습니다.");
@@ -70,22 +68,22 @@ public class AlgorithmService {
 
         return algorithmResponses;
     }
-    private Algorithm buildAlgorithm(AlgorithmRequest request, Long id) {
+    private Algorithm buildAlgorithm(AlgorithmRequest request, Long algorithmId) {
         return Algorithm.builder()
-                .algorithmId(request.getAlgorithmId())
+                .algorithmId(algorithmId)
                 .name(request.getAlgorithmName())
                 .build();
     }
 
-    private Algorithm getAlgorithmById(Integer algorithmId) {
+    private Algorithm getAlgorithmOrThrowIfNotExist(Long algorithmId) {
         return  algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
                 () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR)
         );
     }
 
 
-    private void throwsIfAlgorithmNotExist(Integer algorithmId) {
-        algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
-                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR));
-    }
+//    private void throwsIfAlgorithmNotExist(Long algorithmId) {
+//        algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
+//                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR));
+//    }
 }

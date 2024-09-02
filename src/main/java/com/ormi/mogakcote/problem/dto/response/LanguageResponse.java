@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.language.dto.response;
+package com.ormi.mogakcote.problem.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LanguageResponse {
-    private Integer languageId;
+    private Long languageId;
     private String languageName;
 
-    public static LanguageResponse toResponse(Integer languageId, String languageName){
+    public static LanguageResponse toResponse(Long languageId, String languageName){
         return new LanguageResponse(languageId, languageName);
     }
 }

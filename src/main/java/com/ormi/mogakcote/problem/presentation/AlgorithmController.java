@@ -1,7 +1,7 @@
-package com.ormi.mogakcote.algorithm.presentation;
+package com.ormi.mogakcote.problem.presentation;
 
-import com.ormi.mogakcote.algorithm.application.AlgorithmService;
-import com.ormi.mogakcote.algorithm.dto.request.AlgorithmRequest;
+import com.ormi.mogakcote.problem.application.AlgorithmService;
+import com.ormi.mogakcote.problem.dto.request.AlgorithmRequest;
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.model.ResponseDto;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class AlgorithmController {
     //알고리즘 수정
     @PutMapping("/{algorithmId}")
     public ResponseEntity<?> updateAlgorithm(
-            @PathVariable Integer algorithmId,
+            @PathVariable(name = "algorithmId") Long algorithmId,
             @RequestBody @Valid AlgorithmRequest request
     ) {
         var response = algorithmService.updateAlgorithm(algorithmId, request);
@@ -38,7 +38,7 @@ public class AlgorithmController {
     //알고리즘 삭제
     @DeleteMapping("/{algorithmId}")
     public ResponseEntity<?> deleteAlgorithm(
-            @PathVariable Integer algorithmId
+            @PathVariable Long algorithmId
     ) {
         var response = algorithmService.deleteAlgorithm(algorithmId);
         return ResponseDto.ok(response);

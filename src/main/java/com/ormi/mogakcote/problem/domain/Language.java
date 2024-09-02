@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.language.domain;
+package com.ormi.mogakcote.problem.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,9 +17,11 @@ import lombok.NoArgsConstructor;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int languageId;
+    private Long languageId;
 
     private String languageName;
 
-    public void update(String languageName){ this.languageId = languageId; }
+    public void update(String languageName) {
+        this.languageId = languageId;
+    }
 }

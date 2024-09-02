@@ -1,9 +1,9 @@
-package com.ormi.mogakcote.language.presentation;
+package com.ormi.mogakcote.problem.presentation;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.model.ResponseDto;
-import com.ormi.mogakcote.language.application.LanguageService;
-import com.ormi.mogakcote.language.dto.request.LanguageRequest;
+import com.ormi.mogakcote.problem.application.LanguageService;
+import com.ormi.mogakcote.problem.dto.request.LanguageRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class LanguageController {
     // 작성 언어 수정
     @PutMapping("/{languageId}")
     public ResponseEntity<?> updateLanguage(
-            @PathVariable Integer languageId,
+            @PathVariable("languageId") Long languageId,
             @RequestBody @Valid LanguageRequest request
     ) {
         var response = languageService.updateLanguage(languageId, request);
@@ -39,7 +39,7 @@ public class LanguageController {
     // 작성 언어 삭제
     @DeleteMapping("/{languageId}")
     public ResponseEntity<?> deleteLanguage(
-            @PathVariable Integer languageId
+            @PathVariable("languageId") Long languageId
     ) {
         var response = languageService.deleteLanguage(languageId);
         return ResponseDto.ok(response);

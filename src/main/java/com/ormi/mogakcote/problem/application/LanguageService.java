@@ -1,13 +1,12 @@
-package com.ormi.mogakcote.language.application;
+package com.ormi.mogakcote.problem.application;
 
 import com.ormi.mogakcote.common.dto.SuccessResponse;
-import com.ormi.mogakcote.exception.algorithm.AlgorithmInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
-import com.ormi.mogakcote.exception.language.LanguageInvalidException;
-import com.ormi.mogakcote.language.domain.Language;
-import com.ormi.mogakcote.language.dto.request.LanguageRequest;
-import com.ormi.mogakcote.language.dto.response.LanguageResponse;
-import com.ormi.mogakcote.language.infrastructure.LanguageRepository;
+import com.ormi.mogakcote.exception.problem.LanguageInvalidException;
+import com.ormi.mogakcote.problem.domain.Language;
+import com.ormi.mogakcote.problem.dto.request.LanguageRequest;
+import com.ormi.mogakcote.problem.dto.response.LanguageResponse;
+import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +22,10 @@ public class LanguageService {
 
     @Transactional
     public LanguageResponse createLanguage(
-            Long id,
+            Long userId,
             LanguageRequest request
     ) {
-        Language language = buildLanguage(request, id);
+        Language language = buildLanguage(request, userId);
         Language savedLanguage = languageRepository.save(language);
 
         return LanguageResponse.toResponse(
@@ -36,9 +35,8 @@ public class LanguageService {
     }
 
     @Transactional
-    public LanguageResponse updateLanguage(Integer languageId, LanguageRequest request) {
-        throwsIfLanguageNotExist(languageId);
-        Language findLanguage = getLanguageById(languageId);
+    public LanguageResponse updateLanguage(Long languageId, LanguageRequest request) {
+        Language findLanguage = getLanguageOrThrowIfNotExist(languageId);
 
         findLanguage.update(request.getLanguageName());
 
@@ -49,9 +47,8 @@ public class LanguageService {
     }
 
     @Transactional
-    public SuccessResponse deleteLanguage(Integer languageId) {
-        throwsIfLanguageNotExist(languageId);
-        Language findLanguage = getLanguageById(languageId);
+    public SuccessResponse deleteLanguage(Long languageId) {
+        Language findLanguage = getLanguageOrThrowIfNotExist(languageId);
         languageRepository.deleteByLanguageId(findLanguage.getLanguageId());
 
         return new SuccessResponse("작성언어 삭제를 성공했습니다.");
@@ -73,21 +70,21 @@ public class LanguageService {
     }
 
 
-    private Language buildLanguage(LanguageRequest request, Long id) {
+    private Language buildLanguage(LanguageRequest request, Long languageId) {
         return Language.builder()
-                .languageId(request.getLanguageId())
+                .languageId(languageId)
                 .languageName(request.getLanguageName())
                 .build();
     }
 
-    private Language getLanguageById(Integer languageId) {
+    private Language getLanguageOrThrowIfNotExist(Long languageId) {
         return languageRepository.findByLanguageId(languageId).orElseThrow(
                 () -> new LanguageInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR)
         );
     }
 
-    private void throwsIfLanguageNotExist(Integer languageId) {
-        languageRepository.findByLanguageId(languageId).orElseThrow(
-                () -> new AlgorithmInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR));
-    }
+//    private void throwsIfLanguageNotExist(Long languageId) {
+//        languageRepository.findByLanguageId(languageId).orElseThrow(
+//                () -> new AlgorithmInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR));
+//    }
 }

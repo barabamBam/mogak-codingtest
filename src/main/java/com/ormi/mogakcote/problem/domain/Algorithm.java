@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.algorithm.domain;
+package com.ormi.mogakcote.problem.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,13 +14,12 @@ import lombok.NoArgsConstructor;
 public class Algorithm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer algorithmId;
+    private Long algorithmId;
 
     @Column(nullable = false)
     private String name;
 
-    public void update(Integer algorithmId, String algorithmName) {
-        this.algorithmId = algorithmId;
+    public void update(String algorithmName) {
         this.name = algorithmName;
     }
 }
