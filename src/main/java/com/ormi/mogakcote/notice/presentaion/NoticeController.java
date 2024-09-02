@@ -9,12 +9,14 @@ import com.ormi.mogakcote.notice.dto.request.NoticeUpdateRequest;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/notice")
 @RequiredArgsConstructor
+@Slf4j
 public class NoticeController {
 
     private final NoticeService noticeService;
@@ -24,6 +26,8 @@ public class NoticeController {
     public ResponseEntity<?> createNotice(
             AuthUser user,
             @RequestBody @Valid NoticeRequest request) {
+        log.info("User ID: {}", user.getId());
+
         var response = noticeService.createNotice(user.getId(), request);
         return ResponseDto.created(response);
     }
@@ -31,7 +35,6 @@ public class NoticeController {
 //     공지사항 상세보기
     @GetMapping("/{noticeId}")
     public ResponseEntity<?> getNotice(
-            AuthUser user,
             @PathVariable("noticeId") Long noticeId
     ) {
         var response = noticeService.getNotice(noticeId);
