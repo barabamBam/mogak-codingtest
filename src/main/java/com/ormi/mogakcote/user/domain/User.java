@@ -35,4 +35,6 @@ public class User {
     @Column(name = "join_at")
     @CreatedDate
     private LocalDateTime joinAt;
+
+    @Embedded private Activity activity;
 }

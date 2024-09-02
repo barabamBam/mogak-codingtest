@@ -20,4 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+	@Query("select u.activity.commentCount from User u where u.id = ?1")
+    Integer findCommentCountById(Long id);
+
+    @Query("select u.activity.dayCount from User u where u.id = ?1")
+    Integer findDayCountById(Long id);
 }
