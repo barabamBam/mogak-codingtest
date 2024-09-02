@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.post;
+package com.ormi.mogakcote.post.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
+import com.ormi.mogakcote.notice.domain.Notice;
+import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
+import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
+import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
+import com.ormi.mogakcote.post.dto.response.PostResponse;
+import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
+import com.ormi.mogakcote.post.infrastructure.PostRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +42,7 @@ public class PostService {
 	}
 
 	// 검색 조건에 맞게 게시글 추출
-	public Page<PostResponse> searchPost(AuthUser user, PostSearchRequest postSearchRequest) {
+	public Page<PostSearchResponse> searchPost(AuthUser user, PostSearchRequest postSearchRequest) {
 		// 페이징을 위한 기본 설정 -> (보여줄 페이지, 한 페이지에 보여줄 데이터 수)
 		Pageable pageable = PageRequest.of(postSearchRequest.getPage()-1, 8);
 
