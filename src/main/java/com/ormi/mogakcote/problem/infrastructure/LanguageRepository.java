@@ -8,10 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-@Transactional(readOnly = true)
 public interface LanguageRepository extends JpaRepository<Language, Long>{
 
-    Optional<Language> findByLanguageId(Long languageId);
+    Optional<Language> findById(Long id);
 
-    void deleteByLanguageId(Long languageId);
+    void deleteById(Long id);
 }

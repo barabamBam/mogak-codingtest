@@ -28,27 +28,27 @@ public class LanguageService {
         Language savedLanguage = languageRepository.save(language);
 
         return LanguageResponse.toResponse(
-                savedLanguage.getLanguageId(),
+                savedLanguage.getId(),
                 savedLanguage.getLanguageName()
         );
     }
 
     @Transactional
-    public LanguageResponse updateLanguage(Long languageId, LanguageRequest request) {
-        Language findLanguage = getLanguageOrThrowIfNotExist(languageId);
+    public LanguageResponse updateLanguage(Long id, LanguageRequest request) {
+        Language findLanguage = getLanguageOrThrowIfNotExist(id);
 
         findLanguage.update(request.getLanguageName());
 
         return LanguageResponse.toResponse(
-                findLanguage.getLanguageId(),
+                findLanguage.getId(),
                 findLanguage.getLanguageName()
         );
     }
 
     @Transactional
-    public SuccessResponse deleteLanguage(Long languageId) {
-        Language findLanguage = getLanguageOrThrowIfNotExist(languageId);
-        languageRepository.deleteByLanguageId(findLanguage.getLanguageId());
+    public SuccessResponse deleteLanguage(Long id) {
+        Language findLanguage = getLanguageOrThrowIfNotExist(id);
+        languageRepository.deleteById(findLanguage.getId());
 
         return new SuccessResponse("작성언어 삭제를 성공했습니다.");
     }
@@ -60,7 +60,7 @@ public class LanguageService {
 
         findLanguages.forEach(findLanguage -> {
             languageResponses.add(LanguageResponse.toResponse(
-                    findLanguage.getLanguageId(),
+                    findLanguage.getId(),
                     findLanguage.getLanguageName()
             ));
         });
@@ -71,13 +71,13 @@ public class LanguageService {
 
     private Language buildLanguage(LanguageRequest request) {
         return Language.builder()
-                .languageId(request.getLanguageId())
+                .id(request.getId())
                 .languageName(request.getLanguageName())
                 .build();
     }
 
     private Language getLanguageOrThrowIfNotExist(Long languageId) {
-        return languageRepository.findByLanguageId(languageId).orElseThrow(
+        return languageRepository.findById(languageId).orElseThrow(
                 () -> new LanguageInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR)
         );
     }

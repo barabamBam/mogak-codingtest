@@ -28,28 +28,28 @@ public class AlgorithmService {
         Algorithm savedAlgorithm = algorithmRepository.save(algorithm);
 
         return AlgorithmResponse.toResponse(
-                savedAlgorithm.getAlgorithmId(),
+                savedAlgorithm.getId(),
                 savedAlgorithm.getName()
         );
     }
 
     @Transactional
-    public AlgorithmResponse updateAlgorithm(Long algorithmId, AlgorithmRequest request) {
-        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(algorithmId);
+    public AlgorithmResponse updateAlgorithm(Long id, AlgorithmRequest request) {
+        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(id);
 
         findAlgorithm.update(request.getAlgorithmName());
 
         return AlgorithmResponse.toResponse(
-                findAlgorithm.getAlgorithmId(),
+                findAlgorithm.getId(),
                 findAlgorithm.getName()
         );
     }
 
 
     @Transactional
-    public SuccessResponse deleteAlgorithm(Long algorithmId) {
-        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(algorithmId);
-        algorithmRepository.deleteByAlgorithmId(findAlgorithm.getAlgorithmId());
+    public SuccessResponse deleteAlgorithm(Long id) {
+        Algorithm findAlgorithm = getAlgorithmOrThrowIfNotExist(id);
+        algorithmRepository.deleteById(findAlgorithm.getId());
 
         return new SuccessResponse("알고리즘 삭제를 성공했습니다.");
     }
@@ -61,7 +61,7 @@ public class AlgorithmService {
 
         findAlgorithms.forEach(findAlgorithm -> {
             algorithmResponses.add(AlgorithmResponse.toResponse(
-                    findAlgorithm.getAlgorithmId(),
+                    findAlgorithm.getId(),
                     findAlgorithm.getName()
             ));
         });
@@ -70,13 +70,13 @@ public class AlgorithmService {
     }
     private Algorithm buildAlgorithm(AlgorithmRequest request) {
         return Algorithm.builder()
-                .algorithmId(request.getAlgorithmId())
+                .id(request.getId())
                 .name(request.getAlgorithmName())
                 .build();
     }
 
-    private Algorithm getAlgorithmOrThrowIfNotExist(Long algorithmId) {
-        return  algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
+    private Algorithm getAlgorithmOrThrowIfNotExist(Long id) {
+        return  algorithmRepository.findById(id).orElseThrow(
                 () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR)
         );
     }

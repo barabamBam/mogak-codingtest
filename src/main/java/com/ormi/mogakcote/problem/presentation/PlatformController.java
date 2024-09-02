@@ -26,21 +26,21 @@ public class PlatformController {
     }
 
     // 플랫폼 수정
-    @PutMapping("/{platformId}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updatePlatform(
-            @PathVariable("platformId") Long platformId,
+            @PathVariable("id") Long id,
             @RequestBody @Valid PlatformRequest request
     ) {
-        var response = platformServcie.updatePlatform(platformId, request);
+        var response = platformServcie.updatePlatform(id, request);
         return ResponseDto.ok(response);
     }
 
     // 플랫폼 삭제
-    @DeleteMapping("/{platformId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePlatform(
-            @PathVariable("platformId") Long platformId
+            @PathVariable("id") Long id
     ) {
-        var response = platformServcie.deletePlatform(platformId);
+        var response = platformServcie.deletePlatform(id);
         return ResponseDto.ok(response);
     }
 
