@@ -71,8 +71,8 @@ public class UserService {
                 .name(request.getUsername())
                 .nickname(request.getNickname())
                 .email(request.getEmail())
-                .password(request.getPassword())
-                .authority(Authority.USER)
+                .password(passwordEncoder.encode(request.getPassword()))
+                .authority(request.getAuthority())
                 .joinAt(LocalDateTime.now())
                 .build();
         return userRepository.save(user);
