@@ -23,7 +23,7 @@ public class PlatformServcie {
     public PlatformResponse createPlatform(
             PlatformRequest request
     ) {
-        Platform platform = buildPlatform(request, request.getPlatformId());
+        Platform platform = buildPlatform(request);
         Platform savedPlatform = platformRepository.save(platform);
 
         return PlatformResponse.toResponse(
@@ -66,9 +66,9 @@ public class PlatformServcie {
         return platformResponses;
     }
 
-    private Platform buildPlatform(PlatformRequest request, Long platformId){
+    private Platform buildPlatform(PlatformRequest request){
         return Platform.builder()
-                .platformId(platformId)
+                .platformId(request.getPlatformId())
                 .platformName(request.getPlatformName())
                 .build();
     }

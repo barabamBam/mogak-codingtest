@@ -1,6 +1,5 @@
 package com.ormi.mogakcote.problem.presentation;
 
-import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.problem.application.PlatformServcie;
 import com.ormi.mogakcote.problem.dto.request.PlatformRequest;

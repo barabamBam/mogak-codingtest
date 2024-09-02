@@ -24,7 +24,7 @@ public class AlgorithmService {
     public AlgorithmResponse createAlgorithm(
             AlgorithmRequest request
     ) {
-        Algorithm algorithm = buildAlgorithm(request, request.getAlgorithmId());
+        Algorithm algorithm = buildAlgorithm(request);
         Algorithm savedAlgorithm = algorithmRepository.save(algorithm);
 
         return AlgorithmResponse.toResponse(
@@ -68,9 +68,9 @@ public class AlgorithmService {
 
         return algorithmResponses;
     }
-    private Algorithm buildAlgorithm(AlgorithmRequest request, Long algorithmId) {
+    private Algorithm buildAlgorithm(AlgorithmRequest request) {
         return Algorithm.builder()
-                .algorithmId(algorithmId)
+                .algorithmId(request.getAlgorithmId())
                 .name(request.getAlgorithmName())
                 .build();
     }

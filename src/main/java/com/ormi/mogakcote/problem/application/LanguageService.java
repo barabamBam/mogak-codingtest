@@ -24,7 +24,7 @@ public class LanguageService {
     public LanguageResponse createLanguage(
             LanguageRequest request
     ) {
-        Language language = buildLanguage(request, request.getLanguageId());
+        Language language = buildLanguage(request);
         Language savedLanguage = languageRepository.save(language);
 
         return LanguageResponse.toResponse(
@@ -69,9 +69,9 @@ public class LanguageService {
     }
 
 
-    private Language buildLanguage(LanguageRequest request, Long languageId) {
+    private Language buildLanguage(LanguageRequest request) {
         return Language.builder()
-                .languageId(languageId)
+                .languageId(request.getLanguageId())
                 .languageName(request.getLanguageName())
                 .build();
     }
