@@ -47,29 +47,29 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/*/post/**").permitAll();
 
             // 관리자
-            auth.requestMatchers("/api/*/admin", "/api/*/admin/**").hasRole("Admin");
+            auth.requestMatchers("/api/*/admin", "/api/*/admin/**").hasRole("ADMIN");
 
             // 공지사항
             auth.requestMatchers(HttpMethod.GET, "/api/*/notice/*").permitAll();
-            auth.requestMatchers("/api/*/notice/*").hasRole("Admin");
+            auth.requestMatchers("/api/*/notice/*").hasRole("ADMIN");
 
             // 엘런 문제 분석
-            auth.requestMatchers("/api/*/reports/**").hasRole("User");
+            auth.requestMatchers("/api/*/reports/**").hasRole("USER");
 
             // 알림
-            auth.requestMatchers(HttpMethod.GET, "/api/*/news/*").hasRole("User");
-            auth.requestMatchers("/api/*/news", "/api/*/news/*").hasRole("Admin");
+            auth.requestMatchers(HttpMethod.GET, "/api/*/news/*").hasRole("USER");
+            auth.requestMatchers("/api/*/news", "/api/*/news/*").hasRole("ADMIN");
 
             // 댓글
             auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*/comments/**").permitAll();
-            auth.requestMatchers("/api/*/posts/*/comments", "/api/*/posts/*/comments/**").hasRole("User");
+            auth.requestMatchers("/api/*/posts/*/comments", "/api/*/posts/*/comments/**").hasRole("USER");
 
             // 시스템 댓글
             auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*/system-comments").permitAll();
 
             // 게시글
             auth.requestMatchers(HttpMethod.GET, "/api/*/post/*").permitAll();
-            auth.requestMatchers("/api/*/post", "/api/*/post/*").hasRole("User");
+            auth.requestMatchers("/api/*/post", "/api/*/post/*").hasRole("USER");
 
             // 회원가입
             auth.requestMatchers("/api/*/signup/**", "/api/*/users/**").permitAll();
@@ -78,7 +78,7 @@ public class SecurityConfig {
             auth.requestMatchers("/api/*/auth/**").anonymous();
 
             // 마이페이지
-            auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("User");
+            auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("USER");
             // 나머지 요청은 인증 필요
             auth.anyRequest().authenticated();
         });
@@ -99,7 +99,7 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_Admin > ROLE_User");
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
         return roleHierarchy;
     }
 }
