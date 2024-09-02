@@ -22,10 +22,9 @@ public class LanguageService {
 
     @Transactional
     public LanguageResponse createLanguage(
-            Long userId,
             LanguageRequest request
     ) {
-        Language language = buildLanguage(request, userId);
+        Language language = buildLanguage(request, request.getLanguageId());
         Language savedLanguage = languageRepository.save(language);
 
         return LanguageResponse.toResponse(

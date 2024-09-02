@@ -22,9 +22,9 @@ public class AlgorithmService {
 
     @Transactional
     public AlgorithmResponse createAlgorithm(
-            Long userId, AlgorithmRequest request
+            AlgorithmRequest request
     ) {
-        Algorithm algorithm = buildAlgorithm(request, userId);
+        Algorithm algorithm = buildAlgorithm(request, request.getAlgorithmId());
         Algorithm savedAlgorithm = algorithmRepository.save(algorithm);
 
         return AlgorithmResponse.toResponse(

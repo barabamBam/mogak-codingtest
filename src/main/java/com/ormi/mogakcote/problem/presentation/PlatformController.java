@@ -19,10 +19,10 @@ public class PlatformController {
     // 플랫폼 생성
     @PostMapping
     public ResponseEntity<?> createPlatform(
-            AuthUser user,
+//            AuthUser user,
             @RequestBody @Valid PlatformRequest request
     ) {
-        var response = platformServcie.createPlatform(user.getId(), request);
+        var response = platformServcie.createPlatform(request);
         return ResponseDto.created(response);
     }
 

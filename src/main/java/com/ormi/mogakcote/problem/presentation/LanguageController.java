@@ -22,7 +22,7 @@ public class LanguageController {
             AuthUser user,
             @RequestBody @Valid LanguageRequest request
     ) {
-        var response = languageService.createLanguage(user.getId(), request);
+        var response = languageService.createLanguage(request);
         return ResponseDto.created(response);
     }
 

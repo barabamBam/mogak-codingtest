@@ -21,7 +21,7 @@ public class AlgorithmController {
     public ResponseEntity<?> createAlgorithm(
             AuthUser user,
             @RequestBody @Valid AlgorithmRequest request) {
-        var response = algorithmService.createAlgorithm(user.getId(), request);
+        var response = algorithmService.createAlgorithm(request);
         return ResponseDto.created(response);
     }
 

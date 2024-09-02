@@ -21,15 +21,14 @@ public class PlatformServcie {
 
     @Transactional
     public PlatformResponse createPlatform(
-            Long userId,
             PlatformRequest request
     ) {
-        Platform platform = buildPlatform(request, userId);
+        Platform platform = buildPlatform(request, request.getPlatformId());
         Platform savedPlatform = platformRepository.save(platform);
 
         return PlatformResponse.toResponse(
                 savedPlatform.getPlatformId(),
-                savedPlatform.getPlatformeName()
+                savedPlatform.getPlatformName()
         );
     }
 
@@ -41,7 +40,7 @@ public class PlatformServcie {
 
         return PlatformResponse.toResponse(
                 findPlatform.getPlatformId(),
-                findPlatform.getPlatformeName()
+                findPlatform.getPlatformName()
         );
     }
 
@@ -61,7 +60,7 @@ public class PlatformServcie {
         findPlatforms.forEach(findPlatform -> {
             platformResponses.add(PlatformResponse.toResponse(
                     findPlatform.getPlatformId(),
-                    findPlatform.getPlatformeName()
+                    findPlatform.getPlatformName()
             ));
         });
         return platformResponses;
@@ -70,7 +69,7 @@ public class PlatformServcie {
     private Platform buildPlatform(PlatformRequest request, Long platformId){
         return Platform.builder()
                 .platformId(platformId)
-                .platformeName(request.getPlatformName())
+                .platformName(request.getPlatformName())
                 .build();
     }
 
