@@ -2,20 +2,19 @@ package com.ormi.mogakcote.profile.application;
 
 import com.ormi.mogakcote.profile.vote.Post;
 import com.ormi.mogakcote.profile.infrastructure.PostRepository;
-import com.ormi.mogakcote.profile.infrastructure.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.infrastructure.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserProfileService {
 
-    @Autowired
-    private UsersRepository userRepository;
-
-    @Autowired
+    private UserRepository userRepository;
     private PostRepository postRepository;
 
     public User getUserProfile(String nickname) {

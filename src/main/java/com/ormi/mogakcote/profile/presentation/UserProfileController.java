@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class UserProfileController {
 
-    @Autowired
     private UserProfileService userProfileService;
 
     @GetMapping("/profile/{nickname}")
