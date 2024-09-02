@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.post;
+package com.ormi.mogakcote.post.dto.request;
 
 public enum SortType {
 	LATEST,

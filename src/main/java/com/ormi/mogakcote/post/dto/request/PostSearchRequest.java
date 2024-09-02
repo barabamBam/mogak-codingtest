@@ -1,4 +1,4 @@
-package com.ormi.mogakcote.post;
+package com.ormi.mogakcote.post.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
