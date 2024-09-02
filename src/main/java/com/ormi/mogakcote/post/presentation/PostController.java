@@ -28,8 +28,9 @@ public class PostController {
         return ResponseDto.created(response);
     }
 
+
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long postId) {
         PostResponse post = postService.getPost(postId);
         return ResponseEntity.ok(post);
     }
@@ -41,13 +42,13 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<?> modifyPost(AuthUser user, @PathVariable Long postId, @RequestBody PostRequest postRequest) {
+    public ResponseEntity<?> modifyPost(AuthUser user, @PathVariable(name = "postId") Long postId, @RequestBody PostRequest postRequest) {
         PostResponse updatedPost = postService.updatePost(user, postId, postRequest);
         return ResponseEntity.ok(updatedPost);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable Long postId) {
+    public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable(name = "postId") Long postId) {
         postService.deletePost(user,postId);
         return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
     }
