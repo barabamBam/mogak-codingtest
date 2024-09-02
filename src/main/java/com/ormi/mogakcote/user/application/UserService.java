@@ -2,11 +2,15 @@ package com.ormi.mogakcote.user.application;
 
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.user.UserInvalidException;
+import com.ormi.mogakcote.user.domain.Authority;
 import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.dto.request.RegisterRequest;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -41,4 +45,19 @@ public class UserService {
             throw new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR);
         }
     }
+
+    private User buildAndSaveUser(RegisterRequest request) {
+        User user = User.builder()
+                .name(request.getUsername())
+                .nickname(request.getNickname())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .authority(Authority.USER)
+                .joinAt(LocalDateTime.now())
+                .build();
+        return userRepository.save(user);
+    }
+
+
+
 }

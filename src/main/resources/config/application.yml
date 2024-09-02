@@ -47,3 +47,9 @@ logging:
     org.hibernate.type: trace
     org.springframework.web: debug
     com.ormi.cookudasse: debug
+
+
+  security:
+    user:
+      password:
+        secretKey: your_secret_key_here

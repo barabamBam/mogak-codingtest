@@ -10,7 +10,7 @@ spring:
   security:
     jwt:
       issuer: "http://localhost:8081"
-      secretKey: "secretKeysecretKeysecretKeysecretKey"
+      secretKey: "c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5"
       access-token-expiration-second: 1800
       refresh-token-expiration-second: 10080
     user:
@@ -23,7 +23,7 @@ spring:
     url: jdbc:mysql://localhost:3306/mogakcote
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: 1234
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
