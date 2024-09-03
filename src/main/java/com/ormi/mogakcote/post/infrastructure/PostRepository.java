@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-//@Transactional(readOnly = true)
 public interface PostRepository extends JpaRepository<Post, Long> {
-        List<Post> findByUserOrderByCreatedAtDesc(User user);
-        @Query("SELECT p FROM Post p WHERE p.user = :user ORDER BY SIZE(p.likes) DESC")
-        List<Post> findTop3ByUserOrderByLikesDesc(@Param("user") User user, Pageable pageable);
+    List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
 
-        long countByUser(User user);
-    }
+    @Query("SELECT p FROM Post p WHERE p.userId = :userId ORDER BY p.viewCnt DESC")
+    List<Post> findTop3ByUserIdOrderByViewsDesc(@Param("userId") Long userId, Pageable pageable);
+
+    long countByUserId(Long userId);
+}

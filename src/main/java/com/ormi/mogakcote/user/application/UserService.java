@@ -5,7 +5,6 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.user.UserInvalidException;
 import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.dto.request.RegisterRequest;
-import com.ormi.mogakcote.user.dto.request.UserAuthRequest;
 import com.ormi.mogakcote.user.dto.response.RegisterResponse;
 import com.ormi.mogakcote.user.dto.response.UserAuthResponse;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
@@ -80,6 +79,28 @@ public class UserService {
             throw new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR);
         }
     }
+    @Transactional
+    public void updateProfile(Long userId, String username, String nickname) {
+        User user = getById(userId);
+        user.updateProfile(username, nickname);
+    }
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = getById(userId);
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new UserAuthManagementInvalidException(ErrorType.PASSWORD_NOT);
+        }
+        user.updatePassword(passwordEncoder.encode(newPassword));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, String password) {
+        User user = getById(userId);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserAuthManagementInvalidException(ErrorType.PASSWORD_NOT);
+        }
+        userRepository.delete(user);
+    }
 
     private User buildAndSaveUser(RegisterRequest request) {
         User user = User.builder()
@@ -92,6 +113,7 @@ public class UserService {
                 .build();
         return userRepository.save(user);
     }
+
 
 
     public UserAuthResponse registerUserAuth(Long id) {
@@ -112,5 +134,6 @@ public class UserService {
                 findUser.getPassword(),
                 findUser.getAuthority()
         );
+
     }
 }

@@ -11,28 +11,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
 
-    private UserRepository userRepository;
-    private PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     public User getUserProfile(String nickname) {
-
         return userRepository.findByNickname(nickname);
     }
 
     public List<Post> getUserPosts(User user) {
-        return postRepository.findByUserOrderByCreatedAtDesc(user);
+        return postRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
     }
 
     public long getTotalPostCount(User user) {
-
-        return postRepository.countByUser(user);
+        return postRepository.countByUserId(user.getId());
     }
+
 
     public List<Post> getTopLikedPosts(User user) {
-        return postRepository.findTop3ByUserOrderByLikesDesc(user, PageRequest.of(0, 3));
+        return postRepository.findTop3ByUserIdOrderByViewsDesc(user.getId(), PageRequest.of(0, 3));
     }
-}
+    }

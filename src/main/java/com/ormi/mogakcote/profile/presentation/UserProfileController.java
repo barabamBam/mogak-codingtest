@@ -19,7 +19,7 @@ public class UserProfileController {
 
     private UserProfileService userProfileService;
 
-    @GetMapping("/profile/{nickname}")
+    @GetMapping("/api/v1/profile/{nickname}")
     public ResponseEntity<?> getUserProfile(@PathVariable String nickname) {
         User user = userProfileService.getUserProfile(nickname);
         if (user == null) {
