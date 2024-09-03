@@ -35,4 +35,8 @@ public class User {
     @Column(name = "join_at")
     @CreatedDate
     private LocalDateTime joinAt;
+
+    public void updateAuth(Authority authority){
+        this.authority = authority;
+    }
 }
