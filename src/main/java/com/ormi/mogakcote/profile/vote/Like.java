@@ -20,4 +20,7 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Column(name = "post_id", insertable = false, updatable = false)
+    private Long postId;
 }
