@@ -1,6 +1,6 @@
 package com.ormi.mogakcote.profile.vote;
 
-import com.ormi.mogakcote.post.domain.Post;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
