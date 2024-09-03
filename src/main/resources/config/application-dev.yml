@@ -10,12 +10,14 @@ spring:
   security:
     jwt:
       issuer: "http://localhost:8081"
-      secretKey: "secretKeysecretKeysecretKeysecretKey"
+      secretKey: "c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5"
       access-token-expiration-second: 1800
       refresh-token-expiration-second: 10080
     user:
       password:
         secretKey: "secretKeysecretKeysecretKeysecretKey"
+        reset:
+          registerTimeoutSecond: 1800
 
   datasource:
     url: jdbc:mysql://localhost:3306/mogakcote
