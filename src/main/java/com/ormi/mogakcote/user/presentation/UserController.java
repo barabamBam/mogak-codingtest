@@ -31,11 +31,11 @@ public class UserController {
 
     }
 
-   @PostMapping("/signup/validate-password")
-    public ResponseEntity<?> validatePassword(@RequestBody String password) {
-        var response = userService.validatePassword(password);
-        String error = response ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
-        return ResponseEntity.ok(new ValidatePasswordResponse(response, error));
+    @PostMapping("/signup/validate-password")
+    public ResponseEntity<ValidatePasswordResponse> validatePassword(@RequestBody PasswordRequest request) {
+        boolean isValid = userService.validatePassword(request.getPassword());
+        String error = isValid ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
+        return ResponseEntity.ok(new ValidatePasswordResponse(isValid, error));
     }
 
     @PostMapping("/users/register")
@@ -45,12 +45,3 @@ public class UserController {
         var response = userService.registerUser(request);
         return ResponseDto.created(response);
     }
-
-    @PutMapping("/admin/register_user_auth/{id}")
-    public ResponseEntity<?> registerUserAuth(
-            @PathVariable(name = "id") Long id
-    ) {
-        var response = userService.registerUserAuth(id);
-        return ResponseDto.ok(response);
-    }
-}
