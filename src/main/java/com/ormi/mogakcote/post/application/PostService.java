@@ -211,7 +211,7 @@ public class PostService {
     public PostResponse convertBanned(Long id) {
         Post findPost = getPostById(id);
         List<Long> algorithmIds = getAlgorithmIds(id);
-        if (findPost.getPostFlag().isBanned() == true){
+        if (findPost.getPostFlag().isBanned()){
             findPost.updateBanned(false);
         }else {
             findPost.updateBanned(true);
