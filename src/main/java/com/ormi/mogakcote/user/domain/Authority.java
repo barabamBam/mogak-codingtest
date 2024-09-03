@@ -4,5 +4,6 @@ public enum Authority {
   
     USER,
     ADMIN,
-    SYSTEM
+    SYSTEM,
+    BANNED
 }

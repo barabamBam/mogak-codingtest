@@ -1,6 +1,13 @@
 package com.ormi.mogakcote.user.dto.request;
-import lombok.Data;
-@Data
+
 public class PasswordRequest {
     private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
