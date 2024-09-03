@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "vote")
-public class Like {
+public class Vote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,10 +17,6 @@ public class Like {
     @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
-
-    @Column(name = "post_id", insertable = false, updatable = false)
+    @Column(name = "post_id", nullable = false)
     private Long postId;
 }
