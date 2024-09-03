@@ -48,10 +48,9 @@ public class UserController {
 
     @PutMapping("/admin/register_user_auth/{id}")
     public ResponseEntity<?> registerUserAuth(
-            @PathVariable(name = "id") Long id,
-            @RequestBody UserAuthRequest request
+            @PathVariable(name = "id") Long id
     ) {
-        var response = userService.registerUserAuth(id, request);
+        var response = userService.registerUserAuth(id);
         return ResponseDto.ok(response);
     }
 }

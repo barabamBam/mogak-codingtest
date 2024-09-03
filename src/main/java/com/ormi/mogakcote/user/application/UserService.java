@@ -94,7 +94,7 @@ public class UserService {
     }
 
 
-    public UserAuthResponse registerUserAuth(Long id , UserAuthRequest request) {
+    public UserAuthResponse registerUserAuth(Long id) {
         User findUser = getById(id);
         if (findUser.getAuthority() == BANNED){
             findUser.updateAuth(USER);
