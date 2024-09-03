@@ -56,7 +56,6 @@ public class PostController {
 
     @PutMapping("/api/v1/admin/convertBanned/{postId}")
     public ResponseEntity<?> convertBanned(
-            AuthUser user,
             @PathVariable(name = "postId") Long id,
             @RequestBody @Valid PostRequest request
     ) {

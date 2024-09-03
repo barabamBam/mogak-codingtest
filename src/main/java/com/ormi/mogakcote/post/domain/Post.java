@@ -1,7 +1,6 @@
 package com.ormi.mogakcote.post.domain;
 
 import com.ormi.mogakcote.common.entity.BaseEntity;
-import com.ormi.mogakcote.post.dto.request.PostRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
