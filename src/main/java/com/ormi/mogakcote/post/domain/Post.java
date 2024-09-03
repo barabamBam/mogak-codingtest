@@ -62,12 +62,11 @@ public class Post extends BaseEntity {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post")
-    private Set<Like> likes;
 
     public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
         this.title = title;
