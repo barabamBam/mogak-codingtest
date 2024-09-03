@@ -208,7 +208,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse convertBanned(Long id, PostRequest request) {
+    public PostResponse convertBanned(Long id) {
         Post findPost = getPostById(id);
         List<Long> algorithmIds = getAlgorithmIds(id);
         if (findPost.getPostFlag().isBanned() == true){
