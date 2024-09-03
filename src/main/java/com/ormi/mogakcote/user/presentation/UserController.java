@@ -2,9 +2,9 @@ package com.ormi.mogakcote.user.presentation;
 
 import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.user.application.UserService;
-import com.ormi.mogakcote.user.dto.request.PasswordRequest;
 import com.ormi.mogakcote.user.dto.request.RegisterRequest;
 
+import com.ormi.mogakcote.user.dto.request.UserAuthRequest;
 import com.ormi.mogakcote.user.dto.response.ValidatePasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
 
@@ -43,5 +44,14 @@ public class UserController {
     ) {
         var response = userService.registerUser(request);
         return ResponseDto.created(response);
+    }
+
+    @PutMapping("/admin/register_user_auth/{id}")
+    public ResponseEntity<?> registerUserAuth(
+            @PathVariable(name = "id") Long id,
+            @RequestBody UserAuthRequest request
+    ) {
+        var response = userService.registerUserAuth(id, request);
+        return ResponseDto.ok(response);
     }
 }
