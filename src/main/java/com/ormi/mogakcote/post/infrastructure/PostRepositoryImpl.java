@@ -23,6 +23,7 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.QPost;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.request.SortType;
+import com.ormi.mogakcote.post.dto.response.PostResponse;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
@@ -48,7 +49,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
   private final ProblemReportAlgorithmRepository reportAlgorithmRepository;
   private final PostAlgorithmRepository postAlgorithmRepository;
 
-  private final JPAQueryFactory jpaQueryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
   // 검색 조건에 일치하는 게시글을 불러오기 위한 로직
   @Override
@@ -109,9 +110,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .orderBy(
                 getSortByResult(postSearchRequest.getSortBy(), post, vote), post.createdAt.desc());
 
-    // 출력될 쿼리 결과가 총 몇 개인지 확인 -> 게시물 개수 확인 해서 페이징
-    long totalCount = query.fetch().size();
-    System.out.println("count: " + totalCount);
+		// 출력될 쿼리 결과가 총 몇 개인지 확인 -> 게시물 개수 확인 해서 페이징
+		long totalCount = query.fetch().size();
+		System.out.println("count: "+totalCount);
 
     query =
         query
@@ -168,32 +169,36 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     return null;
   }
 
-  // 일치 확인 메서드
-  private static BooleanExpression isEqual(String searchData, String tableData) {
-    return Expressions.asBoolean(
-        StringUtils.hasText(searchData) ? searchData.equalsIgnoreCase(tableData) : null);
-  }
+	// 일치 확인 메서드
+	private static BooleanExpression isEqual(String searchData, String tableData) {
+		return Expressions.asBoolean(
+			StringUtils.hasText(searchData) ?
+				searchData.equalsIgnoreCase(tableData): null
+		);
+	}
 
-  // 포함 확인 메서드
-  private static BooleanExpression containWord(String searchData, StringPath tableData) {
-    return Expressions.stringTemplate("LOWER({0})", tableData)
-        .contains(Expressions.stringTemplate("LOWER({0})", searchData));
-  }
+	// 포함 확인 메서드
+	private static BooleanExpression containWord(String searchData, StringPath tableData) {
+		return Expressions.stringTemplate(
+				"LOWER({0})", tableData)
+			.contains(Expressions.stringTemplate(
+				"LOWER({0})", searchData));
+	}
 
-  // 사용자가 원하는 정렬 기준을 가지고 정렬
-  private OrderSpecifier<?> getSortByResult(SortType sortBy, QPost post, QVote vote) {
-    return switch (sortBy) {
-        // 게시글을 최신 순으로 정렬
-      case LATEST -> post.createdAt.desc();
+	// 사용자가 원하는 정렬 기준을 가지고 정렬
+	private OrderSpecifier<?> getSortByResult(SortType sortBy, QPost post, QVote vote) {
+		return switch (sortBy) {
+			// 게시글을 최신 순으로 정렬
+			case LATEST -> post.createdAt.desc();
 
-        // 게시글을 오래된 순으로 정렬
-      case OLDEST -> post.createdAt.asc();
+			// 게시글을 오래된 순으로 정렬
+			case OLDEST -> post.createdAt.asc();
 
-        // 게시글을 조회수 많은 순으로 정렬
-      case MOST_VIEWED -> post.viewCnt.desc();
+			// 게시글을 조회수 많은 순으로 정렬
+			case MOST_VIEWED -> post.viewCnt.desc();
 
-        // 게시글을 추천 순으로 정렬
-      case MOST_LIKED -> vote.count().desc();
+			// 게시글을 추천 순으로 정렬
+		  	case MOST_LIKED -> vote.count().desc();
     };
   }
 }

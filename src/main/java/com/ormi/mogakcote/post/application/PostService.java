@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
 
     private final PostRepository postRepository;
@@ -220,9 +221,9 @@ public class PostService {
 		List<NoticeResponse> noticeResponses = new ArrayList<>();
 		notices.forEach(notice -> noticeResponses.add(
 			NoticeResponse.builder()
-				.title(notice.getTitle())
-				.createdAt(notice.getCreatedAt())
-				.build())
+			.title(notice.getTitle())
+			.createdAt(notice.getCreatedAt())
+			.build())
 		);
 		return noticeResponses;
 	}

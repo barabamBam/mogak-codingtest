@@ -13,33 +13,35 @@ import lombok.*;
 @AllArgsConstructor
 public class Post extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String title;
+	@Column(nullable = false)
+	private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+	@Column(columnDefinition = "TEXT")
+	private String content;
 
-    @Column(nullable = false, name = "platform_id")
-    private Long platformId;
+	@Column(nullable = false, name = "platform_id")
+	private Long platformId;
 
-    @Column(nullable = false, name = "problem_number")
-    private int problemNumber;
+	@Column(nullable = false, name = "problem_number")
+	private int problemNumber;
 
-    @Column(nullable = false, name = "language_id")
-    private Long languageId;
+	@Column(nullable = false, name = "language_id")
+	private Long languageId;
 
-    @Column(columnDefinition = "TEXT")
-    private String code;
+	// 알고리즘의 경우 problem 패키지 안의(현재 작업 중) Algorithm 도메인을 이용할 예정.
 
-    @Column(nullable = false, name = "user_id")
-    private Long userId;
+	@Column(columnDefinition = "TEXT")
+	private String code;
 
-    @Column(name = "view_cnt")
-    private int viewCnt;
+	@Column(nullable = false, name = "user_id")
+	private Long userId;
+
+	@Column(name = "view_cnt")
+	private int viewCnt;
 
     @Column(name = "vote_cnt")
     private int voteCnt;
@@ -47,11 +49,11 @@ public class Post extends BaseEntity {
     @Column(name = "prob_report_id")
     private Long probReportId;
 
-    @Embedded
-    private PostFlag postFlag;
+	@Embedded
+	private PostFlag postFlag;
 
-    @Embedded
-    private ReportFlag reportFlag;
+	@Embedded
+	private ReportFlag reportFlag;
 
 
     public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
