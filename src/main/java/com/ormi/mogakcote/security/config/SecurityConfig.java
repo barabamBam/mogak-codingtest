@@ -39,6 +39,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
 
             auth.dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.FORWARD).permitAll();
+// 프로필 관련 엔드포인트 추가
+            auth.requestMatchers("/profile/**").permitAll();
 
             // 회원가입 관련 엔드포인트 허용
             auth.requestMatchers("/api/users/register", "/api/signup/**", "/api/users/**").permitAll();
