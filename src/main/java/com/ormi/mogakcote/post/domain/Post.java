@@ -41,6 +41,12 @@ public class Post extends BaseEntity {
     @Column(name = "view_cnt")
     private int viewCnt;
 
+    @Column(name = "vote_cnt")
+    private int voteCnt;
+
+    @Column(name = "prob_report_id")
+    private Long probReportId;
+
     @Embedded
     private PostFlag postFlag;
 
@@ -59,4 +65,5 @@ public class Post extends BaseEntity {
     public void incrementViewCount() {
         this.viewCnt++;
     }
+    public void incrementVoteCount() { this.voteCnt++; }
 }

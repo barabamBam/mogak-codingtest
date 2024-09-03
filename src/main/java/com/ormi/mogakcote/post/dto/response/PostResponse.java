@@ -13,7 +13,7 @@ public class PostResponse {
     private String content;
     private Long platformId;
     private int problemNumber;
-    private List<Long> algorithmIds;
+    private Long algorithmIds;
     private Long languageId;
     private String code;
     private boolean isPublic;
@@ -27,7 +27,7 @@ public class PostResponse {
             String content,
             Long platformId,
             int problemNumber,
-            List<Long> algorithmIds,
+            Long algorithmId,
             Long languageId,
             String code,
             boolean isPublic,
@@ -35,6 +35,6 @@ public class PostResponse {
             int viewCnt,
             boolean isBanned
     ) {
-        return new PostResponse(id, title, content, platformId, problemNumber, algorithmIds, languageId, code, isPublic, isReportRequested, viewCnt, isBanned);
+        return new PostResponse(id, title, content, platformId, problemNumber, algorithmId, languageId, code, isPublic, isReportRequested, viewCnt, isBanned);
     }
 }

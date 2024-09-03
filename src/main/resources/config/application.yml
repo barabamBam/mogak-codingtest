@@ -46,7 +46,7 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
     org.springframework.web: debug
-    com.ormi.cookudasse: debug
+    com.ormi.mogakcote: debug
 
 
   security:

@@ -34,6 +34,21 @@ public class PostController {
 
     private final PostService postService;
 
+	@GetMapping("/list")
+	public ResponseEntity<?> mainPosts(
+		AuthUser user,
+		@ModelAttribute PostSearchRequest postSearchRequest
+	) {
+		List<NoticeResponse> noticeResponse = postService.getNoticeLatestFive();
+		Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("notice", noticeResponse);
+		map.put("postResponse", postResponse);
+
+		return ResponseDto.ok(map);
+	}
+
     @PostMapping
     public ResponseEntity<?> writePost(
         AuthUser user,
@@ -55,20 +70,7 @@ public class PostController {
         List<PostResponse> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
-	@GetMapping
-	public ResponseEntity<?> mainPosts(
-		AuthUser user,
-		 @ModelAttribute PostSearchRequest postSearchRequest
-	) {
-		List<NoticeResponse> noticeResponse = postService.getNoticeLatestFive();
-		Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
 
-		Map<String, Object> map = new HashMap<>();
-		map.put("notice", noticeResponse);
-		map.put("postResponse", postResponse);
-
-		return ResponseDto.ok(map);
-	}
 
     @PutMapping("/{postId}")
     public ResponseEntity<?> modifyPost(AuthUser user, @PathVariable(name = "postId") Long postId, @RequestBody PostRequest postRequest) {

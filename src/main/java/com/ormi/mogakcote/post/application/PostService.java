@@ -9,15 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
+import com.ormi.mogakcote.exception.auth.AuthInvalidException;
+import com.ormi.mogakcote.exception.post.PostInvalidException;
 import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.PostFlag;
 import com.ormi.mogakcote.post.domain.ReportFlag;
@@ -26,14 +21,7 @@ import com.ormi.mogakcote.notice.domain.Notice;
 import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
-import com.ormi.mogakcote.notice.domain.Notice;
-import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
-import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
-import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
-import com.ormi.mogakcote.post.exception.AuthInvalidException;
-import com.ormi.mogakcote.post.exception.PostInvalidException;
-import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
 
@@ -42,11 +30,8 @@ import com.ormi.mogakcote.problem.domain.PostAlgorithm;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -62,7 +47,7 @@ public class PostService {
         Post savedPost = buildAndSavePost(user.getId(), request);
 
 
-        List<Long> algorithmIds = savePostAlgorithms(savedPost.getId(), request.getAlgorithmIds());
+        Long algorithmId = savePostAlgorithms(savedPost.getId(), request.getAlgorithmId());
 
         return PostResponse.toResponse(
             savedPost.getId(),
@@ -70,7 +55,7 @@ public class PostService {
             savedPost.getContent(),
             savedPost.getPlatformId(),
             savedPost.getProblemNumber(),
-            algorithmIds,
+            algorithmId,
             savedPost.getLanguageId(),
             savedPost.getCode(),
             savedPost.getPostFlag().isPublic(),
@@ -83,7 +68,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponse getPost(Long postId) {
         Post post = getPostById(postId);
-        List<Long> algorithmIds = getAlgorithmIds(postId);
+        Long algorithmId = getAlgorithmIds(postId);
 
         post.incrementViewCount();
         postRepository.save(post);
@@ -94,7 +79,7 @@ public class PostService {
             post.getContent(),
             post.getPlatformId(),
             post.getProblemNumber(),
-            algorithmIds,
+            algorithmId,
             post.getLanguageId(),
             post.getCode(),
             post.getPostFlag().isPublic(),
@@ -109,14 +94,14 @@ public class PostService {
         List<Post> posts = postRepository.findAll();
         return posts.stream()
             .map(post -> {
-                List<Long> algorithmIds = getAlgorithmIds(post.getId());
+                Long algorithmId = getAlgorithmIds(post.getId());
                 return PostResponse.toResponse(
                     post.getId(),
                     post.getTitle(),
                     post.getContent(),
                     post.getPlatformId(),
                     post.getProblemNumber(),
-                    algorithmIds,
+                    algorithmId,
                     post.getLanguageId(),
                     post.getCode(),
                     post.getPostFlag().isPublic(),
@@ -143,7 +128,7 @@ public class PostService {
 
         Post updatedPost = postRepository.save(post);
 
-        List<Long> algorithmIds = updatePostAlgorithms(postId, request.getAlgorithmIds());
+        Long algorithmId = updatePostAlgorithms(postId, request.getAlgorithmId());
 
         return PostResponse.toResponse(
             updatedPost.getId(),
@@ -151,7 +136,7 @@ public class PostService {
             updatedPost.getContent(),
             updatedPost.getPlatformId(),
             updatedPost.getProblemNumber(),
-            algorithmIds,
+            algorithmId,
             updatedPost.getLanguageId(),
             updatedPost.getCode(),
             updatedPost.getPostFlag().isPublic(),
@@ -194,6 +179,7 @@ public class PostService {
             .postFlag(postFlag)
             .reportFlag(reportFlag)
             .viewCnt(0)
+			.voteCnt(0)
             .userId(userId)
             .build();
         return postRepository.save(post);
@@ -211,28 +197,21 @@ public class PostService {
         }
     }
 
-    private List<Long> savePostAlgorithms(Long postId, List<Long> algorithmIds) {
-        return algorithmIds.stream()
-            .map(id -> {
-                PostAlgorithm postAlgorithm = PostAlgorithm.builder()
+    private Long savePostAlgorithms(Long postId, Long algorithmIds) {
+        PostAlgorithm postAlgorithm = PostAlgorithm.builder()
                     .postId(postId)
-                    .algorithmId(id)
+                    .algorithmId(algorithmIds)
                     .build();
-                return postAlgorithmRepository.save(postAlgorithm);
-            })
-            .map(PostAlgorithm::getAlgorithmId)
-            .collect(Collectors.toList());
+        return postAlgorithmRepository.save(postAlgorithm).getAlgorithmId();
     }
 
-    private List<Long> getAlgorithmIds(Long postId) {
-        return postAlgorithmRepository.findByPostId(postId).stream()
-            .map(PostAlgorithm::getAlgorithmId)
-            .collect(Collectors.toList());
+    private Long getAlgorithmIds(Long postId) {
+    return postAlgorithmRepository.findByPostId(postId).getFirst().getAlgorithmId();
     }
 
-    private List<Long> updatePostAlgorithms(Long postId, List<Long> newAlgorithmIds) {
+    private Long updatePostAlgorithms(Long postId, Long newAlgorithmId) {
         postAlgorithmRepository.deleteByPostId(postId);
-        return savePostAlgorithms(postId, newAlgorithmIds);
+        return savePostAlgorithms(postId, newAlgorithmId);
     }
 
 	// 공지사항 최신 5개만 추출
