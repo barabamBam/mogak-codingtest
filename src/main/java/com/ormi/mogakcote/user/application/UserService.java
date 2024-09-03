@@ -89,5 +89,30 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void updateActivity(Long id, String act) {
+        User user = getById(id);
+        switch(act){
+            case "increaseComment":
+                user.getActivity().increaseCommentCount();
+                break;
+            case "decreaseComment":
+                user.getActivity().decreaseCommentCount();
+                break;
+            case "increaseDay":
+                user.getActivity().increaseDayCount();
+                break;
+            case "resetDay":
+                user.getActivity().resetDayCount();
+        }
+        userRepository.save(user);
+    }
+
+    public void updateActivity(Long id, String act, LocalDateTime time) {
+        User user = getById(id);
+		if (act.equals("decreaseDay")) {
+			user.getActivity().decreaseDayCount(time);
+		}
+        userRepository.save(user);
+    }
 
 }

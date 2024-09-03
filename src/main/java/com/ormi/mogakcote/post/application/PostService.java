@@ -1,5 +1,7 @@
 package com.ormi.mogakcote.post.application;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.problem.domain.PostAlgorithm;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
+import com.ormi.mogakcote.user.application.UserService;
+import com.ormi.mogakcote.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,13 +47,22 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostAlgorithmRepository postAlgorithmRepository;
 	private final NoticeRepository noticeRepository;
+	private final UserService userService;
 
 	@Transactional
     public PostResponse createPost(AuthUser user, PostRequest request) {
         Post savedPost = buildAndSavePost(user.getId(), request);
 
-
         Long algorithmId = savePostAlgorithms(savedPost.getId(), request.getAlgorithmId());
+
+		boolean postExists = postRepository.existsPostByCreatedAt(LocalDate.now(ZoneId.of("Asia/Seoul"))
+																			.minusDays(1));
+		if(postExists) {
+			userService.updateActivity(user.getId(), "increaseDay");
+		}
+		else {
+			userService.updateActivity(user.getId(), "resetDay");
+		}
 
         return PostResponse.toResponse(
             savedPost.getId(),
@@ -155,6 +169,8 @@ public class PostService {
 
         postAlgorithmRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
+
+		userService.updateActivity(user.getId(), "decreaseDay", post.getCreatedAt());
 
         return new SuccessResponse("게시글 삭제 성공");
     }

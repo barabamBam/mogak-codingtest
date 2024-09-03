@@ -41,7 +41,7 @@ public enum ErrorType {
 
     // news 예외
     NOT_RECEIVER_ERROR(HttpStatus.BAD_REQUEST, "알림 수신자가 아닙니다."),
-    NEWS_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 알림이 존재하지 않습니다.");
+    NEWS_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 알림이 존재하지 않습니다."),
 
     // badge 예외
     BADGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "뱃지를 찾을 수 없습니다");

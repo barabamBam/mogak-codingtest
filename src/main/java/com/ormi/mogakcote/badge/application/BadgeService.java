@@ -1,7 +1,6 @@
 package com.ormi.mogakcote.badge.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +57,9 @@ public class BadgeService {
         badgeRequest.getDescription()
     );
 
-    return getBadgeResponse(findBadge);
+    Badge updatedBadge = badgeRepository.save(findBadge);
+
+    return getBadgeResponse(updatedBadge);
   }
 
   // 해당 뱃지가 사라지면 userBadge도 같이 삭제됨

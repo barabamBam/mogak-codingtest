@@ -1,5 +1,6 @@
 package com.ormi.mogakcote.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -30,20 +31,26 @@ public class Activity {
 	}
 
 	public void decreaseDayCount(LocalDateTime deletePostDate) {
-		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-		if(!deletePostDate.isAfter(now)) {
-			this.dayCount = this.dayCount +
-				LocalDateTime.of(deletePostDate.getYear(),12,31,0,0).getDayOfYear()
-					- deletePostDate.getDayOfYear();
-			this.dayCount = this.dayCount +
-				now.getDayOfYear()
-				- LocalDateTime.of(deletePostDate.getYear(),1,1,0,0).getDayOfYear();
-
+		LocalDate now = LocalDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
+		// 지우려는 게시글이 오늘 날짜보다 이전일 경우 실행
+		if(!deletePostDate.toLocalDate().isAfter(now)) {
+			// 예를 들어, 오늘이 2024-01-10이고 지우려는 게시글의 날짜가 2023-12-25인 경우
+			// dayCount = (365-359)+(10-1+1) = 6+10 = 16일 째 게시글을 연속으로 쓴 게 된다.
+			this.dayCount =
+				(
+					(LocalDateTime.of(deletePostDate.getYear(), 12, 31, 0, 0).toLocalDate().getDayOfYear()
+					- deletePostDate.toLocalDate().getDayOfYear())
+				+
+					(now.getDayOfYear()
+					- LocalDateTime.of(deletePostDate.getYear(), 1, 1, 0, 0).toLocalDate().getDayOfYear()+1)
+				);
+			if(this.dayCount < 0) this.dayCount = 0;
 		}
-		this.dayCount = 1;
+		else this.dayCount = 0;
 	}
 
 	public void resetDayCount() {
 		this.dayCount = 1;
 	}
+
 }
