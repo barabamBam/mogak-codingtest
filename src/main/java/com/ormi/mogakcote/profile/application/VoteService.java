@@ -5,7 +5,7 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.profile.infrastructure.VoteRepository;
 import com.ormi.mogakcote.profile.vote.Vote;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,16 +14,11 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class VoteService {
 
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
-
-    @Autowired
-    public VoteService(VoteRepository voteRepository, PostRepository postRepository) {
-        this.voteRepository = voteRepository;
-        this.postRepository = postRepository;
-    }
 
     @Transactional
     public Vote createVote(Long userId, Long postId) {
