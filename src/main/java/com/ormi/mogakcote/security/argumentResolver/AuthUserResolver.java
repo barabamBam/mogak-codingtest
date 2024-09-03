@@ -33,7 +33,7 @@ public class AuthUserResolver implements HandlerMethodArgumentResolver {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String accessToken = request.getHeader(HttpHeaderNames.AUTHORIZATION.toString());
-        if (!accessToken.startsWith(BEARER)) {
+        if (accessToken == null || !accessToken.startsWith(BEARER)) {
             return null;
         }
 
