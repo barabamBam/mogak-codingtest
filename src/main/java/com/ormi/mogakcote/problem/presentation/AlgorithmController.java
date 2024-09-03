@@ -19,7 +19,6 @@ public class AlgorithmController {
     //알고리즘 생성
     @PostMapping
     public ResponseEntity<?> createAlgorithm(
-            AuthUser user,
             @RequestBody @Valid AlgorithmRequest request) {
         var response = algorithmService.createAlgorithm(request);
         return ResponseDto.created(response);

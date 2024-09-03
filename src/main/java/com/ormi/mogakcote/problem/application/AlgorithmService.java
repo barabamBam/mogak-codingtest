@@ -70,7 +70,6 @@ public class AlgorithmService {
     }
     private Algorithm buildAlgorithm(AlgorithmRequest request) {
         return Algorithm.builder()
-                .id(request.getId())
                 .name(request.getAlgorithmName())
                 .build();
     }

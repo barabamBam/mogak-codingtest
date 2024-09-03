@@ -46,7 +46,7 @@ public class LanguageController {
     }
 
     // 작성 언어 리스트 불러오기
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getLanguageList(){
         var response = languageService.getLanguageList();
         return ResponseDto.ok(response);

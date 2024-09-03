@@ -68,7 +68,6 @@ public class PlatformServcie {
 
     private Platform buildPlatform(PlatformRequest request){
         return Platform.builder()
-                .id(request.getId())
                 .platformName(request.getPlatformName())
                 .build();
     }

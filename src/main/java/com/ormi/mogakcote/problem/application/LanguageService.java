@@ -71,7 +71,6 @@ public class LanguageService {
 
     private Language buildLanguage(LanguageRequest request) {
         return Language.builder()
-                .id(request.getId())
                 .languageName(request.getLanguageName())
                 .build();
     }

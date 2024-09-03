@@ -46,7 +46,7 @@ public class PlatformController {
 
 
     // 플랫폼 리스트
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getPlatformList(){
         var response = platformServcie.getPlatformList();
         return ResponseDto.ok(response);
