@@ -1,14 +1,10 @@
 package com.ormi.mogakcote.post.domain;
 
 import com.ormi.mogakcote.common.entity.BaseEntity;
-import com.ormi.mogakcote.profile.vote.Like;
-import com.ormi.mogakcote.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-
 
 @Entity
 @Table(name = "post")
@@ -51,22 +47,11 @@ public class Post extends BaseEntity {
 
     @Embedded
     private ReportFlag reportFlag;
-    @Column(nullable = false)
-    private boolean isPublic;
-
-
-    @Column(nullable = false)
-    private boolean isBanned;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
 
     public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
         this.title = title;
