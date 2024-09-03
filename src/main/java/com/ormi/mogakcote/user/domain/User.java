@@ -36,7 +36,17 @@ public class User {
     @CreatedDate
     private LocalDateTime joinAt;
 
-    public void updateAuth(Authority authority){
+    public void updateAuth(Authority authority) {
+
         this.authority = authority;
+    }
+
+    public void updateProfile(String name, String nickname) {
+        this.name = name;
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }
