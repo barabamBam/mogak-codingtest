@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping("/users/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        var response = userService.checkEmail(email);
+        var response = userService.existsByEmail(email);
         return ResponseDto.ok(response);
 
     }
