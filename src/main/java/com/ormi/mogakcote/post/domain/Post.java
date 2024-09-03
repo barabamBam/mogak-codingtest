@@ -49,9 +49,6 @@ public class Post extends BaseEntity {
     private ReportFlag reportFlag;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
         this.title = title;
