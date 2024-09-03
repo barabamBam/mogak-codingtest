@@ -206,4 +206,30 @@ public class PostService {
         postAlgorithmRepository.deleteByPostId(postId);
         return savePostAlgorithms(postId, newAlgorithmIds);
     }
+
+    @Transactional
+    public PostResponse convertBanned(Long id, PostRequest request) {
+        Post findPost = getPostById(id);
+        List<Long> algorithmIds = getAlgorithmIds(id);
+        if (findPost.getPostFlag().isBanned() == true){
+            findPost.updateBanned(false);
+        }else {
+            findPost.updateBanned(true);
+        }
+
+        return PostResponse.toResponse(
+                findPost.getId(),
+                findPost.getTitle(),
+                findPost.getContent(),
+                findPost.getPlatformId(),
+                findPost.getProblemNumber(),
+                algorithmIds,
+                findPost.getLanguageId(),
+                findPost.getCode(),
+                findPost.getPostFlag().isPublic(),
+                findPost.getReportFlag().isReportRequested(),
+                findPost.getViewCnt(),
+                findPost.getPostFlag().isBanned()
+        );
+    }
 }
