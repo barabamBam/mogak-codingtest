@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long languageId;
+    private Long id;
 
     private String languageName;
 

@@ -27,27 +27,27 @@ public class PlatformServcie {
         Platform savedPlatform = platformRepository.save(platform);
 
         return PlatformResponse.toResponse(
-                savedPlatform.getPlatformId(),
+                savedPlatform.getId(),
                 savedPlatform.getPlatformName()
         );
     }
 
     @Transactional
-    public PlatformResponse updatePlatform(Long platformId, PlatformRequest request){
-        Platform findPlatform = getPlatformOrThrowIfNotExist(platformId);
+    public PlatformResponse updatePlatform(Long id, PlatformRequest request){
+        Platform findPlatform = getPlatformOrThrowIfNotExist(id);
 
         findPlatform.update(request.getPlatformName());
 
         return PlatformResponse.toResponse(
-                findPlatform.getPlatformId(),
+                findPlatform.getId(),
                 findPlatform.getPlatformName()
         );
     }
 
     @Transactional
-    public SuccessResponse deletePlatform(Long platformId){
-        Platform findPlatform = getPlatformOrThrowIfNotExist(platformId);
-        platformRepository.deleteByPlatformId(findPlatform.getPlatformId());
+    public SuccessResponse deletePlatform(Long id){
+        Platform findPlatform = getPlatformOrThrowIfNotExist(id);
+        platformRepository.deleteById(findPlatform.getId());
 
         return new SuccessResponse("플랫폼 삭제를 성공했습니다.");
     }
@@ -59,7 +59,7 @@ public class PlatformServcie {
 
         findPlatforms.forEach(findPlatform -> {
             platformResponses.add(PlatformResponse.toResponse(
-                    findPlatform.getPlatformId(),
+                    findPlatform.getId(),
                     findPlatform.getPlatformName()
             ));
         });
@@ -68,13 +68,12 @@ public class PlatformServcie {
 
     private Platform buildPlatform(PlatformRequest request){
         return Platform.builder()
-                .platformId(request.getPlatformId())
                 .platformName(request.getPlatformName())
                 .build();
     }
 
     private Platform getPlatformOrThrowIfNotExist(Long platformId){
-        return platformRepository.findByPlatformId(platformId).orElseThrow(
+        return platformRepository.findById(platformId).orElseThrow(
                 () -> new PlatformInvalidException(ErrorType.PLATFORM_NOT_FOUND_ERROR)
         );
     }

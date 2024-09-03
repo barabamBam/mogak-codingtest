@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Platform {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long platformId;
+    private Long id;
 
     private String platformName;
 

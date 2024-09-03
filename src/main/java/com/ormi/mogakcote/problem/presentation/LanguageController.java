@@ -27,26 +27,26 @@ public class LanguageController {
     }
 
     // 작성 언어 수정
-    @PutMapping("/{languageId}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateLanguage(
-            @PathVariable("languageId") Long languageId,
+            @PathVariable("id") Long id,
             @RequestBody @Valid LanguageRequest request
     ) {
-        var response = languageService.updateLanguage(languageId, request);
+        var response = languageService.updateLanguage(id, request);
         return ResponseDto.ok(response);
     }
 
     // 작성 언어 삭제
-    @DeleteMapping("/{languageId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteLanguage(
-            @PathVariable("languageId") Long languageId
+            @PathVariable("id") Long id
     ) {
-        var response = languageService.deleteLanguage(languageId);
+        var response = languageService.deleteLanguage(id);
         return ResponseDto.ok(response);
     }
 
     // 작성 언어 리스트 불러오기
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getLanguageList(){
         var response = languageService.getLanguageList();
         return ResponseDto.ok(response);
