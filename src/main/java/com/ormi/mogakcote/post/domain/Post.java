@@ -4,6 +4,7 @@ import com.ormi.mogakcote.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post")
@@ -55,6 +56,7 @@ public class Post extends BaseEntity {
 	@Embedded
 	private ReportFlag reportFlag;
 
+    @Column(nullable = false)
 
     public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
         this.title = title;

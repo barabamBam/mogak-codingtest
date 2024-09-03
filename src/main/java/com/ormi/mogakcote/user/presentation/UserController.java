@@ -2,18 +2,21 @@ package com.ormi.mogakcote.user.presentation;
 
 import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.user.application.UserService;
-import com.ormi.mogakcote.user.dto.request.PasswordRequest;
-import com.ormi.mogakcote.user.dto.request.RegisterRequest;
+import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.dto.request.*;
 
 import com.ormi.mogakcote.user.dto.response.ValidatePasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
 
@@ -30,18 +33,47 @@ public class UserController {
 
     }
 
-   @PostMapping("/signup/validate-password")
-    public ResponseEntity<?> validatePassword(@RequestBody String password) {
-        var response = userService.validatePassword(password);
-        String error = response ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
-        return ResponseEntity.ok(new ValidatePasswordResponse(response, error));
+    @PostMapping("/signup/validate-password")
+    public ResponseEntity<ValidatePasswordResponse> validatePassword(@RequestBody PasswordRequest request) {
+        boolean isValid = userService.validatePassword(request.getPassword());
+        String error = isValid ? null : "비밀번호는 8자 이상, 소문자+숫자만 가능합니다.";
+        return ResponseEntity.ok(new ValidatePasswordResponse(isValid, error));
     }
 
     @PostMapping("/users/register")
     public ResponseEntity<?> registerUser(
-            @RequestBody RegisterRequest request
+        @RequestBody RegisterRequest request
     ) {
         var response = userService.registerUser(request);
         return ResponseDto.created(response);
     }
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateProfileRequest request,
+                                               @AuthenticationPrincipal UserDetails userDetails) {
+        userService.updateProfile(
+            ((User) userDetails).getId(),
+            request.getUsername(),  // getName() 대신 getUsername() 사용
+            request.getNickname()
+        );
+        return ResponseDto.ok("Profile updated successfully");
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+                                            @AuthenticationPrincipal UserDetails userDetails) {
+        userService.changePassword(
+            ((User) userDetails).getId(),
+            request.getCurrentPassword(),
+            request.getNewPassword()
+        );
+        return ResponseDto.ok("Password changed successfully");
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserRequest request,
+                                        @AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(((User) userDetails).getId(), request.getPassword());
+        return ResponseDto.ok("User deleted successfully");
+    }
 }
+

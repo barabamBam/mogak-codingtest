@@ -1,11 +1,12 @@
 package com.ormi.mogakcote.user.application;
 
+import com.ormi.mogakcote.exception.auth.UserAuthManagementInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.user.UserInvalidException;
-import com.ormi.mogakcote.user.domain.Authority;
 import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.dto.request.RegisterRequest;
 import com.ormi.mogakcote.user.dto.response.RegisterResponse;
+import com.ormi.mogakcote.user.dto.response.UserAuthResponse;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+
+import static com.ormi.mogakcote.user.domain.Authority.*;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +79,28 @@ public class UserService {
             throw new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR);
         }
     }
+    @Transactional
+    public void updateProfile(Long userId, String username, String nickname) {
+        User user = getById(userId);
+        user.updateProfile(username, nickname);
+    }
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = getById(userId);
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new UserAuthManagementInvalidException(ErrorType.PASSWORD_NOT);
+        }
+        user.updatePassword(passwordEncoder.encode(newPassword));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, String password) {
+        User user = getById(userId);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserAuthManagementInvalidException(ErrorType.PASSWORD_NOT);
+        }
+        userRepository.delete(user);
+    }
 
     private User buildAndSaveUser(RegisterRequest request) {
         User user = User.builder()
@@ -90,4 +115,25 @@ public class UserService {
     }
 
 
+
+    public UserAuthResponse registerUserAuth(Long id) {
+        User findUser = getById(id);
+        if (findUser.getAuthority() == BANNED){
+            findUser.updateAuth(USER);
+        } else if (findUser.getAuthority() == USER) {
+            findUser.updateAuth(BANNED);
+        } else {
+            throw new UserAuthManagementInvalidException(ErrorType.INVALID_AUTH_CHANGE_ERROR);
+        }
+
+        return UserAuthResponse.toResponse(
+                findUser.getId(),
+                findUser.getName(),
+                findUser.getNickname(),
+                findUser.getEmail(),
+                findUser.getPassword(),
+                findUser.getAuthority()
+        );
+
+    }
 }
