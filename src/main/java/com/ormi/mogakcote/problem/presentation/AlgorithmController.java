@@ -19,33 +19,32 @@ public class AlgorithmController {
     //알고리즘 생성
     @PostMapping
     public ResponseEntity<?> createAlgorithm(
-            AuthUser user,
             @RequestBody @Valid AlgorithmRequest request) {
         var response = algorithmService.createAlgorithm(request);
         return ResponseDto.created(response);
     }
 
     //알고리즘 수정
-    @PutMapping("/{algorithmId}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateAlgorithm(
-            @PathVariable(name = "algorithmId") Long algorithmId,
+            @PathVariable(name = "id") Long id,
             @RequestBody @Valid AlgorithmRequest request
     ) {
-        var response = algorithmService.updateAlgorithm(algorithmId, request);
+        var response = algorithmService.updateAlgorithm(id, request);
         return ResponseDto.ok(response);
     }
 
     //알고리즘 삭제
-    @DeleteMapping("/{algorithmId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAlgorithm(
-            @PathVariable(name = "algorithmId")Long algorithmId
+            @PathVariable(name = "id")Long id
     ) {
-        var response = algorithmService.deleteAlgorithm(algorithmId);
+        var response = algorithmService.deleteAlgorithm(id);
         return ResponseDto.ok(response);
     }
 
     //알고리즘 조회 ( 리스트로 )
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> algorithmList(){
         var response= algorithmService.getAlgorithmList();
         return ResponseDto.ok(response);
