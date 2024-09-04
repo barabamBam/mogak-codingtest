@@ -1,6 +1,8 @@
 package com.ormi.mogakcote.post.application;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
+import com.ormi.mogakcote.badge.application.UserBadgeService;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
 import com.ormi.mogakcote.exception.auth.AuthInvalidException;
 import com.ormi.mogakcote.exception.post.PostInvalidException;
@@ -48,6 +51,7 @@ public class PostService {
   private final PostAlgorithmRepository postAlgorithmRepository;
   private final NoticeRepository noticeRepository;
   private final UserService userService;
+  private final UserBadgeService userBadgeService;
 
   @Transactional
   public PostResponse createPost(AuthUser user, PostRequest request) {
@@ -56,12 +60,16 @@ public class PostService {
     Long algorithmId = savePostAlgorithms(savedPost.getId(), request.getAlgorithmId());
 
     boolean postExists =
-        postRepository.existsPostByCreatedAt(LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1));
+        postRepository.existsPostByCreatedAt(
+            LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1),
+                LocalTime.of(0,0)));
     if (postExists) {
       userService.updateActivity(user.getId(), "increaseDay");
     } else {
       userService.updateActivity(user.getId(), "resetDay");
     }
+
+    userBadgeService.makeUserBadge(user, "POST");
 
     return PostResponse.toResponse(
         savedPost.getId(),

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -23,6 +24,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("select p.voteCnt from Post p where p.id = ?1")
 	Integer findVoteCountById(Long id);
 
-	@Query("select (count(p) > 0) from Post p where p.createdAt = ?1")
-	boolean existsPostByCreatedAt(LocalDate date);
+	@Query("select (count(p) > 0) from Post p where p.createdAt >= ?1")
+	boolean existsPostByCreatedAt(LocalDateTime date);
 }

@@ -1,6 +1,7 @@
 package com.ormi.mogakcote.comment.application;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
+import com.ormi.mogakcote.badge.application.UserBadgeService;
 import com.ormi.mogakcote.comment.domain.Comment;
 import com.ormi.mogakcote.comment.dto.request.CommentRequest;
 import com.ormi.mogakcote.comment.dto.response.CommentResponse;
@@ -24,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 //    private final PostRepository postRepository;
     private final UserService userService;
+    private final UserBadgeService userBadgeService;
 
     /**
      * 답변 생성
@@ -38,6 +40,8 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         userService.updateActivity(user.getId(), "increaseComment");
+
+        userBadgeService.makeUserBadge(user, "COMMENT");
 
         return CommentResponse.toResponse(
                 savedComment.getId(),

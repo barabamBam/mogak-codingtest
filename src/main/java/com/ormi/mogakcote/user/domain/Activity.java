@@ -33,7 +33,7 @@ public class Activity {
 	public void decreaseDayCount(LocalDateTime deletePostDate) {
 		LocalDate now = LocalDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
 		// 지우려는 게시글이 오늘 날짜보다 이전일 경우 실행
-		if(!deletePostDate.toLocalDate().isAfter(now)) {
+		if(deletePostDate.toLocalDate().isBefore(now)) {
 			// 예를 들어, 오늘이 2024-01-10이고 지우려는 게시글의 날짜가 2023-12-25인 경우
 			// dayCount = (365-359)+(10-1+1) = 6+10 = 16일 째 게시글을 연속으로 쓴 게 된다.
 			this.dayCount =
@@ -46,6 +46,7 @@ public class Activity {
 				);
 			if(this.dayCount < 0) this.dayCount = 0;
 		}
+		else if(deletePostDate.toLocalDate().isEqual(now)) this.dayCount--;
 		else this.dayCount = 0;
 	}
 

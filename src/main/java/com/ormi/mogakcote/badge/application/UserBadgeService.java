@@ -1,5 +1,6 @@
 package com.ormi.mogakcote.badge.application;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,9 +92,10 @@ public class UserBadgeService {
     System.out.println(checkExists);
 
     // 같은 뱃지가 없고 뱃지를 줄 요건이 충족되었다면 뱃지 생성
-    if (checkExists) {
+    if (!checkExists) {
       UserBadge badgeForSave = UserBadge.builder()
           .userId(user.getId())
+          .acquiredAt(LocalDateTime.now())
           .badgeId(getBadgeByName(satisfiedBadgeType.toString()).getId())
           .build();
       userBadgeRepository.save(badgeForSave);
@@ -102,7 +104,7 @@ public class UserBadgeService {
 
   // 일치하는 뱃지를 현재 사용자가 가지고 있는지 확인을 위한 메서드
   private boolean existBadgeAlready(Long userId, BadgeType badgeType) {
-    if(badgeType == null) return false;
+    if(badgeType == null) return true;
 
     String badgeName = badgeType.toString();
     Badge findBadge = getBadgeByName(badgeName);
