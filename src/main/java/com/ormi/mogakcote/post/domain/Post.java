@@ -5,6 +5,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "post")
@@ -50,18 +61,18 @@ public class Post extends BaseEntity {
   @Column(name = "prob_report_id")
   private Long probReportId;
 
-  @Embedded private PostFlag postFlag;
+  @Embedded
+  private PostFlag postFlag;
 
-  @Embedded private ReportFlag reportFlag;
+  @Embedded
+  private ReportFlag reportFlag;
 
-  @Column(nullable = false)
-  public void update(
-      String title, String content, Long platformId, Long languageId, int problemNumber) {
-    this.title = title;
-    this.content = content;
-    this.platformId = platformId;
-    this.languageId = languageId;
-    this.problemNumber = problemNumber;
+  public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
+      this.title = title;
+      this.content = content;
+      this.platformId = platformId;
+      this.languageId = languageId;
+      this.problemNumber = problemNumber;
   }
 
   public void incrementViewCount() {

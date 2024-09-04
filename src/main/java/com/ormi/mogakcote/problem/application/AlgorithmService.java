@@ -54,8 +54,8 @@ public class AlgorithmService {
         return new SuccessResponse("알고리즘 삭제를 성공했습니다.");
     }
 
-    @Transactional
-    public List getAlgorithmList() {
+    @Transactional(readOnly = true)
+    public List<AlgorithmResponse> getAlgorithmList() {
         List<AlgorithmResponse> algorithmResponses = new ArrayList<>();
         List<Algorithm> findAlgorithms = algorithmRepository.findAll();
 
@@ -68,6 +68,8 @@ public class AlgorithmService {
 
         return algorithmResponses;
     }
+
+
     private Algorithm buildAlgorithm(AlgorithmRequest request) {
         return Algorithm.builder()
                 .name(request.getAlgorithmName())
@@ -79,10 +81,4 @@ public class AlgorithmService {
                 () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR)
         );
     }
-
-
-//    private void throwsIfAlgorithmNotExist(Long algorithmId) {
-//        algorithmRepository.findByAlgorithmId(algorithmId).orElseThrow(
-//                () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR));
-//    }
 }

@@ -1,7 +1,7 @@
 package com.ormi.mogakcote.problem.presentation;
 
 import com.ormi.mogakcote.common.model.ResponseDto;
-import com.ormi.mogakcote.problem.application.PlatformServcie;
+import com.ormi.mogakcote.problem.application.PlatformService;
 import com.ormi.mogakcote.problem.dto.request.PlatformRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PlatformController {
 
-    private final PlatformServcie platformServcie;
+    private final PlatformService platformServcie;
 
     // 플랫폼 생성
     @PostMapping

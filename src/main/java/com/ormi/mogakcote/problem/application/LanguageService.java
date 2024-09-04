@@ -29,7 +29,7 @@ public class LanguageService {
 
         return LanguageResponse.toResponse(
                 savedLanguage.getId(),
-                savedLanguage.getLanguageName()
+                savedLanguage.getName()
         );
     }
 
@@ -41,7 +41,7 @@ public class LanguageService {
 
         return LanguageResponse.toResponse(
                 findLanguage.getId(),
-                findLanguage.getLanguageName()
+                findLanguage.getName()
         );
     }
 
@@ -53,15 +53,15 @@ public class LanguageService {
         return new SuccessResponse("작성언어 삭제를 성공했습니다.");
     }
 
-    @Transactional
-    public List getLanguageList() {
+    @Transactional(readOnly = true)
+    public List<LanguageResponse> getLanguageList() {
         List<LanguageResponse> languageResponses = new ArrayList<>();
         List<Language> findLanguages = languageRepository.findAll();
 
         findLanguages.forEach(findLanguage -> {
             languageResponses.add(LanguageResponse.toResponse(
                     findLanguage.getId(),
-                    findLanguage.getLanguageName()
+                    findLanguage.getName()
             ));
         });
 
@@ -71,7 +71,7 @@ public class LanguageService {
 
     private Language buildLanguage(LanguageRequest request) {
         return Language.builder()
-                .languageName(request.getLanguageName())
+                .name(request.getLanguageName())
                 .build();
     }
 
@@ -80,9 +80,4 @@ public class LanguageService {
                 () -> new LanguageInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR)
         );
     }
-
-//    private void throwsIfLanguageNotExist(Long languageId) {
-//        languageRepository.findByLanguageId(languageId).orElseThrow(
-//                () -> new AlgorithmInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR));
-//    }
 }

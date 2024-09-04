@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional(readOnly = true)
 public interface PostAlgorithmRepository extends JpaRepository<PostAlgorithm, Long> {
     List<PostAlgorithm> findByPostId(Long postId);
     void deleteByPostId(Long postId);

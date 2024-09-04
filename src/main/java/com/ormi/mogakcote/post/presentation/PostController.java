@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.model.ResponseDto;
+import com.ormi.mogakcote.orchestration.application.ReportCreationOrchestrator;
 import com.ormi.mogakcote.notice.application.NoticeService;
 import com.ormi.mogakcote.post.dto.request.PostRequest;
 import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
@@ -37,11 +38,11 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/post")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 
-  private final PostService postService;
+  private final ReportCreationOrchestrator reportCreationOrchestrator;
   private final NoticeService noticeService;
 
   @GetMapping("/list")
@@ -70,9 +71,10 @@ public class PostController {
   }
 
   @PostMapping
-  public ResponseEntity<?> writePost(AuthUser user, @RequestBody PostRequest request) {
-    var response = postService.createPost(user, request);
-    return ResponseDto.created(response);
+  public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
+        var response = reportCreationOrchestrator.createPostWithReportAndComment(
+                user, request);
+        return ResponseDto.created(response);
   }
 
   @GetMapping("/{postId}")
@@ -92,8 +94,9 @@ public class PostController {
       AuthUser user,
       @PathVariable(name = "postId") Long postId,
       @RequestBody PostRequest postRequest) {
-    PostResponse updatedPost = postService.updatePost(user, postId, postRequest);
-    return ResponseEntity.ok(updatedPost);
+    PostResponse response = reportCreationOrchestrator.updatePostWithReportAndComment(user,
+                postId, request);
+    return ResponseEntity.ok(response);
   }
 
   @DeleteMapping("/{postId}")
@@ -102,5 +105,4 @@ public class PostController {
     postService.deletePost(user, postId);
     return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
   }
-
 }

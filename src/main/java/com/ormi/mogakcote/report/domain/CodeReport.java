@@ -1,5 +1,6 @@
-package com.ormi.mogakcote.problem.domain;
+package com.ormi.mogakcote.report.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,14 +15,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Language {
+public class CodeReport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(name = "full_report", columnDefinition = "TEXT")
+    private String fullReport;
 
-    public void update(String name) {
-        this.name = name;
-    }
+    @Column(name = "is_passed")
+    private boolean isPassed;
+
+    @Column(name = "code_analysis", columnDefinition = "TEXT")
+    private String codeAnalysis;
+
+    @Column(name = "post_id")
+    private Long postId;
 }

@@ -7,7 +7,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorType {
+
     CONFLICT_ERROR(HttpStatus.BAD_REQUEST, "예기치 못한 에러가 발생했습니다."),
+
+    // Fast API 예외
+    FAST_API_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FastAPI 서버 오류가 발생했습니다."),
+    FAST_API_CALL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FastAPI 호출 중 예상치 못한 오류가 발생했습니다."),
 
     // problem 예외
     LANGUAGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 언어가 존재하지 않습니다."),
