@@ -1,12 +1,8 @@
 package com.ormi.mogakcote.notice.dto.response;
 
-import com.ormi.mogakcote.notice.domain.Notice;
-
-import io.swagger.v3.oas.annotations.info.Info;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 

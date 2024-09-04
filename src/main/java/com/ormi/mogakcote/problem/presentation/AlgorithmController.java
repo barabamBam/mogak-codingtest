@@ -2,7 +2,6 @@ package com.ormi.mogakcote.problem.presentation;
 
 import com.ormi.mogakcote.problem.application.AlgorithmService;
 import com.ormi.mogakcote.problem.dto.request.AlgorithmRequest;
-import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.model.ResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

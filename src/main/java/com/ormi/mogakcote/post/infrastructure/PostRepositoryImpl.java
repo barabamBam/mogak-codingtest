@@ -1,16 +1,13 @@
 package com.ormi.mogakcote.post.infrastructure;
 
 import static com.ormi.mogakcote.post.domain.QPost.*;
-import static com.ormi.mogakcote.post.dto.request.SortType.*;
 import static com.ormi.mogakcote.problem.domain.QAlgorithm.*;
 import static com.ormi.mogakcote.problem.domain.QLanguage.*;
 import static com.ormi.mogakcote.problem.domain.QPostAlgorithm.*;
 import static com.ormi.mogakcote.problem.domain.QProblemReportAlgorithm.*;
-import static com.ormi.mogakcote.vote.domain.QVote.*;
+import static com.ormi.mogakcote.profile.vote.QVote.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -23,13 +20,12 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.QPost;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.request.SortType;
-import com.ormi.mogakcote.post.dto.response.PostResponse;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository;
-import com.ormi.mogakcote.vote.domain.QVote;
+import com.ormi.mogakcote.profile.vote.QVote;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -22,8 +21,6 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.PostFlag;
 import com.ormi.mogakcote.post.domain.ReportFlag;
 import com.ormi.mogakcote.post.dto.request.PostRequest;
-import com.ormi.mogakcote.notice.domain.Notice;
-import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
@@ -34,7 +31,6 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.problem.domain.PostAlgorithm;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.user.application.UserService;
-import com.ormi.mogakcote.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +53,7 @@ public class PostService {
   public PostResponse createPost(AuthUser user, PostRequest request) {
     Post savedPost = buildAndSavePost(user.getId(), request);
 
-    Long algorithmId = savePostAlgorithms(savedPost.getId(), request.getAlgorithmId());
+    Long algorithmId = savePostAlgorithm(savedPost.getId(), request.getAlgorithmId());
 
     boolean postExists =
         postRepository.existsPostByCreatedAt(
@@ -89,7 +85,7 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostResponse getPost(Long postId) {
     Post post = getPostById(postId);
-    Long algorithmId = getAlgorithmIds(postId);
+    Long algorithmId = getAlgorithmId(postId);
 
     post.incrementViewCount();
     postRepository.save(post);
@@ -114,22 +110,19 @@ public class PostService {
     List<Post> posts = postRepository.findAll();
     return posts.stream()
         .map(
-            post -> {
-              Long algorithmId = getAlgorithmIds(post.getId());
-              return PostResponse.toResponse(
-                  post.getId(),
-                  post.getTitle(),
-                  post.getContent(),
-                  post.getPlatformId(),
-                  post.getProblemNumber(),
-                  algorithmId,
-                  post.getLanguageId(),
-                  post.getCode(),
-                  post.getPostFlag().isPublic(),
-                  post.getReportFlag().isReportRequested(),
-                  post.getViewCnt(),
-                  post.getPostFlag().isBanned());
-            })
+            post -> PostResponse.toResponse(
+				post.getId(),
+				post.getTitle(),
+				post.getContent(),
+				post.getPlatformId(),
+				post.getProblemNumber(),
+				getAlgorithmId(post.getId()),
+				post.getLanguageId(),
+				post.getCode(),
+				post.getPostFlag().isPublic(),
+				post.getReportFlag().isReportRequested(),
+				post.getViewCnt(),
+				post.getPostFlag().isBanned()))
         .collect(Collectors.toList());
   }
 
@@ -147,7 +140,7 @@ public class PostService {
 
     Post updatedPost = postRepository.save(post);
 
-    Long algorithmId = updatePostAlgorithms(postId, request.getAlgorithmId());
+    Long algorithmId = updatePostAlgorithm(postId, request.getAlgorithmId());
 
     return PostResponse.toResponse(
         updatedPost.getId(),
@@ -216,44 +209,54 @@ public class PostService {
     }
   }
 
-  private Long savePostAlgorithms(Long postId, Long algorithmIds) {
+  private Long savePostAlgorithm(Long postId, Long algorithmId) {
     PostAlgorithm postAlgorithm =
-        PostAlgorithm.builder().postId(postId).algorithmId(algorithmIds).build();
+        PostAlgorithm.builder().postId(postId).algorithmId(algorithmId).build();
     return postAlgorithmRepository.save(postAlgorithm).getAlgorithmId();
   }
 
-  private Long getAlgorithmIds(Long postId) {
+  private Long getAlgorithmId(Long postId) {
     return postAlgorithmRepository.findByPostId(postId).getFirst().getAlgorithmId();
   }
 
-  private Long updatePostAlgorithms(Long postId, Long newAlgorithmId) {
+  private Long updatePostAlgorithm(Long postId, Long newAlgorithmId) {
     postAlgorithmRepository.deleteByPostId(postId);
-    return savePostAlgorithms(postId, newAlgorithmId);
-  }
-
-  // 공지사항 최신 5개만 추출
-  public List<NoticeResponse> getNoticeLatestFive() {
-    List<Notice> notices = noticeRepository.getNoticeLatestFive();
-    List<NoticeResponse> noticeResponses = new ArrayList<>();
-    notices.forEach(
-        notice ->
-            noticeResponses.add(
-                NoticeResponse.builder()
-                    .title(notice.getTitle())
-                    .createdAt(notice.getCreatedAt())
-                    .build()));
-    return noticeResponses;
+    return savePostAlgorithm(postId, newAlgorithmId);
   }
 
   // 검색 조건에 맞게 게시글 추출
+  @Transactional(readOnly = true)
   public Page<PostSearchResponse> searchPost(AuthUser user, PostSearchRequest postSearchRequest) {
     // 페이징을 위한 기본 설정 -> (보여줄 페이지, 한 페이지에 보여줄 데이터 수)
     Pageable pageable = PageRequest.of(postSearchRequest.getPage() - 1, 8);
 
-    // System.out.println(postSearchRequest.getKeyword()+ postSearchRequest.getAlgorithm()+
-    // postSearchRequest.getLanguage()+ postSearchRequest.getSortBy()+ postSearchRequest.getPage()+
-    // pageable);
     // 검색 및 정렬 기능 수행 후 설정된 pageable에 맞게 페이지 반환
     return postRepository.searchPosts(user, postSearchRequest, pageable);
   }
+
+    @Transactional
+    public PostResponse convertBanned(Long id) {
+        Post findPost = getPostById(id);
+
+        if (findPost.getPostFlag().isBanned()){
+            findPost.updateBanned(false);
+        }else {
+            findPost.updateBanned(true);
+        }
+
+        return PostResponse.toResponse(
+                findPost.getId(),
+                findPost.getTitle(),
+                findPost.getContent(),
+                findPost.getPlatformId(),
+                findPost.getProblemNumber(),
+                getAlgorithmId(id),
+                findPost.getLanguageId(),
+                findPost.getCode(),
+                findPost.getPostFlag().isPublic(),
+                findPost.getReportFlag().isReportRequested(),
+                findPost.getViewCnt(),
+                findPost.getPostFlag().isBanned()
+        );
+    }
 }
