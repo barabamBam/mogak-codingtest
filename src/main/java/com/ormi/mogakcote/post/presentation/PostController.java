@@ -6,7 +6,6 @@ import com.ormi.mogakcote.post.dto.request.PostRequest;
 import com.ormi.mogakcote.post.application.PostService;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/post")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/api/v1/post")
+    @PostMapping()
     public ResponseEntity<?> writePost(
             AuthUser user,
             @RequestBody PostRequest request
@@ -30,35 +29,28 @@ public class PostController {
     }
 
 
-    @GetMapping("/api/v1/post/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long postId) {
         PostResponse post = postService.getPost(postId);
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/api/v1/post")
+    @GetMapping("")
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<PostResponse> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
-    @PutMapping("/api/v1/post/{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity<?> modifyPost(AuthUser user, @PathVariable(name = "postId") Long postId, @RequestBody PostRequest postRequest) {
         PostResponse updatedPost = postService.updatePost(user, postId, postRequest);
         return ResponseEntity.ok(updatedPost);
     }
 
-    @DeleteMapping("/api/v1/post/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable(name = "postId") Long postId) {
         postService.deletePost(user, postId);
         return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
     }
 
-    @PutMapping("/api/v1/admin/convertBanned/{postId}")
-    public ResponseEntity<?> convertBanned(
-            @PathVariable(name = "postId") Long id
-    ) {
-        PostResponse updateBanned = postService.convertBanned(id);
-        return ResponseEntity.ok(updateBanned);
-    }
 }
