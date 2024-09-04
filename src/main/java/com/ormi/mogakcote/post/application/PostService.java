@@ -221,6 +221,7 @@ public class PostService {
   }
 
   // 검색 조건에 맞게 게시글 추출
+  @Transactional(readOnly = true)
   public Page<PostSearchResponse> searchPost(AuthUser user, PostSearchRequest postSearchRequest) {
     // 페이징을 위한 기본 설정 -> (보여줄 페이지, 한 페이지에 보여줄 데이터 수)
     Pageable pageable = PageRequest.of(postSearchRequest.getPage() - 1, 8);
