@@ -2,7 +2,6 @@ package com.ormi.mogakcote.post.application;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,8 +18,6 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.PostFlag;
 import com.ormi.mogakcote.post.domain.ReportFlag;
 import com.ormi.mogakcote.post.dto.request.PostRequest;
-import com.ormi.mogakcote.notice.domain.Notice;
-import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
@@ -31,7 +28,6 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.problem.domain.PostAlgorithm;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.user.application.UserService;
-import com.ormi.mogakcote.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -226,18 +222,14 @@ public class PostService {
     // 페이징을 위한 기본 설정 -> (보여줄 페이지, 한 페이지에 보여줄 데이터 수)
     Pageable pageable = PageRequest.of(postSearchRequest.getPage() - 1, 8);
 
-    // System.out.println(postSearchRequest.getKeyword()+ postSearchRequest.getAlgorithm()+
-    // postSearchRequest.getLanguage()+ postSearchRequest.getSortBy()+ postSearchRequest.getPage()+
-    // pageable);
     // 검색 및 정렬 기능 수행 후 설정된 pageable에 맞게 페이지 반환
     return postRepository.searchPosts(user, postSearchRequest, pageable);
   }
-}
 
     @Transactional
     public PostResponse convertBanned(Long id) {
         Post findPost = getPostById(id);
-        List<Long> algorithmIds = getAlgorithmIds(id);
+
         if (findPost.getPostFlag().isBanned()){
             findPost.updateBanned(false);
         }else {
@@ -250,7 +242,7 @@ public class PostService {
                 findPost.getContent(),
                 findPost.getPlatformId(),
                 findPost.getProblemNumber(),
-                algorithmIds,
+                getAlgorithmId(id),
                 findPost.getLanguageId(),
                 findPost.getCode(),
                 findPost.getPostFlag().isPublic(),

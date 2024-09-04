@@ -76,7 +76,6 @@ public class Post extends BaseEntity {
     if (this.voteCnt >= 0) this.voteCnt--;
     else this.voteCnt = 0;
   }
-}
 
   public void updateBanned(boolean isBanned) {
       if (this.postFlag == null) {
