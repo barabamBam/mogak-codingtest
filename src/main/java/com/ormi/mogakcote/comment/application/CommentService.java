@@ -12,7 +12,6 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.post.PostInvalidException;
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.user.application.UserService;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

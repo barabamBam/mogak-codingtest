@@ -9,6 +9,7 @@ public class ReportContentParser {
 
     public CodeReportContent parseAnswerForCode(String content) {
         log.info("*** code report content = {}", content);
+
         return CodeReportContent.builder()
                 .isPassed(extractBetween(content, "[성공/실패 여부] ", " <END>").equals("true"))
                 .codeAnalysis((extractBetween(content, "[코드 개선점 제안] ","<END>")))
@@ -42,5 +43,4 @@ public class ReportContentParser {
         }
         return content.substring(startIndex, endIndex).trim();
     }
-
 }
