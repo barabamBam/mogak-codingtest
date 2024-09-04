@@ -53,7 +53,7 @@ public class PostService {
   public PostResponse createPost(AuthUser user, PostRequest request) {
     Post savedPost = buildAndSavePost(user.getId(), request);
 
-    Long algorithmId = savePostAlgorithms(savedPost.getId(), request.getAlgorithmId());
+    Long algorithmId = savePostAlgorithm(savedPost.getId(), request.getAlgorithmId());
 
     boolean postExists =
         postRepository.existsPostByCreatedAt(LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1));
@@ -81,7 +81,7 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostResponse getPost(Long postId) {
     Post post = getPostById(postId);
-    Long algorithmId = getAlgorithmIds(postId);
+    Long algorithmId = getAlgorithmId(postId);
 
     post.incrementViewCount();
     postRepository.save(post);
@@ -106,22 +106,19 @@ public class PostService {
     List<Post> posts = postRepository.findAll();
     return posts.stream()
         .map(
-            post -> {
-              Long algorithmId = getAlgorithmIds(post.getId());
-              return PostResponse.toResponse(
-                  post.getId(),
-                  post.getTitle(),
-                  post.getContent(),
-                  post.getPlatformId(),
-                  post.getProblemNumber(),
-                  algorithmId,
-                  post.getLanguageId(),
-                  post.getCode(),
-                  post.getPostFlag().isPublic(),
-                  post.getReportFlag().isReportRequested(),
-                  post.getViewCnt(),
-                  post.getPostFlag().isBanned());
-            })
+            post -> PostResponse.toResponse(
+				post.getId(),
+				post.getTitle(),
+				post.getContent(),
+				post.getPlatformId(),
+				post.getProblemNumber(),
+				getAlgorithmId(post.getId()),
+				post.getLanguageId(),
+				post.getCode(),
+				post.getPostFlag().isPublic(),
+				post.getReportFlag().isReportRequested(),
+				post.getViewCnt(),
+				post.getPostFlag().isBanned()))
         .collect(Collectors.toList());
   }
 
@@ -139,7 +136,7 @@ public class PostService {
 
     Post updatedPost = postRepository.save(post);
 
-    Long algorithmId = updatePostAlgorithms(postId, request.getAlgorithmId());
+    Long algorithmId = updatePostAlgorithm(postId, request.getAlgorithmId());
 
     return PostResponse.toResponse(
         updatedPost.getId(),
@@ -208,33 +205,19 @@ public class PostService {
     }
   }
 
-  private Long savePostAlgorithms(Long postId, Long algorithmIds) {
+  private Long savePostAlgorithm(Long postId, Long algorithmId) {
     PostAlgorithm postAlgorithm =
-        PostAlgorithm.builder().postId(postId).algorithmId(algorithmIds).build();
+        PostAlgorithm.builder().postId(postId).algorithmId(algorithmId).build();
     return postAlgorithmRepository.save(postAlgorithm).getAlgorithmId();
   }
 
-  private Long getAlgorithmIds(Long postId) {
+  private Long getAlgorithmId(Long postId) {
     return postAlgorithmRepository.findByPostId(postId).getFirst().getAlgorithmId();
   }
 
-  private Long updatePostAlgorithms(Long postId, Long newAlgorithmId) {
+  private Long updatePostAlgorithm(Long postId, Long newAlgorithmId) {
     postAlgorithmRepository.deleteByPostId(postId);
-    return savePostAlgorithms(postId, newAlgorithmId);
-  }
-
-  // 공지사항 최신 5개만 추출
-  public List<NoticeResponse> getNoticeLatestFive() {
-    List<Notice> notices = noticeRepository.getNoticeLatestFive();
-    List<NoticeResponse> noticeResponses = new ArrayList<>();
-    notices.forEach(
-        notice ->
-            noticeResponses.add(
-                NoticeResponse.builder()
-                    .title(notice.getTitle())
-                    .createdAt(notice.getCreatedAt())
-                    .build()));
-    return noticeResponses;
+    return savePostAlgorithm(postId, newAlgorithmId);
   }
 
   // 검색 조건에 맞게 게시글 추출

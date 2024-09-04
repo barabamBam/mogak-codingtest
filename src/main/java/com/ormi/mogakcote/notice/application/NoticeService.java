@@ -132,6 +132,7 @@ public class NoticeService {
         List<NoticeResponse> noticeResponses = new ArrayList<>();
         notices.forEach(notice -> noticeResponses.add(
             NoticeResponse.builder()
+                .noticeId(notice.getNoticeId())
                 .title(notice.getTitle())
                 .createdAt(notice.getCreatedAt())
                 .build())
