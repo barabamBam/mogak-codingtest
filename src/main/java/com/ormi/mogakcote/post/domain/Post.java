@@ -61,4 +61,15 @@ public class Post extends BaseEntity {
     public void incrementViewCount() {
         this.viewCnt++;
     }
+
+    public void updateBanned(boolean isBanned) {
+        if (this.postFlag == null) {
+            this.postFlag = new PostFlag(); // 기본 값으로 초기화
+        }
+        this.postFlag = PostFlag.builder()
+                .isPublic(this.postFlag.isPublic())
+                .isSuccess(this.postFlag.isSuccess())
+                .isBanned(isBanned)
+                .build();
+    }
 }

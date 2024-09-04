@@ -21,8 +21,8 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> writePost(
-        AuthUser user,
-        @RequestBody PostRequest request
+            AuthUser user,
+            @RequestBody PostRequest request
     ) {
         var response = postService.createPost(user, request);
         return ResponseDto.created(response);
@@ -49,7 +49,8 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable(name = "postId") Long postId) {
-        postService.deletePost(user,postId);
-        return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
+        var response = postService.deletePost(user,postId);
+        return ResponseEntity.ok(response);
     }
+
 }
