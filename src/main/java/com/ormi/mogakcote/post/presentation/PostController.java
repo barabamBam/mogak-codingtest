@@ -37,56 +37,52 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostService postService;
+  private final PostService postService;
 
-	@GetMapping("/list")
-	public ResponseEntity<?> mainPosts(
-		AuthUser user,
-		 @ModelAttribute PostSearchRequest postSearchRequest
-	) {
-		List<NoticeResponse> noticeResponse = postService.getNoticeLatestFive();
-		Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
+  @GetMapping("/list")
+  public ResponseEntity<?> mainPosts(
+      AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest) {
+    List<NoticeResponse> noticeResponse = postService.getNoticeLatestFive();
+    Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
 
-		Map<String, Object> map = new HashMap<>();
-		map.put("notice", noticeResponse);
-		map.put("postResponse", postResponse);
+    Map<String, Object> map = new HashMap<>();
+    map.put("notice", noticeResponse);
+    map.put("postResponse", postResponse);
 
-		return ResponseDto.ok(map);
-	}
+    return ResponseDto.ok(map);
+  }
 
-    @PostMapping
-    public ResponseEntity<?> writePost(
-        AuthUser user,
-        @RequestBody PostRequest request
-    ) {
-        var response = postService.createPost(user, request);
-        return ResponseDto.created(response);
-    }
+  @PostMapping
+  public ResponseEntity<?> writePost(AuthUser user, @RequestBody PostRequest request) {
+    var response = postService.createPost(user, request);
+    return ResponseDto.created(response);
+  }
 
+  @GetMapping("/{postId}")
+  public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long postId) {
+    PostResponse post = postService.getPost(postId);
+    return ResponseEntity.ok(post);
+  }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long postId) {
-        PostResponse post = postService.getPost(postId);
-        return ResponseEntity.ok(post);
-    }
+  @GetMapping
+  public ResponseEntity<List<PostResponse>> getAllPosts() {
+    List<PostResponse> posts = postService.getAllPosts();
+    return ResponseEntity.ok(posts);
+  }
 
-    @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<PostResponse> posts = postService.getAllPosts();
-        return ResponseEntity.ok(posts);
-    }
+  @PutMapping("/{postId}")
+  public ResponseEntity<?> modifyPost(
+      AuthUser user,
+      @PathVariable(name = "postId") Long postId,
+      @RequestBody PostRequest postRequest) {
+    PostResponse updatedPost = postService.updatePost(user, postId, postRequest);
+    return ResponseEntity.ok(updatedPost);
+  }
 
-
-    @PutMapping("/{postId}")
-    public ResponseEntity<?> modifyPost(AuthUser user, @PathVariable(name = "postId") Long postId, @RequestBody PostRequest postRequest) {
-        PostResponse updatedPost = postService.updatePost(user, postId, postRequest);
-        return ResponseEntity.ok(updatedPost);
-    }
-
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable(name = "postId") Long postId) {
-        postService.deletePost(user,postId);
-        return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
-    }
-
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<SuccessResponse> deletePost(
+      AuthUser user, @PathVariable(name = "postId") Long postId) {
+    postService.deletePost(user, postId);
+    return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
+  }
 }

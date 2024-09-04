@@ -9,6 +9,8 @@ import com.ormi.mogakcote.common.dto.SuccessResponse;
 import com.ormi.mogakcote.exception.auth.AuthInvalidException;
 import com.ormi.mogakcote.exception.comment.CommentInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
+import com.ormi.mogakcote.user.application.UserService;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 //    private final PostRepository postRepository;
+    private final UserService userService;
 
     /**
      * 답변 생성
@@ -33,6 +36,8 @@ public class CommentService {
 
         Comment comment = buildComment(request, user.getId(), postId);
         Comment savedComment = commentRepository.save(comment);
+
+        userService.updateActivity(user.getId(), "increaseComment");
 
         return CommentResponse.toResponse(
                 savedComment.getId(),
@@ -98,6 +103,8 @@ public class CommentService {
         validateSameUser(findComment.getUserId(), user.getId());
 
         commentRepository.deleteById(findComment.getId());
+
+        userService.updateActivity(user.getId(), "decreaseComment");
 
         return new SuccessResponse("답변 삭제를 성공했습니다.");
     }

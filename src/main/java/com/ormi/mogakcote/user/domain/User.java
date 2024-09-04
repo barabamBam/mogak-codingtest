@@ -36,6 +36,8 @@ public class User {
     @CreatedDate
     private LocalDateTime joinAt;
 
+    @Embedded private Activity activity;
+
     public void updateAuth(Authority authority) {
 
         this.authority = authority;

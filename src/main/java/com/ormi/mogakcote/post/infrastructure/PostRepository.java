@@ -1,5 +1,7 @@
 package com.ormi.mogakcote.post.infrastructure;
 
+import java.time.LocalDate;
+
 import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.user.domain.User;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +21,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     List<Post> findTop3ByUserIdOrderByViewsDesc(@Param("userId") Long userId, Pageable pageable);
 
     long countByUserId(Long userId);
+
+	@Query("select p.voteCnt from Post p where p.id = ?1")
+	Integer findVoteCountById(Long id);
+
+	@Query("select (count(p) > 0) from Post p where p.createdAt = ?1")
+	boolean existsPostByCreatedAt(LocalDate date);
 }
