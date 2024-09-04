@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final PostService postService;
-    @PutMapping("/api/v1/admin/convertBanned/{postId}")
+    @PutMapping("/convertBanned/{postId}")
     public ResponseEntity<?> convertBanned(
             @PathVariable(name = "postId") Long id
     ) {
