@@ -19,9 +19,9 @@ public class Platform {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String platformName;
+    private String name;
 
-    public void update(String platformName) {
-        this.platformName = platformName;
+    public void update(String name) {
+        this.name = name;
     }
 }

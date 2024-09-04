@@ -7,15 +7,16 @@ import com.ormi.mogakcote.problem.domain.Platform;
 import com.ormi.mogakcote.problem.dto.request.PlatformRequest;
 import com.ormi.mogakcote.problem.dto.response.PlatformResponse;
 import com.ormi.mogakcote.problem.infrastructure.PlatformRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
-public class PlatformServcie {
+public class PlatformService {
 
     private final PlatformRepository platformRepository;
 
@@ -28,7 +29,7 @@ public class PlatformServcie {
 
         return PlatformResponse.toResponse(
                 savedPlatform.getId(),
-                savedPlatform.getPlatformName()
+                savedPlatform.getName()
         );
     }
 
@@ -40,7 +41,7 @@ public class PlatformServcie {
 
         return PlatformResponse.toResponse(
                 findPlatform.getId(),
-                findPlatform.getPlatformName()
+                findPlatform.getName()
         );
     }
 
@@ -52,15 +53,15 @@ public class PlatformServcie {
         return new SuccessResponse("플랫폼 삭제를 성공했습니다.");
     }
 
-    @Transactional
-    public List getPlatformList(){
+    @Transactional(readOnly = true)
+    public List<PlatformResponse> getPlatformList(){
         List<PlatformResponse> platformResponses = new ArrayList<>();
         List<Platform> findPlatforms = platformRepository.findAll();
 
         findPlatforms.forEach(findPlatform -> {
             platformResponses.add(PlatformResponse.toResponse(
                     findPlatform.getId(),
-                    findPlatform.getPlatformName()
+                    findPlatform.getName()
             ));
         });
         return platformResponses;
@@ -68,7 +69,7 @@ public class PlatformServcie {
 
     private Platform buildPlatform(PlatformRequest request){
         return Platform.builder()
-                .platformName(request.getPlatformName())
+                .name(request.getPlatformName())
                 .build();
     }
 

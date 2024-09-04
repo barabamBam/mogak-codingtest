@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 @Repository
+@Transactional(readOnly = true)
 public interface PlatformRepository extends JpaRepository<Platform, Long> {
     @Transactional(readOnly = true)
     Optional<Platform> findById(Long id);

@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 @Transactional(readOnly = true)
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 

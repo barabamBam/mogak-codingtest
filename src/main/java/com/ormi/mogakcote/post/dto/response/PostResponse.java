@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class PostResponse {
+
     private Long id;
     private String title;
     private String content;
