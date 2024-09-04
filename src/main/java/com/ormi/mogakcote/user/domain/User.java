@@ -35,4 +35,20 @@ public class User {
     @Column(name = "join_at")
     @CreatedDate
     private LocalDateTime joinAt;
+
+    @Embedded private Activity activity;
+
+    public void updateAuth(Authority authority) {
+
+        this.authority = authority;
+    }
+
+    public void updateProfile(String name, String nickname) {
+        this.name = name;
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
