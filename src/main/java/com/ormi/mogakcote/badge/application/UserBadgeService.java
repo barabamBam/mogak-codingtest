@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.badge.domain.Badge;
@@ -31,6 +32,7 @@ public class UserBadgeService {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
 
+  @Transactional(readOnly = true)
   public List<UserBadgeResponse> getUserBadges(AuthUser user) {
     List<UserBadge> badges = userBadgeRepository.findAllByUserId(user.getId());
     List<UserBadgeResponse> badgesResponse = new ArrayList<>();
@@ -49,6 +51,7 @@ public class UserBadgeService {
     return badgesResponse;
   }
 
+  @Transactional
   public void makeUserBadge(AuthUser user, String badgeType) {
 
     Integer cnt = 0;  // 뱃지에서 개수를 지정하기 위한 변수
