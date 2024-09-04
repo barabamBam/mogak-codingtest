@@ -102,4 +102,5 @@ public class PostController {
     postService.deletePost(user, postId);
     return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
   }
+
 }
