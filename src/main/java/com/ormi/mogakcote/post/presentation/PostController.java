@@ -19,7 +19,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> writePost(
             AuthUser user,
             @RequestBody PostRequest request
@@ -35,7 +35,7 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<PostResponse> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
@@ -49,8 +49,8 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<SuccessResponse> deletePost(AuthUser user, @PathVariable(name = "postId") Long postId) {
-        postService.deletePost(user, postId);
-        return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
+        var response = postService.deletePost(user,postId);
+        return ResponseEntity.ok(response);
     }
 
 }
