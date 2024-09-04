@@ -58,7 +58,6 @@ public class Post extends BaseEntity {
   @Column(name = "vote_cnt")
   private int voteCnt;
 
-
   @Column(name = "prob_report_id")
   private Long probReportId;
 

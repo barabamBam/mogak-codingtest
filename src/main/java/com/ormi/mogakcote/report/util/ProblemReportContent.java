@@ -16,7 +16,7 @@ public class ProblemReportContent {
 
     private String solutionCode;
 
-    private List<String> solutionAlgorithms;
+    private String solutionAlgorithmName;
 
     private String timeComplexity;
 

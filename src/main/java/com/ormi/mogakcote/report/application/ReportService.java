@@ -200,7 +200,7 @@ public class ReportService {
                         +
                         "<조건>\n답변은 오직 내가 요구한 항목에 대해서만 '[항목] 답변 <END>' 의 일관된 형식으로 주고, 항목을 쓸 때를 제외하면 답변에 '[', ']' 는 포함되지 않도록 해줘. "
                         +
-                        "또 사용된 알고리즘과 시간복잡도는 서술이 아닌 단답 형식으로 제시해줘. 사용된 알고리즘은 최대 3개 까지만 제시해주고, 여러 개라면 ', ' 으로 나눠줘."
+                        "또 사용된 알고리즘과 시간복잡도는 서술이 아닌 단답 형식으로 제시해줘. 사용된 알고리즘은 1개만 제시해줘."
                         +
                         "알고리즘은 내가 주는 다음 목록에서만 골라주고, 이 중에서 없으면 'X' 라고만 보내줘! \n\n"
                         +
@@ -265,23 +265,20 @@ public class ReportService {
             ProblemReport savedProblemReport
     ) {
 
-        content.getSolutionAlgorithms().forEach(algorithmName -> {
-            // 목록에 해당하는 알고리즘이 없을 경우 return
-            // TODO 관리자에게 해당 알고리즘 추가 여부 검증?
-//            if(algorithmName.equals("X")) return;
-            Algorithm findAlgorithm = getAlgorithm(algorithmName);
-            if(findAlgorithm == null) return;
+        // 목록에 해당하는 알고리즘이 없을 경우 return
+        Algorithm findAlgorithm = getAlgorithm(content.getSolutionAlgorithmName());
 
-            // 동일한 리포트와 알고리즘이 존재하지 않을 경우 저장
-            if (!problemReportAlgorithmRepository.existsByAlgorithmIdAndProblemReportId(
-                    findAlgorithm.getId(), savedProblemReport.getId())) {
-                ProblemReportAlgorithm problemReportAlgorithm = ProblemReportAlgorithm.builder()
-                        .algorithmId(findAlgorithm.getId())
-                        .problemReportId(savedProblemReport.getId())
-                        .build();
-                problemReportAlgorithmRepository.save(problemReportAlgorithm);
-            }
-        });
+        if(findAlgorithm == null) return;
+
+        // 동일한 리포트와 알고리즘이 존재하지 않을 경우 저장
+        if (!problemReportAlgorithmRepository.existsByAlgorithmIdAndProblemReportId(
+                findAlgorithm.getId(), savedProblemReport.getId())) {
+            ProblemReportAlgorithm problemReportAlgorithm = ProblemReportAlgorithm.builder()
+                    .algorithmId(findAlgorithm.getId())
+                    .problemReportId(savedProblemReport.getId())
+                    .build();
+            problemReportAlgorithmRepository.save(problemReportAlgorithm);
+        }
     }
 
     private Algorithm getAlgorithm(String algorithmName) {
