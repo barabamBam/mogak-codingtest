@@ -40,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
 
-  private final LanguageRepository languageRepository;
   private final AlgorithmRepository algorithmRepository;
   private final ProblemReportAlgorithmRepository reportAlgorithmRepository;
   private final PostAlgorithmRepository postAlgorithmRepository;
@@ -89,7 +88,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 							? (isEqual(
                             postSearchRequest.getLanguage(),
 							  (jpaQueryFactory
-								  .select(language.languageName)
+								  .select(language.name)
 								  .from(post)
 								  .leftJoin(language)
 								  .on(language.id.eq(post.languageId))
@@ -141,7 +140,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
   private String getCodeReportAlgorithm(Long probReportId) {
     return algorithmRepository.findNameById(
-        reportAlgorithmRepository.findAlgorithmIdByProbReportId(probReportId));
+        reportAlgorithmRepository.findAlgorithmIdByProblemReportId(probReportId));
   }
 
   private String getAlgorithm(String pos) {

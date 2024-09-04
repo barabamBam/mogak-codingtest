@@ -31,17 +31,15 @@ import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 
+  private final PostService postService;
   private final ReportCreationOrchestrator reportCreationOrchestrator;
   private final NoticeService noticeService;
 
@@ -95,7 +93,7 @@ public class PostController {
       @PathVariable(name = "postId") Long postId,
       @RequestBody PostRequest postRequest) {
     PostResponse response = reportCreationOrchestrator.updatePostWithReportAndComment(user,
-                postId, request);
+                postId, postRequest);
     return ResponseEntity.ok(response);
   }
 

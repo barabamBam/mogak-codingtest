@@ -45,8 +45,6 @@ public class ReportCreationOrchestrator {
         Post savedPost = getPost(postResponse);
         log.info("ㅁㅁㅁㅁㅁ 게시글 저장 -> 제목: {}", savedPost.getTitle());
 
-        List<Long> algorithmIds = request.getAlgorithmIds();
-
         if (request.isReportRequested()) {
 
             // 분석 요청
@@ -67,7 +65,7 @@ public class ReportCreationOrchestrator {
 
         return PostResponse.toResponse(
                 savedPost.getId(), savedPost.getTitle(), savedPost.getContent(),
-                savedPost.getPlatformId(), savedPost.getProblemNumber(), algorithmIds,
+                savedPost.getPlatformId(), savedPost.getProblemNumber(), request.getAlgorithmId(),
                 savedPost.getLanguageId(), savedPost.getCode(), savedPost.getPostFlag().isPublic(),
                 savedPost.getReportFlag().isReportRequested(), savedPost.getViewCnt(),
                 savedPost.getPostFlag()
@@ -88,7 +86,6 @@ public class ReportCreationOrchestrator {
         // 게시글 수정
         PostResponse postResponse = postService.updatePost(user, postId, request);
         Post savedPost = getPost(postResponse);
-        List<Long> algorithmIds = request.getAlgorithmIds();
 
         // 이전에 리포트를 요청한 적 없는데 게시글을 수정하며 새로 요청하는 경우
         if (request.isReportRequested() && !request.isHasPreviousReportRequested()) {
@@ -104,7 +101,7 @@ public class ReportCreationOrchestrator {
 
         return PostResponse.toResponse(
                 savedPost.getId(), savedPost.getTitle(), savedPost.getContent(),
-                savedPost.getPlatformId(), savedPost.getProblemNumber(), algorithmIds,
+                savedPost.getPlatformId(), savedPost.getProblemNumber(), request.getAlgorithmId(),
                 savedPost.getLanguageId(), savedPost.getCode(), savedPost.getPostFlag().isPublic(),
                 savedPost.getReportFlag().isReportRequested(), savedPost.getViewCnt(),
                 savedPost.getPostFlag().isBanned()
