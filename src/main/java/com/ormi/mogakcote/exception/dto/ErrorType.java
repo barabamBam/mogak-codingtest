@@ -33,7 +33,7 @@ public enum ErrorType {
     INVALID_AUTH_CHANGE_ERROR(HttpStatus.FORBIDDEN,"사용자의 권한을 변경 할 수 없습니다."),
     // notice 예외
     NOTICE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "공지사항을 찾을 수 없습니다."),
-  
+
     // user 예외
     USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
     SYSTEM_USER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "시스템 유저를 찾을 수 없습니다."),
@@ -41,10 +41,11 @@ public enum ErrorType {
 
     // news 예외
     NOT_RECEIVER_ERROR(HttpStatus.BAD_REQUEST, "알림 수신자가 아닙니다."),
-    NEWS_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 알림이 존재하지 않습니다.");
+    NEWS_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "id 에 맞는 알림이 존재하지 않습니다."),
+
+    // badge 예외
+    BADGE_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "뱃지를 찾을 수 없습니다");
 
     private final HttpStatus status;
     private final String message;
 }
-
-

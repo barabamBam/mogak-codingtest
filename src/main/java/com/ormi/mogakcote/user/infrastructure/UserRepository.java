@@ -14,20 +14,28 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByNickname(String nickname);
-    Optional<User> findByEmail(String email);
 
-    @Query("SELECT u.email FROM User u WHERE u.email = :email AND u.nickname = :nickname")
-    Optional<String> findEmailByNameAndNickname(String email, String nickname);
+  User findByNickname(String nickname);
 
-    @Transactional
-    @Modifying
-    @Query("update User u set u.password = ?2 where u.email = ?1")
-    int updatePasswordByEmail(@NonNull String email, @NonNull String password);
+  Optional<User> findByEmail(String email);
 
-    Optional<User> findByAuthority(Authority authority);
+  @Query("SELECT u.email FROM User u WHERE u.email = :email AND u.nickname = :nickname")
+  Optional<String> findEmailByNameAndNickname(String email, String nickname);
 
-    boolean existsByNickname(String nickname);
+  @Transactional
+  @Modifying
+  @Query("update User u set u.password = ?2 where u.email = ?1")
+  int updatePasswordByEmail(@NonNull String email, @NonNull String password);
 
-    boolean existsByEmail(String email);
+  Optional<User> findByAuthority(Authority authority);
+
+  boolean existsByNickname(String nickname);
+
+  boolean existsByEmail(String email);
+
+  @Query("select u.activity.commentCount from User u where u.id = ?1")
+  Integer findCommentCountById(Long id);
+
+  @Query("select u.activity.dayCount from User u where u.id = ?1")
+  Integer findDayCountById(Long id);
 }

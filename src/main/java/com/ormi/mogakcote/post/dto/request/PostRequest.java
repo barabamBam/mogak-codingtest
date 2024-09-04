@@ -9,7 +9,7 @@ public class PostRequest {
     private String content;
     private Long platformId;
     private int problemNumber;
-    private List<Long> algorithmIds;
+    private Long algorithmId;
     private Long languageId;
     private String code;
     private boolean isPublic;

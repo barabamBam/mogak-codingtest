@@ -124,6 +124,22 @@ public class NoticeService {
         return noticeResponses;
     }
 
+
+    // 공지사항 최신 5개만 추출
+    @Transactional(readOnly = true)
+    public List<NoticeResponse> getNoticeLatestFive() {
+        List<Notice> notices = noticeRepository.getNoticeLatestFive();
+        List<NoticeResponse> noticeResponses = new ArrayList<>();
+        notices.forEach(notice -> noticeResponses.add(
+            NoticeResponse.builder()
+                .noticeId(notice.getNoticeId())
+                .title(notice.getTitle())
+                .createdAt(notice.getCreatedAt())
+                .build())
+        );
+        return noticeResponses;
+    }
+
     private static Notice buildNotice(NoticeRequest request, Long adminId) {
         return Notice.builder()
                 .title(request.getTitle())

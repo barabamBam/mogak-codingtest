@@ -14,62 +14,77 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Post extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+  @Column(columnDefinition = "TEXT")
+  private String content;
 
-    @Column(nullable = false, name = "platform_id")
-    private Long platformId;
+  @Column(nullable = false, name = "platform_id")
+  private Long platformId;
 
-    @Column(nullable = false, name = "problem_number")
-    private int problemNumber;
+  @Column(nullable = false, name = "problem_number")
+  private int problemNumber;
 
-    @Column(nullable = false, name = "language_id")
-    private Long languageId;
+  @Column(nullable = false, name = "language_id")
+  private Long languageId;
 
-    @Column(columnDefinition = "TEXT")
-    private String code;
+  // 알고리즘의 경우 problem 패키지 안의(현재 작업 중) Algorithm 도메인을 이용할 예정.
 
-    @Column(nullable = false, name = "user_id")
-    private Long userId;
+  @Column(columnDefinition = "TEXT")
+  private String code;
 
-    @Column(name = "view_cnt")
-    private int viewCnt;
+  @Column(nullable = false, name = "user_id")
+  private Long userId;
 
-    @Embedded
-    private PostFlag postFlag;
+  @Column(name = "view_cnt")
+  private int viewCnt;
 
-    @Embedded
-    private ReportFlag reportFlag;
+  @Column(name = "vote_cnt")
+  private int voteCnt;
 
-    @Column(nullable = false)
+  @Column(name = "prob_report_id")
+  private Long probReportId;
 
-    public void update(String title, String content, Long platformId, Long languageId, int problemNumber) {
-        this.title = title;
-        this.content = content;
-        this.platformId = platformId;
-        this.languageId = languageId;
-        this.problemNumber = problemNumber;
-    }
+  @Embedded private PostFlag postFlag;
 
-    public void incrementViewCount() {
-        this.viewCnt++;
-    }
+  @Embedded private ReportFlag reportFlag;
 
-    public void updateBanned(boolean isBanned) {
-        if (this.postFlag == null) {
-            this.postFlag = new PostFlag(); // 기본 값으로 초기화
-        }
-        this.postFlag = PostFlag.builder()
-                .isPublic(this.postFlag.isPublic())
-                .isSuccess(this.postFlag.isSuccess())
-                .isBanned(isBanned)
-                .build();
-    }
+  @Column(nullable = false)
+  public void update(
+      String title, String content, Long platformId, Long languageId, int problemNumber) {
+    this.title = title;
+    this.content = content;
+    this.platformId = platformId;
+    this.languageId = languageId;
+    this.problemNumber = problemNumber;
+  }
+
+  public void incrementViewCount() {
+    this.viewCnt++;
+  }
+
+  public void incrementVoteCount() {
+    this.voteCnt++;
+  }
+
+  public void decrementVoteCount() {
+    if (this.voteCnt >= 0) this.voteCnt--;
+    else this.voteCnt = 0;
+  }
+
+  public void updateBanned(boolean isBanned) {
+      if (this.postFlag == null) {
+          this.postFlag = new PostFlag(); // 기본 값으로 초기화
+      }
+      this.postFlag = PostFlag.builder()
+              .isPublic(this.postFlag.isPublic())
+              .isSuccess(this.postFlag.isSuccess())
+              .isBanned(isBanned)
+              .build();
+  }
 }
