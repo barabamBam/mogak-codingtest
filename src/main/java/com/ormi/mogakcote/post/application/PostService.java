@@ -57,8 +57,8 @@ public class PostService {
 
     boolean postExists =
         postRepository.existsPostByCreatedAt(
-            LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1),
-                LocalTime.of(0,0)));
+            LocalDateTime.of(
+                LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1), LocalTime.of(0, 0)));
     if (postExists) {
       userService.updateActivity(user.getId(), "increaseDay");
     } else {
@@ -110,19 +110,20 @@ public class PostService {
     List<Post> posts = postRepository.findAll();
     return posts.stream()
         .map(
-            post -> PostResponse.toResponse(
-				post.getId(),
-				post.getTitle(),
-				post.getContent(),
-				post.getPlatformId(),
-				post.getProblemNumber(),
-				getAlgorithmId(post.getId()),
-				post.getLanguageId(),
-				post.getCode(),
-				post.getPostFlag().isPublic(),
-				post.getReportFlag().isReportRequested(),
-				post.getViewCnt(),
-				post.getPostFlag().isBanned()))
+            post ->
+                PostResponse.toResponse(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getPlatformId(),
+                    post.getProblemNumber(),
+                    getAlgorithmId(post.getId()),
+                    post.getLanguageId(),
+                    post.getCode(),
+                    post.getPostFlag().isPublic(),
+                    post.getReportFlag().isReportRequested(),
+                    post.getViewCnt(),
+                    post.getPostFlag().isBanned()))
         .collect(Collectors.toList());
   }
 
@@ -216,7 +217,7 @@ public class PostService {
   }
 
   private Long getAlgorithmId(Long postId) {
-    return postAlgorithmRepository.findByPostId(postId).getFirst().getAlgorithmId();
+    return postAlgorithmRepository.findByPostId(postId).getAlgorithmId();
   }
 
   private Long updatePostAlgorithm(Long postId, Long newAlgorithmId) {
@@ -234,29 +235,28 @@ public class PostService {
     return postRepository.searchPosts(user, postSearchRequest, pageable);
   }
 
-    @Transactional
-    public PostResponse convertBanned(Long id) {
-        Post findPost = getPostById(id);
+  @Transactional
+  public PostResponse convertBanned(Long id) {
+    Post findPost = getPostById(id);
 
-        if (findPost.getPostFlag().isBanned()){
-            findPost.updateBanned(false);
-        }else {
-            findPost.updateBanned(true);
-        }
-
-        return PostResponse.toResponse(
-                findPost.getId(),
-                findPost.getTitle(),
-                findPost.getContent(),
-                findPost.getPlatformId(),
-                findPost.getProblemNumber(),
-                getAlgorithmId(id),
-                findPost.getLanguageId(),
-                findPost.getCode(),
-                findPost.getPostFlag().isPublic(),
-                findPost.getReportFlag().isReportRequested(),
-                findPost.getViewCnt(),
-                findPost.getPostFlag().isBanned()
-        );
+    if (findPost.getPostFlag().isBanned()) {
+      findPost.updateBanned(false);
+    } else {
+      findPost.updateBanned(true);
     }
+
+    return PostResponse.toResponse(
+        findPost.getId(),
+        findPost.getTitle(),
+        findPost.getContent(),
+        findPost.getPlatformId(),
+        findPost.getProblemNumber(),
+        getAlgorithmId(id),
+        findPost.getLanguageId(),
+        findPost.getCode(),
+        findPost.getPostFlag().isPublic(),
+        findPost.getReportFlag().isReportRequested(),
+        findPost.getViewCnt(),
+        findPost.getPostFlag().isBanned());
+  }
 }

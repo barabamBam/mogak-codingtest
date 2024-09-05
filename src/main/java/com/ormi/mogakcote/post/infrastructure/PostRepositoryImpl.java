@@ -26,6 +26,7 @@ import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository;
 import com.ormi.mogakcote.profile.vote.QVote;
+import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -43,13 +44,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
   private final AlgorithmRepository algorithmRepository;
   private final ProblemReportAlgorithmRepository reportAlgorithmRepository;
   private final PostAlgorithmRepository postAlgorithmRepository;
+  private final UserRepository userRepository;
 
 	private final JPAQueryFactory jpaQueryFactory;
 
   // 검색 조건에 일치하는 게시글을 불러오기 위한 로직
   @Override
   public Page<PostSearchResponse> searchPosts(
-      AuthUser user, PostSearchRequest postSearchRequest, Pageable pageable) {
+      AuthUser authUser, PostSearchRequest postSearchRequest, Pageable pageable) {
 
     // import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository; 추가
     // Post 도메인 probReportId 추가
@@ -59,11 +61,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             .leftJoin(vote)
             .on(vote.postId.eq(post.id)) // 게시글의 추천 수 를 확인하기 위해 join
             .where(
-                // 공개 게시글과 자신의 비공개 게시글만 추출
+                // 공개 게시글과 자신의 비공개 게시글, 숨김 처리되지 않은 게시글만 추출
                 (post.postFlag
                         .isPublic
                         .eq(true)
-                        .or(user != null ? post.userId.eq(user.getId()) : null))
+                        .or(authUser != null
+							? post.postFlag.isBanned.eq(false)
+							.and(post.userId.eq(authUser.getId())) : null))
                     // 제목 및 내용에 키워드가 포함하고 있는지 확인
                     .and(
                         StringUtils.hasText(postSearchRequest.getKeyword())
@@ -125,6 +129,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         .content(post.getContent())
                         .algorithms(Arrays.asList(
 							getCodeAlgorithm(post.getId()), getCodeReportAlgorithm(post.getProbReportId())))
+						.nickname(userRepository.findNicknameById(post.getUserId()))
                         .viewCnt(post.getViewCnt())
                         .createdAt(post.getCreatedAt())
                         .build())

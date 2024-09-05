@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/post")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -45,27 +45,15 @@ public class PostController {
 
   @GetMapping("/list")
   public ModelAndView mainPosts(
-      AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest, Model model) {
+      @RequestBody(required = false) AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest, Model model) {
     List<NoticeResponse> noticeResponse = noticeService.getNoticeLatestFive();
     Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
 
     model.addAttribute("notices", noticeResponse);
     model.addAttribute("posts", postResponse);
     model.addAttribute("postSearchRequest", postSearchRequest);
-    model.addAttribute("SortType", SortType.values());
-
-    mainPostsResponse(noticeResponse, postResponse);
 
     return new ModelAndView("post/list");
-  }
-
-  public ResponseEntity<?> mainPostsResponse(List<NoticeResponse> noticeResponse, Page<PostSearchResponse> postResponse) {
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("notice", noticeResponse);
-    map.put("postResponse", postResponse);
-
-    return ResponseDto.ok(map);
   }
 
   @PostMapping
