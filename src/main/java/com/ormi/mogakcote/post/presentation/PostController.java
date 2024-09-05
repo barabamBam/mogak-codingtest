@@ -1,5 +1,7 @@
 package com.ormi.mogakcote.post.presentation;
 
+import com.ormi.mogakcote.exception.rate_limit.DailyRateLimitExceededException;
+import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +71,8 @@ public class PostController {
   }
 
   @PostMapping
+  @RateLimit(key = "'createPost:' + #user.id", limit = 1, period = 24 * 60 * 60,
+          exceptionClass = DailyRateLimitExceededException.class)
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
         var response = reportCreationOrchestrator.createPostWithReportAndComment(
                 user, request);

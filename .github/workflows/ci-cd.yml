@@ -49,6 +49,9 @@ jobs:
           spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
           spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
           spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
+          # Redis 환경 변수 주입
+          spring.cache.host: ${{ secrets.REDIS_HOST }}
+          spring.cache.port: ${{ secrets.REDIS_PORT }}
 
       # gradlew 파일 실행권한 설정
       - name: Grant execute permission for gradlew

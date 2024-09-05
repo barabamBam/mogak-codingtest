@@ -9,3 +9,7 @@ spring:
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
+  cache:
+    type: redis
+    host:
+    port:
