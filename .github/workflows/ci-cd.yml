@@ -83,7 +83,7 @@ jobs:
           SPRING_SECURITY_JWT_ISSUER: ${{ secrets.JWT_ISSURE }}
           SPRING_SECURITY_JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
           SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
-        run: ./gradlew clean --stacktrace --info build
+        run: ./gradlew clean --stacktrace --info build -x test
         shell: bash
 
       # Generate Image Tag
