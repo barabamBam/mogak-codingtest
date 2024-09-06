@@ -70,16 +70,10 @@ jobs:
       # Gradle build (Test 제외)
       - name: Build with Gradle
         env:
-          SPRING_DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
           SPRING_MAIL_HOST: ${{ secrets.MAIL_HOST }}
           SPRING_MAIL_PORT: ${{ secrets.MAIL_PORT }}
           SPRING_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          SPRING_SECURITY_JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
-          SPRING_SECURITY_JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
-          SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
         run: ./gradlew clean --stacktrace --info build
         shell: bash
 
