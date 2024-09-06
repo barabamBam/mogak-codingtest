@@ -6,6 +6,7 @@ import static com.ormi.mogakcote.problem.domain.QLanguage.*;
 import static com.ormi.mogakcote.problem.domain.QPostAlgorithm.*;
 import static com.ormi.mogakcote.problem.domain.QProblemReportAlgorithm.*;
 import static com.ormi.mogakcote.profile.vote.QVote.*;
+import static com.querydsl.jpa.JPAExpressions.*;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -19,10 +20,8 @@ import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.QPost;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
-import com.ormi.mogakcote.post.dto.request.SortType;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
-import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository;
 import com.ormi.mogakcote.profile.vote.QVote;
@@ -30,7 +29,9 @@ import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -64,10 +65,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 // 공개 게시글과 자신의 비공개 게시글, 숨김 처리되지 않은 게시글만 추출
                 (post.postFlag
                         .isPublic
-                        .eq(true)
+                        .eq(true).and(post.postFlag.isBanned.eq(false))
                         .or(authUser != null
-							? post.postFlag.isBanned.eq(false)
-							.and(post.userId.eq(authUser.getId())) : null))
+							? post.userId.eq(authUser.getId()) : null))
                     // 제목 및 내용에 키워드가 포함하고 있는지 확인
                     .and(
                         StringUtils.hasText(postSearchRequest.getKeyword())
@@ -79,11 +79,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         StringUtils.hasText(postSearchRequest.getAlgorithm())
                             ? (isEqual(
                                     postSearchRequest.getAlgorithm(),
-									getAlgorithm("postAlgorithm"))
+									getAlgorithm("postAlgorithm", post.id))
                                 .or(
                                     isEqual(
                                         postSearchRequest.getAlgorithm(),
-										getAlgorithm("problemReportAlgorithm"))))
+										getAlgorithm("problemReportAlgorithm", post.probReportId))))
                             : null
 					)
                     // 선택한 언어로 된 코드인지 확인
@@ -91,12 +91,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 						StringUtils.hasText(postSearchRequest.getLanguage())
 							? (isEqual(
                             postSearchRequest.getLanguage(),
-							  (jpaQueryFactory
-								  .select(language.name)
-								  .from(post)
-								  .leftJoin(language)
-								  .on(language.id.eq(post.languageId))
-								  .fetchOne()))
+							  (select(language.name)
+								  .from(language)
+								  .where(language.id.eq(post.languageId))
+								  .limit(1)))
 						) : null
 					)
                     // 코드 성공 여부 확인
@@ -148,33 +146,29 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         reportAlgorithmRepository.findAlgorithmIdByProblemReportId(probReportId));
   }
 
-  private String getAlgorithm(String pos) {
+  private JPQLQuery<String> getAlgorithm(String pos, NumberPath<Long> id) {
     if (pos.equals("postAlgorithm")) {
-      return (jpaQueryFactory
-          .select(algorithm.name)
+      return (select(algorithm.name)
           .from(algorithm)
           .leftJoin(postAlgorithm)
           .on(algorithm.id.eq(postAlgorithm.algorithmId))
-          .where(postAlgorithm.postId.eq(post.id))
-          .fetchOne());
+          .where(postAlgorithm.postId.eq(id)).limit(1));
     } else if (pos.equals("problemReportAlgorithm")) {
-      return (jpaQueryFactory
-          .select(algorithm.name)
+      return (select(algorithm.name)
           .from(algorithm)
           .leftJoin(problemReportAlgorithm)
           .on(algorithm.id.eq(problemReportAlgorithm.algorithmId))
-          .where(problemReportAlgorithm.id.eq(post.probReportId))
-          .fetchOne());
+          .where(problemReportAlgorithm.id.eq(id)).limit(1));
     }
     return null;
   }
 
 	// 일치 확인 메서드
-	private static BooleanExpression isEqual(String searchData, String tableData) {
-		return Expressions.asBoolean(
-			StringUtils.hasText(searchData) ?
-				searchData.equalsIgnoreCase(tableData): null
-		);
+	private static BooleanExpression isEqual(String searchData, JPQLQuery<?> tableData) {
+		return Expressions.stringTemplate(
+				"LOWER({0})", tableData)
+			.eq(Expressions.stringTemplate(
+				"LOWER({0})", searchData));
 	}
 
 	// 포함 확인 메서드
@@ -186,19 +180,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	// 사용자가 원하는 정렬 기준을 가지고 정렬
-	private OrderSpecifier<?> getSortByResult(SortType sortBy, QPost post, QVote vote) {
+	private OrderSpecifier<?> getSortByResult(String sortBy, QPost post, QVote vote) {
 		return switch (sortBy) {
-			// 게시글을 최신 순으로 정렬
-			case LATEST -> post.createdAt.desc();
 
 			// 게시글을 오래된 순으로 정렬
-			case OLDEST -> post.createdAt.asc();
+			case "OLDEST" -> post.createdAt.asc();
 
 			// 게시글을 조회수 많은 순으로 정렬
-			case MOST_VIEWED -> post.viewCnt.desc();
+			case "MOST_VIEWED" -> post.viewCnt.desc();
 
 			// 게시글을 추천 순으로 정렬
-		  	case MOST_LIKED -> vote.count().desc();
-    };
+		  	case "MOST_LIKED" -> vote.count().desc();
+
+			// 게시글을 최신 순으로 정렬
+			default -> post.createdAt.desc();
+		};
   }
 }
