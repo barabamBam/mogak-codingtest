@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <style>
+        * {
+            margin: 0;
+
+            font-family: 'Actor';
+            font-style: normal;
+            font-weight: 400;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+
+            background-color: #0E2439;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: default;
+            justify-content: center;
+        }
+
+        p {
+            /* 403 Forbidden 게시글을 찾을 수 없습니다. */
+            font-size: 20px;
+            line-height: 30px;
+            text-align: center;
+
+            color: #FFFFFF;
+        }
+
+        #status, #error {
+            padding-bottom: 20px;
+        }
+
+        #status {
+            font-size: 50px;
+            line-height: 70px;
+        }
+
+        #error {
+            font-size: 30px;
+            line-height: 40px;
+        }
+
+        #message {
+            padding-bottom: 80px;
+            overflow-wrap: break-word;
+            width: 70%;
+        }
+
+        #back-to-main {
+            color: #0E2439;
+            background: #FFFFFF;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+
+            text-decoration: none;
+            cursor: pointer;
+
+            padding: 13px 21px;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        }
+    </style>
+</head>
+<body>
+    <p id="status" th:text="${status}"></p>
+    <p id="error" th:text="${error}"></p>
+    <p id="message" th:text="${message}"></p>
+    <a id="back-to-main" th:href="@{/api/v1/post/list}">메인페이지로 돌아가기</a>
+</body>
