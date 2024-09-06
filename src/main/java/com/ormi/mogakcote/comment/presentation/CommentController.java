@@ -5,6 +5,8 @@ import com.ormi.mogakcote.comment.application.CommentService;
 import com.ormi.mogakcote.comment.dto.request.CommentRequest;
 import com.ormi.mogakcote.comment.dto.response.CommentResponse;
 import com.ormi.mogakcote.common.model.ResponseDto;
+import com.ormi.mogakcote.exception.rate_limit.PerSecondRateLimitExceededException;
+import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
+    @RateLimit(key = "'createComment:' + #user.id", limit = 5, period = 1,
+            exceptionClass = PerSecondRateLimitExceededException.class)
     public ResponseEntity<?> createComment(
             AuthUser user,
             @PathVariable("postId") Long postId,

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(readOnly = true)
 public interface PostAlgorithmRepository extends JpaRepository<PostAlgorithm, Long> {
+
     PostAlgorithm findByPostId(Long postId);
 
     void deleteByPostId(Long postId);
