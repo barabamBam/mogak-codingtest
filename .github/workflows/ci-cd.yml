@@ -100,7 +100,7 @@ jobs:
       # Docker 이미지 빌드
       - name: docker image build
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}} \
+          docker build \
             --build-arg SPRING_PROFILES_ACTIVE=${{ env.ACTIVE_PROFILE }} \
             --build-arg SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
             --build-arg SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
@@ -114,7 +114,8 @@ jobs:
             --build-arg SPRING_SECURITY_JWT_ISSUER=${{ secrets.JWT_ISSURE }} \
             --build-arg SPRING_SECURITY_JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }} \
             --build-arg SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY=${{ secrets.JWT_USER_SECRET_KEY }} \
-            .
+            -t ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{ env.IMAGE_TAG }} .
+
 
       #  Docker Hub 이미지 푸시
       - name: dockerHub push
