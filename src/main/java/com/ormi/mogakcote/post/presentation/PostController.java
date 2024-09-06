@@ -1,8 +1,6 @@
 package com.ormi.mogakcote.post.presentation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,6 @@ import com.ormi.mogakcote.post.dto.request.PostRequest;
 import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.post.application.PostService;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
-import com.ormi.mogakcote.post.dto.request.SortType;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
