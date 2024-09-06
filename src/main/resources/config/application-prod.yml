@@ -9,30 +9,30 @@ spring:
 
   security:
     jwt:
-      issuer:
-      secretKey:
+      issuer: ${SPRING_SECURITY_JWT_ISSUER}
+      secretKey: ${SPRING_SECURITY_JWT_SECRETKEY}
       access-token-expiration-second: 1800
       refresh-token-expiration-second: 10080
     user:
       password:
-        secretKey:
+        secretKey: ${SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY}
         reset:
           registerTimeoutSecond: 1800
 
   datasource:
-    url:
+    url: ${SPRING_DATASOURCE_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username:
-    password:
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
 
   mail:
-    host: smtp.gmail.com
-    port:
-    username:
-    password:
+    host: ${SPRING_MAIL_HOST}
+    port: ${SPRING_MAIL_PORT}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
