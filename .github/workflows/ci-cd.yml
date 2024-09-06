@@ -85,7 +85,22 @@ jobs:
 
       # Docker 이미지 빌드
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}} .
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}} \
+            --build-arg SPRING_PROFILES_ACTIVE=${{ env.ACTIVE_PROFILE }} \
+            --build-arg SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
+            --build-arg SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+            --build-arg SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+            --build-arg SPRING_CACHE_HOST=${{ secrets.REDIS_HOST }} \
+            --build-arg SPRING_CACHE_PORT=${{ secrets.REDIS_PORT }} \
+            --build-arg SPRING_MAIL_HOST=${{ secrets.MAIL_HOST }} \
+            --build-arg SPRING_MAIL_PORT=${{ secrets.MAIL_PORT }} \
+            --build-arg SPRING_MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
+            --build-arg SPRING_MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+            --build-arg SPRING_SECURITY_JWT_ISSUER=${{ secrets.JWT_ISSURE }} \
+            --build-arg SPRING_SECURITY_JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }} \
+            --build-arg SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY=${{ secrets.JWT_USER_SECRET_KEY }} \
+            .
 
       #  Docker Hub 이미지 푸시
       - name: dockerHub push
@@ -105,6 +120,20 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
             if [ $(sudo docker ps -q) ]; then sudo docker stop $(sudo docker ps -q); fi
             if [ $(sudo docker ps -aq) ]; then sudo docker rm $(sudo docker ps -aq); fi
-            sudo docker run -d -p 8080:8080 --name ${{ env.SERVICE_NAME }}-${{env.IMAGE_TAG}} ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
+            sudo docker run -d -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=${{ env.ACTIVE_PROFILE }} \
+              -e SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
+              -e SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+              -e SPRING_CACHE_HOST=${{ secrets.REDIS_HOST }} \
+              -e SPRING_CACHE_PORT=${{ secrets.REDIS_PORT }} \
+              -e SPRING_MAIL_HOST=${{ secrets.MAIL_HOST }} \
+              -e SPRING_MAIL_PORT=${{ secrets.MAIL_PORT }} \
+              -e SPRING_MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
+              -e SPRING_MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+              -e SPRING_SECURITY_JWT_ISSUER=${{ secrets.JWT_ISSURE }} \
+              -e SPRING_SECURITY_JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }} \
+              -e SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY=${{ secrets.JWT_USER_SECRET_KEY }} \
+              --name ${{ env.SERVICE_NAME }}-${{env.IMAGE_TAG}} ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
             sudo docker image prune -f
           timeout: 30m
