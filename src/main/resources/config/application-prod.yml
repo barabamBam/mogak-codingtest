@@ -4,8 +4,8 @@ spring:
 
   cache:
     type: redis
-    host:
-    port:
+    host: ${SPRING_CACHE_HOST}
+    port: ${SPRING_CACHE_PORT}
 
   security:
     jwt:
@@ -27,6 +27,7 @@ spring:
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
+      connection-timeout: 30000 # 30초
 
   mail:
     host: ${SPRING_MAIL_HOST}
@@ -41,3 +42,8 @@ spring:
             enable: true
           starttls:
             enable: true
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.zaxxer.hikari: DEBUG
