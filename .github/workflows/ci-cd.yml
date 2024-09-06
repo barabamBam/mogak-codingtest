@@ -52,6 +52,15 @@ jobs:
           # Redis 환경 변수 주입
           spring.cache.host: ${{ secrets.REDIS_HOST }}
           spring.cache.port: ${{ secrets.REDIS_PORT }}
+          # MailSender 환경 변수 주입
+          spring.mail.host: ${{ secrets.MAIL_HOST }}
+          spring.mail.port: ${{ secrets.MAIL_PORT }}
+          spring.mail.username: ${{ secrets.MAIL_USERNAME }}
+          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
+          # JWT 환경 변수 주입
+          spring.security.jwt.issuer: ${{ secrets.JWT_ISSURE }}
+          spring.security.jwt.secretKey: ${{ secrets.JWT_SECRETKEY }}
+          spring.security.jwt.user.password.secretKey: ${{ secrets.JWT_USER_SECRET_KEY }}
 
       # gradlew 파일 실행권한 설정
       - name: Grant execute permission for gradlew

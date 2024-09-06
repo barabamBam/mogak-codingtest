@@ -1,6 +1,24 @@
 spring:
   application:
     name: mogak-codingtest
+
+  cache:
+    type: redis
+    host:
+    port:
+
+  security:
+    jwt:
+      issuer:
+      secretKey:
+      access-token-expiration-second: 1800
+      refresh-token-expiration-second: 10080
+    user:
+      password:
+        secretKey:
+        reset:
+          registerTimeoutSecond: 1800
+
   datasource:
     url:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,7 +27,17 @@ spring:
     hikari:
       minimum-idle: 15
       maximum-pool-size: 20
-  cache:
-    type: redis
+
+  mail:
     host:
     port:
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
