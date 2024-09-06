@@ -29,7 +29,7 @@ spring:
       maximum-pool-size: 20
 
   mail:
-    host:
+    host: smtp.gmail.com
     port:
     username:
     password:
