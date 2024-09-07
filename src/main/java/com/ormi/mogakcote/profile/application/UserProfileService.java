@@ -14,7 +14,6 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
@@ -41,6 +40,7 @@ public class UserProfileService {
     public List<Post> getTopLikedPosts(User user) {
         return postRepository.findTop3ByUserIdOrderByViewsDesc(user.getId(), PageRequest.of(0, 3));
     }
+
     @Transactional
     public User updateProfile(String nickname, String name, String email, String password) {
         User existingUser = userRepository.findByNickname(nickname);
@@ -56,6 +56,7 @@ public class UserProfileService {
 
         return userRepository.save(existingUser);
     }
+
     @Transactional
     public void deleteAccount(String nickname) {
         User user = userRepository.findByNickname(nickname);
@@ -64,3 +65,4 @@ public class UserProfileService {
         }
         userRepository.delete(user);
     }
+}
