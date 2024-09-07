@@ -8,9 +8,11 @@ import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
+
 
 
 @Service
@@ -35,8 +37,30 @@ public class UserProfileService {
         return postRepository.countByUserId(user.getId());
     }
 
-    @Transactional(readOnly = true)
+
     public List<Post> getTopLikedPosts(User user) {
         return postRepository.findTop3ByUserIdOrderByViewsDesc(user.getId(), PageRequest.of(0, 3));
     }
+    @Transactional
+    public User updateProfile(String nickname, String name, String email, String password) {
+        User existingUser = userRepository.findByNickname(nickname);
+        if (existingUser == null) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+
+        existingUser.updateProfile(name, nickname, email);
+
+        if (password != null && !password.isEmpty()) {
+            existingUser.updatePassword(password);
+        }
+
+        return userRepository.save(existingUser);
+    }
+    @Transactional
+    public void deleteAccount(String nickname) {
+        User user = userRepository.findByNickname(nickname);
+        if (user == null) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+        userRepository.delete(user);
     }

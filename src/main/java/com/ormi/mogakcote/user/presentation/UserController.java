@@ -55,19 +55,39 @@ public class UserController {
     return ResponseDto.ok("Profile updated successfully");
   }
 
-  @PostMapping("/change-password")
-  public ResponseEntity<?> changePassword(
-      @RequestBody ChangePasswordRequest request,
-      @AuthenticationPrincipal UserDetails userDetails) {
-    userService.changePassword(
-        ((User) userDetails).getId(), request.getCurrentPassword(), request.getNewPassword());
-    return ResponseDto.ok("Password changed successfully");
-  }
+    @PostMapping("/users/register")
+    public ResponseEntity<?> registerUser(
+        @RequestBody RegisterRequest request
+    ) {
+        var response = userService.registerUser(request);
+        return ResponseDto.created(response);
+    }
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UpdateProfileRequest request,
+                                               @AuthenticationPrincipal UserDetails userDetails) {
+        userService.updateProfile(
+            ((User) userDetails).getId(),
+            request.getUsername(),  // getName() 대신 getUsername() 사용
+            request.getNickname()
+        );
+        return ResponseDto.ok("Profile updated successfully");
+    }
 
-  @DeleteMapping
-  public ResponseEntity<?> deleteUser(
-      @RequestBody DeleteUserRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-    userService.deleteUser(((User) userDetails).getId(), request.getPassword());
-    return ResponseDto.ok("User deleted successfully");
-  }
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+                                            @AuthenticationPrincipal UserDetails userDetails) {
+        userService.changePassword(
+            ((User) userDetails).getId(),
+            request.getCurrentPassword(),
+            request.getNewPassword()
+        );
+        return ResponseDto.ok("Password changed successfully");
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserRequest request,
+                                        @AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(((User) userDetails).getId(), request.getPassword());
+        return ResponseDto.ok("User deleted successfully");
+    }
 }
