@@ -24,9 +24,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     long countByUserId(Long userId);
 
-	@Query("select p.voteCnt from Post p where p.id = ?1")
-	Integer findVoteCountById(Long id);
+    @Query("select p.voteCnt from Post p where p.id = ?1")
+    Integer findVoteCountById(Long id);
 
-	@Query("select (count(p) > 0) from Post p where p.createdAt >= ?1")
-	boolean existsPostByCreatedAt(LocalDateTime date);
+    @Query("select (count(p) > 0) from Post p where p.createdAt >= ?1")
+    boolean existsPostByCreatedAt(LocalDateTime date);
 }

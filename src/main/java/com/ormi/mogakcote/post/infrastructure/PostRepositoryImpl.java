@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 
 // PostRepositoryCustom의 구현체로 PostRepository에서 인터페이스를 확장시켜 사용
 // 따라서 해당 구현체 내 오버라이딩 된 메서드 또한 사용 가능해짐
+@Repository
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
 

@@ -1,31 +1,26 @@
 spring:
+  application:
+    name: mogak-codingtest
   servlet:
     multipart:
       enabled: true
+  web:
+    resources:
+      static-locations: classpath:/static/
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+  # DB
   datasource:
     url: jdbc:mysql://localhost:3306/mogakcote
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-  web:
-    resources:
-      static-locations: classpath:/static/
-  application:
-    name: mogak-codingtest
-  mail:
-    host: ${mail.host}
-    port: ${mail.port}
-    username: ${mail.username}
-    password: ${mail.password}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          starttls:
-            enable: true
-
+    hikari:
+      minimum-idle: 15
+      maximum-pool-size: 20
+      connection-timeout: 30000 # 30초
   jpa:
     open-in-view: true
     hibernate:
@@ -33,13 +28,10 @@ spring:
       format_sql: true
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
-
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
-
-server:
-  port: 8081
+  data:
+    redis:
+      repositories:
+        enabled: false
 
 logging:
   level:
@@ -47,9 +39,3 @@ logging:
     org.hibernate.type: trace
     org.springframework.web: debug
     com.ormi.mogakcote: debug
-
-
-  security:
-    user:
-      password:
-        secretKey: your_secret_key_here

@@ -31,8 +31,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	testImplementation 'org.springframework.security:spring-security-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// bucket4j
+	implementation 'com.bucket4j:bucket4j-redis:8.7.0'
 
 	// redis
 	implementation 'com.github.codemonstur:embedded-redis:1.4.3'
@@ -91,5 +95,3 @@ tasks.withType(JavaCompile) {
 clean.doLast {
 	file(querydslDir).deleteDir()
 }
-
-
