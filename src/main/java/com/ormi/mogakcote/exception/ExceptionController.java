@@ -10,10 +10,10 @@ public class ExceptionController {
 
 	@GetMapping("/error")
 	@ExceptionHandler(BusinessException.class)
-    public String handleBusinessException(BusinessException e, Model model) {
+	public String handleBusinessException(BusinessException e, Model model) {
 		model.addAttribute("status", e.getErrorType().getStatus().value());
-        model.addAttribute("error", e.getErrorType());
-        model.addAttribute("message", e.getMessage());
-        return "error";
-    }
+		model.addAttribute("error", e.getErrorType());
+		model.addAttribute("message", e.getMessage());
+		return "error";
+	}
 }
