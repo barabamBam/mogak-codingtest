@@ -5,6 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
+# name
 name: mogakcote ci/cd
 
 # trigger
@@ -60,7 +61,7 @@ jobs:
           # JWT 환경 변수 주입
           spring.security.jwt.issuer: ${{ secrets.JWT_ISSURE }}
           spring.security.jwt.secretKey: ${{ secrets.JWT_SECRETKEY }}
-          spring.security.user.password.secretKey: ${{ secrets.JWT_USER_SECRET_KEY }}
+          spring.security.jwt.user.password.secretKey: ${{ secrets.JWT_USER_SECRET_KEY }}
 
       # gradlew 파일 실행권한 설정
       - name: Grant execute permission for gradlew
@@ -82,7 +83,7 @@ jobs:
           SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           SPRING_SECURITY_JWT_ISSUER: ${{ secrets.JWT_ISSURE }}
           SPRING_SECURITY_JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
-          SPRING_SECURITY_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
+          SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
         run: ./gradlew clean --stacktrace --info build -x test
         shell: bash
 
@@ -119,20 +120,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
             if [ $(sudo docker ps -q) ]; then sudo docker stop $(sudo docker ps -q); fi
             if [ $(sudo docker ps -aq) ]; then sudo docker rm $(sudo docker ps -aq); fi
-            sudo docker run -d -p 8080:8080 \
-              -e SPRING_PROFILES_ACTIVE=${{ env.ACTIVE_PROFILE }} \
-              -e SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
-              -e SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
-              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
-              -e SPRING_CACHE_HOST=${{ secrets.REDIS_HOST }} \
-              -e SPRING_CACHE_PORT=${{ secrets.REDIS_PORT }} \
-              -e SPRING_MAIL_HOST=${{ secrets.MAIL_HOST }} \
-              -e SPRING_MAIL_PORT=${{ secrets.MAIL_PORT }} \
-              -e SPRING_MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
-              -e SPRING_MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
-              -e SPRING_SECURITY_JWT_ISSUER=${{ secrets.JWT_ISSURE }} \
-              -e SPRING_SECURITY_JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }} \
-              -e SPRING_SECURITY_USER_PASSWORD_SECRETKEY=${{ secrets.JWT_USER_SECRET_KEY }} \
-              --name ${{ env.SERVICE_NAME }}-${{env.IMAGE_TAG}} ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
+            sudo docker run -d -p 8080:8080 --name ${{ env.SERVICE_NAME }}-${{env.IMAGE_TAG}} ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:${{env.IMAGE_TAG}}
             sudo docker image prune -f
-          timeout: 30m
