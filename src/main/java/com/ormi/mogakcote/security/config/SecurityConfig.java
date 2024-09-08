@@ -82,6 +82,9 @@ public class SecurityConfig {
             // 인증/권한
             auth.requestMatchers("/api/*/auth/**").anonymous();
 
+            // 헬스 체크
+            auth.requestMatchers("/health").anonymous();
+
             // 마이페이지
             auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("USER");
             // 나머지 요청은 인증 필요
