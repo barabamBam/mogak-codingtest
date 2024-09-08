@@ -28,7 +28,10 @@ spring:
       format_sql: true
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
-
+  data:
+    redis:
+      repositories:
+        enabled: false
 
 logging:
   level:
