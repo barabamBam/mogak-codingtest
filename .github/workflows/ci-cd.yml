@@ -61,7 +61,7 @@ jobs:
           # JWT 환경 변수 주입
           spring.security.jwt.issuer: ${{ secrets.JWT_ISSURE }}
           spring.security.jwt.secretKey: ${{ secrets.JWT_SECRETKEY }}
-          spring.security.jwt.user.password.secretKey: ${{ secrets.JWT_USER_SECRET_KEY }}
+          spring.security.user.password.secretKey: ${{ secrets.JWT_USER_SECRET_KEY }}
 
       # gradlew 파일 실행권한 설정
       - name: Grant execute permission for gradlew
@@ -83,7 +83,7 @@ jobs:
           SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           SPRING_SECURITY_JWT_ISSUER: ${{ secrets.JWT_ISSURE }}
           SPRING_SECURITY_JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
-          SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
+          SPRING_SECURITY_USER_PASSWORD_SECRETKEY: ${{ secrets.JWT_USER_SECRET_KEY }}
         run: ./gradlew clean --stacktrace --info build -x test
         shell: bash
 
