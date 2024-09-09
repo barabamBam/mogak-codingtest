@@ -2,8 +2,10 @@ package com.ormi.mogakcote.exception;
 
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class BusinessException extends RuntimeException {
 
     private ErrorType errorType;

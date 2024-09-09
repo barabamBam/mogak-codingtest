@@ -13,6 +13,8 @@ import com.ormi.mogakcote.news.infrastructure.NewsRepository;
 import com.ormi.mogakcote.user.domain.Authority;
 import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -89,20 +91,14 @@ public class NewsService {
     }
 
     @Transactional(readOnly = true)
-    public List<NewsResponse> getUnViewedNews(AuthUser user) {
-        List<News> findNewsList = newsRepository.findUnviewedNewsByReceiverId(
-                user.getId());
-        return getNewsResponses(findNewsList);
+    public Page<NewsResponse> getAllNews(AuthUser user, Pageable pageable) {
+        Page<News> newsPage = newsRepository.findAllNewsByReceiverId(user.getId(), pageable);
+        return newsPage.map(news -> NewsResponse.toResponse(
+                news.getId(), news.getTitle(), news.getContent(),
+                news.getType(), news.isViewed(), news.getCreatedAt(),
+                news.isHasRelatedContent(), news.getRelatedContentId()
+        ));
     }
-
-    @Transactional(readOnly = true)
-    public List<NewsResponse> getViewedNews(AuthUser user) {
-        List<News> findNewsList = newsRepository.findViewedNewsByReceiverId(
-                user.getId());
-
-        return getNewsResponses(findNewsList);
-    }
-
 
     private User getUserOrThrowIfNotExist(Long userId) {
         return userRepository.findById(userId).orElseThrow(
