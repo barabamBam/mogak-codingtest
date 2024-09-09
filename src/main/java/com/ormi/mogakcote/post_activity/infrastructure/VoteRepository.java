@@ -1,6 +1,6 @@
-package com.ormi.mogakcote.profile.infrastructure;
+package com.ormi.mogakcote.post_activity.infrastructure;
 
-import com.ormi.mogakcote.profile.vote.Vote;
+import com.ormi.mogakcote.post_activity.domain.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
