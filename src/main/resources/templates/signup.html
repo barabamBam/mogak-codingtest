@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .feedback {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 14px;
+        }
+        .valid {
+            color: green;
+        }
+        .invalid {
+            color: red;
+        }
+
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .feedback {
+            position: absolute;
+            left: 100%; /* 입력란 바로 오른쪽에 위치 */
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px; /* 입력란과의 간격 */
+            font-size: 14px;
+            white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0E2439;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+        form {
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .feedback {
+            font-size: 12px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #F44336;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #7E57C2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #673AB7;
+        }
+        .password-mismatch {
+            border: 1px solid #F44336;
+        }
+    </style>
+</head>
+<body>
+<form id="signupForm">
+    <h2>회원가입</h2>
+    <div class="input-group">
+        <label for="name">이름</label>
+        <input type="text" id="name" required>
+    </div>
+    <div class="input-group">
+        <label for="nickname">닉네임</label>
+        <input type="text" id="nickname" required>
+        <div id="nicknameFeedback" class="feedback"></div>
+    </div>
+    <div class="input-group">
+        <label for="email">이메일</label>
+        <input type="email" id="email" required>
+        <div id="emailFeedback" class="feedback"></div>
+    </div>
+    <div class="input-group">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" required>
+        <div id="passwordFeedback" class="feedback"></div>
+    </div>
+    <div class="input-group">
+        <label for="confirmPassword">비밀번호 확인</label>
+        <input type="password" id="confirmPassword" required>
+        <div id="confirmPasswordFeedback" class="feedback"></div>
+    </div>
+    <button type="submit">회원가입</button>
+</form>
+
+
+<script th:inline="javascript">
+    const form = document.getElementById('signupForm');
+    const nicknameInput = document.getElementById('nickname');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    function setFeedback(elementId, message, isValid) {
+        const feedback = document.getElementById(elementId);
+        feedback.textContent = message;
+        feedback.className = `feedback ${isValid ? 'valid' : 'invalid'}`;
+        console.log(`Feedback set for ${elementId}: ${message} (${isValid ? 'valid' : 'invalid'})`);
+    }
+
+    function validateEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    function validatePassword(password) {
+        const re = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/;
+        return re.test(password);
+    }
+
+    nicknameInput.addEventListener('blur', async () => {
+        try {
+            const response = await axios.get(`/api/v1/users/check-nickname?username=${nicknameInput.value}`);
+            console.log('Nickname check response:', response.data);
+            const isAvailable = response.data.data;
+            setFeedback('nicknameFeedback',
+                isAvailable ? '사용 가능한 닉네임입니다.' : '이미 사용 중인 닉네임입니다.',
+                isAvailable);
+        } catch (error) {
+            console.error('Nickname check error:', error);
+            setFeedback('nicknameFeedback', '닉네임 확인 중 오류가 발생했습니다.', false);
+        }
+    });
+
+    emailInput.addEventListener('blur', async () => {
+        if (!validateEmail(emailInput.value)) {
+            setFeedback('emailFeedback', '올바른 이메일 형식이 아닙니다.', false);
+            return;
+        }
+        try {
+            const response = await axios.get(`/api/v1/users/check-email?email=${emailInput.value}`);
+            console.log('Email check response:', response.data);
+            const isAvailable = response.data.data;
+            setFeedback('emailFeedback',
+                isAvailable ? '사용 가능한 이메일입니다.' : '이미 사용 중인 이메일입니다.',
+                isAvailable);
+        } catch (error) {
+            console.error('Email check error:', error);
+            setFeedback('emailFeedback', '이메일 확인 중 오류가 발생했습니다.', false);
+        }
+    });
+
+    passwordInput.addEventListener('input', () => {
+        const isValid = validatePassword(passwordInput.value);
+        setFeedback('passwordFeedback',
+            isValid ? '사용 가능한 비밀번호입니다.' : '8자 이상, 소문자+숫자만 가능합니다.',
+            isValid);
+    });
+
+    confirmPasswordInput.addEventListener('input', () => {
+        const isValid = passwordInput.value === confirmPasswordInput.value;
+        setFeedback('confirmPasswordFeedback',
+            isValid ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.',
+            isValid);
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await axios.post('/api/v1/users/register', data);
+            console.log('Registration response:', response.data);
+            alert('회원가입이 완료되었습니다.');
+            window.location.href = '/login';  // 로그인 페이지로 리다이렉트
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,6 +1,10 @@
 spring:
-  application:
-    name: mogak-codingtest
+
+  # DB
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   cache:
     type: redis
@@ -15,19 +19,9 @@ spring:
       refresh-token-expiration-second: 10080
     user:
       password:
-        secretKey: ${SPRING_SECURITY_JWT_USER_PASSWORD_SECRETKEY}
+        secretKey: ${SPRING_SECURITY_USER_PASSWORD_SECRETKEY}
         reset:
           registerTimeoutSecond: 1800
-
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    hikari:
-      minimum-idle: 15
-      maximum-pool-size: 20
-      connection-timeout: 30000 # 30초
 
   mail:
     host: ${SPRING_MAIL_HOST}

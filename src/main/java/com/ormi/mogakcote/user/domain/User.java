@@ -43,12 +43,17 @@ public class User {
         this.authority = authority;
     }
 
-    public void updateProfile(String name, String nickname) {
+    public void updateProfile(String name, String nickname, String email) {
         this.name = name;
         this.nickname = nickname;
+        this.email = email;
     }
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+  
+    public void updateEmail(String email) {
+        this.email = email;
     }
 }
