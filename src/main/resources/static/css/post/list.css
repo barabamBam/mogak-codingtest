@@ -1,0 +1,346 @@
+* {
+    margin: 0;
+
+    font-family: 'Actor';
+    font-style: normal;
+    font-weight: 400;
+}
+
+body {
+    background-color: #0E2439;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 80px 121px;
+    cursor: default;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul, li {
+    list-style: none;
+}
+#content-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    flex-direction: column;
+}
+
+#notice-container {
+    border-radius: 4px;
+    background-color: rgba(31, 54, 77, 1);
+    margin-top: 95px;
+    color: rgba(255, 255, 255, 1);
+    padding: 30px 45px;
+    font: 400 26px Actor, sans-serif;
+}
+
+.notice-container-title {
+    padding-bottom: 10px;
+    font-size: 26px;
+}
+
+.notice-item {
+    padding-top: 15px;
+}
+
+.notice-item-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.create-post-btn {
+    border: 0;
+    border-radius: 8px;
+    background-color: rgba(31, 54, 77, 1);
+    color: rgba(255, 255, 255, 1);
+
+    width: max-content;
+    margin-top: 53px;
+    margin-bottom: 3px;
+    padding: 10px 22px;
+    align-self: flex-end;
+
+    font: 400 16px Actor, sans-serif;
+}
+
+.post-search {
+    border-radius: 4px;
+    background-color: rgba(31, 54, 77, 1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: rgba(255, 255, 255, 1);
+    padding: 39px;
+    font: 400 26px Actor, sans-serif;
+}
+
+.post-search > label {
+    width: auto;
+    height: auto;
+    padding-top: 4px;
+}
+
+.post-search > label:after {
+    width: 26px;
+    height: 26px;
+    display: block;
+    content: '';
+    background-image: url("https://cdn.builder.io/api/v1/image/assets/TEMP/0ddf0091d58c63e18ea9b6fc91e13d5c3e500eec0b47c801e621c4d216ab1512?placeholderIfAbsent=true&apiKey=329d762b486c4e32a96c2f2a6dcade3d");
+}
+
+.post-search-keyword {
+    background-color: transparent;
+    border: none;
+    flex-grow: 1;
+    flex-basis: auto;
+
+    font-size: 26px;
+    line-height: 31px;
+    display: flex;
+    align-items: center;
+
+    color: #FFFFFF;
+}
+
+.post-search-keyword:focus {
+    outline: none;
+}
+
+#post-selector {
+    display: flex;
+    margin-top: 64px;
+    width: 100%;
+    height: 45px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selector-options {
+    display: flex;
+    color: rgba(255, 255, 255, 1);
+    text-align: center;
+    font: 400 16px Actor, sans-serif;
+}
+
+.label,
+.selector-option,
+.sort-option {
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 1);
+    text-align: center;
+    font: 400 16px Actor, sans-serif;
+    border: none;
+
+    margin-right: 20px;
+    background-color: rgba(31, 54, 77, 1);
+    padding: 11px 10px;
+    box-sizing: border-box;
+    width: 145px;
+
+    cursor: pointer;
+}
+
+.label {
+    background: url("../../img/select-arrow.svg") 10% rgba(31, 54, 77, 1) no-repeat;
+    padding: 11px 10px 11px 25px;
+}
+
+.select-sortBy label,
+.sort-option {
+    margin-right: 0;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.selector-option,
+.sort-option {
+    z-index: 10;
+    position: absolute;
+    margin-top: 3px;
+}
+
+.selector-option li,
+.sort-option li {
+    text-align: center;
+    padding: 7px;
+    cursor: pointer;
+}
+
+.pagination-sort {
+    display: flex;
+    gap: 17px;
+    height: 45px;
+    justify-content: space-between;
+}
+
+.page-container {
+    font-size: 15px;
+    color: #63809C;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.page-container p {
+    padding-right: 9px;
+}
+
+.page-container a {
+    background-color: #4F7092;
+    width: fit-content;
+    height: fit-content;
+}
+
+.arrow {
+    display: block;
+    width: 38px;
+    height: 38px;
+    background: url("../../img/page-arrow-active.svg") 50% no-repeat;
+}
+
+.page_prev {
+    margin-right: 2px;
+}
+
+.page_next .arrow {
+    transform: rotate(180deg);
+}
+
+.page-container .disabled {
+    background-color: #1F364D;
+    cursor: initial;
+    pointer-events: none;
+}
+
+.disabled .arrow {
+    background: url("../../img/page-arrow-disabled.svg") 50% no-repeat;
+}
+
+main:before {
+    width: 100%;
+    border-radius: 9999px;
+    background-color: #1F364D;
+    margin-top: 12px;
+    height: 4px;
+    display: block;
+    content: '';
+}
+
+#post-list {
+    display: flex;
+    margin-top: 24px;
+    align-items: center;
+    gap: 24px;
+    color: rgba(79, 112, 146, 1);
+    justify-content: start;
+    flex-wrap: wrap;
+    font: 400 17px Actor, sans-serif;
+}
+
+#no-post {
+    padding-top: 30px;
+    width: 100%;
+    font-size: 27px;
+    text-align: center;
+
+}
+
+.post-item {
+    align-self: stretch;
+    display: flex;
+    min-width: 240px;
+    flex-direction: column;
+    align-items: start;
+    flex-grow: 1;
+    width: 43%;
+    padding: 21px 28px 21px 11px;
+}
+
+.post-item a {
+    color: #4F7092;
+}
+
+.post-title {
+    color: rgba(255, 255, 255, 1);
+    font-size: 18px;
+}
+
+.post-author {
+    margin-top: 6px;
+}
+
+.post-date {
+    margin-top: 6px;
+}
+
+.notice-title,
+.notice-date,
+.post-content {
+    color: rgba(156, 179, 201, 1);
+    line-height: 24px;
+    align-self: stretch;
+    margin-top: 7px;
+    max-width: 100%;
+}
+
+.post-content {
+    height: 100px;
+}
+
+.post-algorithm {
+    display: flex;
+    margin-top: 9px;
+    align-items: start;
+    gap: 7px;
+}
+
+.post-algorithm-hashtag {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-count {
+    align-self: start;
+    margin-top: 10px;
+}
+
+@media (max-width: 991px) {
+    body {
+        padding: 0 20px 100px;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+    }
+
+    #notice-container {
+        max-width: 100%;
+        margin-top: 40px;
+    }
+
+    #post-selector {
+        max-width: 100%;
+        margin-top: 40px;
+    }
+
+    .post-item {
+        max-width: 100%;
+        padding-right: 20px;
+    }
+
+}

@@ -1,10 +1,9 @@
 package com.ormi.mogakcote.post.presentation;
 
+
 import com.ormi.mogakcote.exception.rate_limit.DailyRateLimitExceededException;
 import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,6 @@ import com.ormi.mogakcote.post.dto.request.PostRequest;
 import com.ormi.mogakcote.notice.dto.response.NoticeResponse;
 import com.ormi.mogakcote.post.application.PostService;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
-import com.ormi.mogakcote.post.dto.request.SortType;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
@@ -47,27 +45,15 @@ public class PostController {
 
   @GetMapping("/list")
   public ModelAndView mainPosts(
-      AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest, Model model) {
+      @RequestBody(required = false) AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest, Model model) {
     List<NoticeResponse> noticeResponse = noticeService.getNoticeLatestFive();
     Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
 
     model.addAttribute("notices", noticeResponse);
     model.addAttribute("posts", postResponse);
     model.addAttribute("postSearchRequest", postSearchRequest);
-    model.addAttribute("SortType", SortType.values());
-
-    mainPostsResponse(noticeResponse, postResponse);
 
     return new ModelAndView("post/list");
-  }
-
-  public ResponseEntity<?> mainPostsResponse(List<NoticeResponse> noticeResponse, Page<PostSearchResponse> postResponse) {
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("notice", noticeResponse);
-    map.put("postResponse", postResponse);
-
-    return ResponseDto.ok(map);
   }
 
   @PostMapping

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title class="postTitle">Main Page</title>
+    <link rel="stylesheet" th:href="@{/css/post/list.css}">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+<div id="content-wrapper">
+    <section id="notice-container">
+        <h3 class="notice-container-title">공지사항</h3>
+        <article class="notice-item" th:each="notice: ${notices}">
+            <a class="notice-item-link" th:href="@{|/api/v1/notice/${notice.noticeId}|}">
+                <p class="notice-title" th:text="${notice.title}">title</p>
+                <p class="notice-date" th:text="${notice.createdAt.toLocalDate}">date</p>
+            </a>
+        </article>
+    </section>
+    <a th:href="@{|/api/v1/post|}" class="create-post-btn">게시글 작성</a>
+    <form class="post-search" th:action="@{/api/v1/post/list}" method="get">
+        <label for="search-input"></label>
+        <input class="post-search-keyword" id="search-input" type="text" name="keyword" placeholder="검색"
+               th:value="${postSearchRequest.keyword != null} ? ${postSearchRequest.keyword}">
+    </form>
+    <div id="post-selector">
+        <div class="selector-options">
+            <div class="select-algorithm">
+                <button class="label"
+                        th:text="${postSearchRequest.algorithm == null} ?
+                        '알고리즘' : ${postSearchRequest.algorithm}">알고리즘
+                </button>
+                <ul class="selector-option hidden" id="algorithm">
+                    <li value="null">선택</li>
+                    <li value="Bellman-ford">Bellman-ford</li>
+                    <li value="BFS">BFS</li>
+                    <li value="DFS">DFS</li>
+                    <li value="BruteForce">BruteForce</li>
+                    <li value="DP">DP</li>
+                    <li value="Dijkstra's">Dijkstra's</li>
+                    <li value="Graph">Graph</li>
+                    <li value="Greedy">Greedy</li>
+                    <li value="Hash">Hash</li>
+                    <li value="Heap">Heap</li>
+                    <li value="Stack">Stack</li>
+                    <li value="Queue">Queue</li>
+                    <li value="String">String</li>
+                    <li value="Sort">Sort</li>
+                    <li value="SQL">SQL</li>
+                    <li value="Tree">Tree</li>
+                    <li value="Recursion">Recursion</li>
+                </ul>
+            </div>
+            <div class="select-language">
+                <button class="label"
+                        th:text="${postSearchRequest.language == null} ?
+                        '작성 언어' : ${postSearchRequest.language}">작성 언어
+                </button>
+                <ul class="selector-option hidden" id="language">
+                    <li value="null">선택</li>
+                    <li value="Java">Java</li>
+                    <li value="Python">Python</li>
+                    <li value="C">C</li>
+                    <li value="C++">C++</li>
+                    <li value="C#">C#</li>
+                    <li value="Go">Go</li>
+                    <li value="JavaScript">Javascript</li>
+                    <li value="Kotlin">Kotlin</li>
+                    <li value="Ruby">Ruby</li>
+                    <li value="Swift">Swift</li>
+                    <li value="SQL">SQL</li>
+                </ul>
+            </div>
+            <div class="select-checkSuccess">
+                <button class="label"
+                        th:text="${postSearchRequest.checkSuccess} ? '성공' : '무관'">
+                    코드 결과
+                </button>
+                <ul class="selector-option hidden" id="checkSuccess">
+                    <li value="null">선택</li>
+                    <li value="false">무관</li>
+                    <li value="true">성공</li>
+                </ul>
+            </div>
+        </div>
+        <div class="pagination-sort">
+            <!-- ${posts.totalPages <= 1 ? (posts.number / 10) * 10 + 1 : -->
+            <div class="page-container" th:data-page="${posts.number}">
+                <p th:text="${((posts.number / 10) * 10 + 1) + ' - ' + ((posts.number / 10) * 10 + 10)}"></p>
+                <a th:href="${posts.hasPrevious() ? '?page='+posts.number : null}"
+                   class="page_prev" th:classappend="${!posts.hasPrevious()} ? disabled : null ">
+                    <span class="arrow"></span>
+                </a>
+                <a th:href="${posts.hasNext() ? '?page='+(posts.number+2): null}"
+                   class="page_next" th:classappend="${!posts.hasNext()} ? disabled : null ">
+                    <span class="arrow"></span>
+                </a>
+            </div>
+            <div class="select-sortBy">
+                <button class="label" th:if="${postSearchRequest.sortBy == 'OLDEST'}">오래된 순</button>
+                <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_VIEWED'}">조회수 순</button>
+                <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_LIKED'}">추천 순</button>
+                <button class="label" th:if="${postSearchRequest.sortBy == null || postSearchRequest.sortBy == 'LATEST'}">최신 순</button>
+                <ul class="sort-option hidden" id="sortBy">
+                    <li value="LATEST">최신 순</li>
+                    <li value="OLDEST">오래된 순</li>
+                    <li value="MOST_VIEWED">조회수 순</li>
+                    <li value="MOST_LIKED">추천 순</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <main id="post-list">
+        <p th:if="${posts.isEmpty()}" id="no-post">검색 조건과 일치하는 게시글이 없습니다.</p>
+        <article class="post-item" th:each="post: ${posts}">
+            <a th:href="@{|/api/v1/post/${post.id}|}">
+                <h2 class="post-title" th:text="${post.title}">title</h2>
+                <!-- user nickname 받아오기 -->
+                <p class="post-author" th:text="${post.nickname}">nickname</p>
+                <p class="post-date" th:text="${post.createdAt.toLocalDate()}">date</p>
+                <p class="post-content" th:text="${#strings.abbreviate(post.content,300)}">content</p>
+                <!-- 문제 내용 받아오기 -->
+                <div class="post-algorithm">
+                    <span class="post-algorithm-hashtag">#Algorithm</span>
+                    <span class="post-algorithm-hashtag" th:each="algorithm: ${post.algorithms}"
+                          th:if="${algorithm != null}" th:text="'#'+${algorithm}"></span>
+                </div>
+                <p class="view-count" th:text="${post.viewCnt}+' views'">29 views</p>
+            </a>
+        </article>
+    </main>
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const labels = document.querySelectorAll(".label");
+    const pageNum = document.querySelector(".page-container").dataset.page;
+    let prevButton = document.querySelector(".page_prev");
+    let nextButton = document.querySelector(".page_next");
+
+    document.querySelector("form").action += location.search;
+
+    labels.forEach(label => {
+        label.addEventListener('click', function () {
+            const select = label.nextElementSibling;
+            select.classList.toggle("hidden");
+            select.childNodes.forEach(option => {
+                option.addEventListener('click', function () {
+                    const key = select.id;
+                    const value = option.getAttribute('value');
+
+                    updateQueryParam(key, value);
+
+                });
+            })
+        });
+    });
+
+    const existPageString = location.search.includes("page");
+
+    if (!existPageString) {
+        prevButton.href = location.search;
+
+        if (location.search.length > 0) prevButton.href += "&page=" + parseInt(pageNum);
+        else prevButton.href += "?page=" + parseInt(pageNum);
+
+    } else {
+        urlParams.set("page", pageNum);
+        prevButton.href = window.location.pathname + '?'+ urlParams.toString();
+    }
+
+    if (!existPageString) {
+        nextButton.href = location.search;
+
+        if (location.search.length > 0) nextButton.href += "&page=" + (parseInt(pageNum)+2);
+        else nextButton.href += "?page=" + (parseInt(pageNum)+2);
+
+    } else {
+        urlParams.set("page", (parseInt(pageNum)+2).toString())
+        nextButton.href = window.location.pathname + '?'+ urlParams.toString();
+    }
+
+    if(!location.search.includes("checkSuccess"))
+        document.querySelector(".select-checkSuccess .label").textContent = '코드 결과';
+
+    // 현재 URL에서 쿼리 파라미터를 추출하고 관리하기 위한 함수
+    function updateQueryParam(key, value) {
+
+        // 기존 쿼리 파라미터에서 동일한 키가 있으면 값을 업데이트, 없으면 추가
+        if (value && value !== "null") {
+            urlParams.set(key, value);
+        } else {
+            urlParams.delete(key);
+        }
+        urlParams.delete("page");
+
+        // 쿼리 파라미터를 업데이트한 URL로 변경
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        location.href = urlParams.toString() !== '' ? newUrl : window.location.pathname;
+
+    }
+
+
+</script>
+</body>

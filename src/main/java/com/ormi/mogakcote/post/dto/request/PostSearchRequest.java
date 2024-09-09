@@ -17,6 +17,6 @@ public class PostSearchRequest {
 	private String language;
 	@JsonProperty("checkSuccess")
 	private boolean checkSuccess;
-	private SortType sortBy = SortType.LATEST;
+	private String sortBy = "LATEST";
 	private Integer page = 1;
 }
