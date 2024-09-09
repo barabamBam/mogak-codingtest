@@ -135,6 +135,9 @@ public class JwtService {
     @Nullable
     public Claims validateAccessToken(String accessToken) {
         try {
+            if (isUsedAccessToken(accessToken)) {
+                throw new AuthInvalidException(ErrorType.USED_ACCESS_TOKEN_ERROR);
+            }
             return secretParser.parseSignedClaims(accessToken).getPayload();
         } catch (JwtException e) {
             return null;

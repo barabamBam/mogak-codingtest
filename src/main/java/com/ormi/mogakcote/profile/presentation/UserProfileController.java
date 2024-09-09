@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/profile")
 public class UserProfileController {
 
-    private UserProfileService userProfileService;
+    private final UserProfileService userProfileService;
 
     @GetMapping("/{nickname}")
     public ResponseEntity<?> getUserProfile(@PathVariable String nickname) {

@@ -23,10 +23,10 @@ spring:
         reset:
           registerTimeoutSecond: 1800
   mail:
-    host: ${mail.host}
-    port: ${mail.port}
-    username: ${mail.username}
-    password: ${mail.password}
+    host:
+    port:
+    username:
+    password:
     properties:
       mail:
         smtp:
