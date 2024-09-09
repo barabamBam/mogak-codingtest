@@ -57,7 +57,7 @@ public class PostController {
   }
 
   @PostMapping
-  @RateLimit(key = "'createPost:' + #user.id", limit = 1, period = 24 * 60 * 60,
+  @RateLimit(key = "'createPostWithReport:' + #user.id", limit = 5, period = 24 * 60 * 60,
           exceptionClass = DailyRateLimitExceededException.class)
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
         var response = reportCreationOrchestrator.createPostWithReportAndComment(
@@ -66,8 +66,10 @@ public class PostController {
   }
 
   @GetMapping("/{postId}")
-  public ResponseEntity<PostResponse> getPost(@PathVariable(name = "postId") Long postId) {
-    PostResponse post = postService.getPost(postId);
+  public ResponseEntity<PostResponse> getPost(
+          AuthUser user,
+          @PathVariable(name = "postId") Long postId) {
+    PostResponse post = postService.getPost(user, postId);
     return ResponseEntity.ok(post);
   }
 
