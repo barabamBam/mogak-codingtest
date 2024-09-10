@@ -1,0 +1,35 @@
+spring:
+
+  # DB
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  cache:
+    type: redis
+    host: localhost
+    port: 6379
+
+  security:
+    jwt:
+      issuer: "http://localhost:8081"
+      secretKey: "c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5c2VjcmV0S2V5"
+      access-token-expiration-second: 1800
+      refresh-token-expiration-second: 10080
+    user:
+      password:
+        secretKey: "secretKeysecretKeysecretKeysecretKey"
+        reset:
+          registerTimeoutSecond: 1800
+logging:
+  level:
+    sql: debug
