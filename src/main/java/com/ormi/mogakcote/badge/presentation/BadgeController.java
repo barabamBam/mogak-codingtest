@@ -3,7 +3,6 @@ package com.ormi.mogakcote.badge.presentation;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +33,16 @@ public class BadgeController {
 	public ResponseEntity<?> getBadges()
 	{
 		List<BadgeResponse> response = badgeService.getBadges();
-
 		return ResponseDto.ok(response);
+
 	}
+
 
 	@GetMapping(path="/{badgeId}")
 	public ResponseEntity<?> getBadgeById(
-		@PathVariable("badgeId") Long badgeId)
+		@PathVariable("badgeId") Long badgeId, Model model)
 	{
 		BadgeResponse response = badgeService.getBadgeById(badgeId);
-
 		return ResponseDto.ok(response);
 	}
 

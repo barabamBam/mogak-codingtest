@@ -5,8 +5,11 @@ import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.news.application.NewsService;
 import com.ormi.mogakcote.news.dto.request.NewsRequest;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,24 +77,14 @@ public class NewsController {
     }
 
     /**
-     * 확인되지 않은 알림 목록
+     * 전체 알림 목록
      */
-    @GetMapping(path = "/unviewed-list")
-    public ResponseEntity<?> getUnViewedNews(
-            AuthUser user
+    @GetMapping(path = "/list")
+    public ResponseEntity<?> getAllNews(
+            AuthUser user,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        var responses = newsService.getUnViewedNews(user);
-        return ResponseDto.ok(responses);
-    }
-
-    /**
-     * 확인된 알림 목록
-     */
-    @GetMapping(path = "/viewed-list")
-    public ResponseEntity<?> getViewedNews(
-            AuthUser user
-    ) {
-        var responses = newsService.getViewedNews(user);
+        var responses = newsService.getAllNews(user, pageable);
         return ResponseDto.ok(responses);
     }
 

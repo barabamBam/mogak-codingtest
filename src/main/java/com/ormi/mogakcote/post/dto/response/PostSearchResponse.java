@@ -15,6 +15,7 @@ public class PostSearchResponse {
 	private String title;
 	private String content;
 	private List<String> algorithms;
+	private String nickname;
 	private Integer viewCnt;
 	private LocalDateTime createdAt;
 }
