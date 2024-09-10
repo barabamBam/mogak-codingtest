@@ -24,42 +24,30 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(path="/api/v1/admin")
+@RequestMapping(path="/api/v1/admin/badge")
 @RequiredArgsConstructor
 public class BadgeController {
 
 	private final BadgeService badgeService;
 
-	@GetMapping(path="/badge/list")
-	public String getBadges(Model model)
+	@GetMapping
+	public ResponseEntity<?> getBadges()
 	{
 		List<BadgeResponse> response = badgeService.getBadges();
-		model.addAttribute("badges", response);
 
-		// TODO: 관리자페이지
-		return "";
-	}
-
-
-	@GetMapping(path="/badge/{badgeId}")
-	public String getBadgeById(
-		@PathVariable("badgeId") Long badgeId, Model model)
-	{
-		BadgeResponse response = badgeService.getBadgeById(badgeId);
-		model.addAttribute("badge", response);
-
-		getBadgeByIdResponse(response);
-
-		// TODO: 관리자페이지
-		return "";
-	}
-
-	public ResponseEntity<?> getBadgeByIdResponse(BadgeResponse response)
-	{
 		return ResponseDto.ok(response);
 	}
 
-	@PostMapping(path="/createBadge")
+	@GetMapping(path="/{badgeId}")
+	public ResponseEntity<?> getBadgeById(
+		@PathVariable("badgeId") Long badgeId)
+	{
+		BadgeResponse response = badgeService.getBadgeById(badgeId);
+
+		return ResponseDto.ok(response);
+	}
+
+	@PostMapping
 	public ResponseEntity<?> createBadge(
 		@RequestBody @Valid BadgeRequest badgeRequest)
 	{
@@ -67,7 +55,7 @@ public class BadgeController {
 		return ResponseDto.created(response);
 	}
 
-	@PutMapping(path="/updateBadge/{badgeId}")
+	@PutMapping(path="/{badgeId}")
 	public ResponseEntity<?> updateBadge(
 		@PathVariable("badgeId") Long badgeId,
 		@RequestBody @Valid BadgeRequest badgeRequest)
@@ -76,7 +64,7 @@ public class BadgeController {
 		return ResponseDto.ok(response);
 	}
 
-	@DeleteMapping(path="/deleteBadge/{badgeId}")
+	@DeleteMapping(path="/{badgeId}")
 	public ResponseEntity<?> deleteBadge(
 		@PathVariable("badgeId") Long badgeId)
 	{
