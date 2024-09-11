@@ -118,8 +118,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Activity 테이블의 내용을 변경하기 위한 메서드 -> 댓글 생성, 게시글 생성 시에 작동
+     * @param id 게시글 작성자의 아이디
+     * @param act 작동할 내용
+     */
     public void updateActivity(Long id, String act) {
-        User user = getById(id);
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+
         switch(act){
             case "increaseComment":
                 user.getActivity().increaseCommentCount();
@@ -127,18 +134,43 @@ public class UserService {
             case "decreaseComment":
                 user.getActivity().decreaseCommentCount();
                 break;
-            case "increaseDay":
-                user.getActivity().increaseDayCount();
-                break;
             case "resetDay":
                 user.getActivity().resetDayCount();
+                break;
         }
         userRepository.save(user);
     }
 
+    /**
+     * 게시글 생성 시 dayCount 작동을 위한 메서드
+     * @param id 게시글 작성자의 아이디
+     * @param act 작동할 내용
+     * @param prevPostDate 바로 직전에 작성한 게시글의 작성 날짜
+     * @param createPostDate 지금 작성한 게시글의 작성 날짜
+     */
+    public void updateActivity(Long id, String act,
+        LocalDateTime prevPostDate, LocalDateTime createPostDate) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+
+        if (act.equals("increaseDay")) {
+            user.getActivity()
+                .increaseDayCount(prevPostDate.toLocalDate(), createPostDate.toLocalDate());
+        }
+        userRepository.save(user);
+    }
+
+    /**
+     * 게시글 삭제 시 dayCount 작동을 위한 메서드
+     * @param id 게시글 작성자의 아이디
+     * @param act 작동할 내용
+     * @param time 삭제되는 게시글의 날짜를 의미
+     */
     public void updateActivity(Long id, String act, LocalDateTime time) {
-        User user = getById(id);
-		if (act.equals("decreaseDay")) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+
+        if (act.equals("decreaseDay")) {
 			user.getActivity().decreaseDayCount(time);
 		}
         userRepository.save(user);
@@ -147,7 +179,9 @@ public class UserService {
 
 
     public UserAuthResponse registerUserAuth(Long id) {
-        User findUser = getById(id);
+        User findUser = userRepository.findById(id)
+            .orElseThrow(() -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR));
+
         if (findUser.getAuthority() == BANNED){
             findUser.updateAuth(USER);
         } else if (findUser.getAuthority() == USER) {
