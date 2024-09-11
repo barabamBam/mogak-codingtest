@@ -5,7 +5,7 @@
     fetchSystemComment(postId);
   }
 
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('access_token');
 
   function fetchSystemComment(postId) {
     const url = `http://localhost:8080/api/v1/posts/${postId}/system-comments`;
