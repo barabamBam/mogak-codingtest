@@ -1,13 +1,16 @@
-package com.ormi.mogakcote.profile.application;
+package com.ormi.mogakcote.post_activity.application;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.badge.application.UserBadgeService;
+import com.ormi.mogakcote.exception.dto.ErrorType;
+import com.ormi.mogakcote.exception.user.UserInvalidException;
 import com.ormi.mogakcote.post.domain.Post;
 
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
-import com.ormi.mogakcote.profile.infrastructure.VoteRepository;
-import com.ormi.mogakcote.profile.vote.Vote;
-import com.ormi.mogakcote.user.application.UserService;
+import com.ormi.mogakcote.post_activity.domain.Vote;
+import com.ormi.mogakcote.post_activity.dto.response.VoteResponse;
+import com.ormi.mogakcote.post_activity.infrastructure.VoteRepository;
+import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,25 +31,25 @@ public class VoteService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Vote createVote(AuthUser user, Long postId) {
-        // 먼저 Post가 존재하는지 확인
+    public VoteResponse clickVote(AuthUser user, Long postId) {
+        // Post 가 존재하는지 확인
         Post post = checkExistsPost(postId);
 
-        Vote vote = new Vote();
-        vote.setUserId(user.getId());
-        vote.setPostId(postId);
+        // user 가 존재하는지 확인
+        User findUser = getUserOrThrowIfNotExist(user);
 
-        post.incrementVoteCount();
-        postRepository.save(post);
+        // 이전 vote 여부에 따라 vote 추가/취소
+        if (!voteRepository.existsByUserIdAndPostId(findUser.getId(), postId)) {
+            buildAndSaveVote(postId, findUser);
+            post.incrementVoteCount();
+        } else {
+            voteRepository.deleteByUserIdAndPostId(findUser.getId(), postId);
+            post.decrementVoteCount();
+        }
 
         userBadgeService.makeUserBadge(user, "VOTE");
 
-        return voteRepository.save(vote);
-    }
-
-    private Post checkExistsPost(Long postId) {
-        return postRepository.findById(postId)
-            .orElseThrow(() -> new RuntimeException("Post not found"));
+        return VoteResponse.toResponse(post.getVoteCnt());
     }
 
     @Transactional(readOnly = true)
@@ -84,5 +87,24 @@ public class VoteService {
     @Transactional(readOnly = true)
     public long countVotesByPostId(Long postId) {
         return voteRepository.countByPostId(postId);
+    }
+
+    private User getUserOrThrowIfNotExist(AuthUser user) {
+        return userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR)
+        );
+    }
+
+    private Post checkExistsPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+    }
+
+    private void buildAndSaveVote(Long postId, User findUser) {
+        Vote vote = Vote.builder()
+                .postId(postId)
+                .userId(findUser.getId())
+                .build();
+        voteRepository.save(vote);
     }
 }

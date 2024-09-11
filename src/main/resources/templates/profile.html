@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/header.css">
   <title>마이프로필</title>
   <style>
     body {
@@ -11,12 +13,12 @@
       margin: 0;
       padding: 20px;
     }
+
     .container {
-      display: flex;
-      max-width: 1400px;
-      margin: auto;
-      gap: 30px;
+      max-width: 800px;
+      margin: 0 auto;
     }
+
     /* 프로필 사이드바 스타일 수정 */
     .profile-sidebar {
       width: 250px;
@@ -25,49 +27,45 @@
       border-radius: 10px;
       height: fit-content;
     }
+
     .profile-sidebar h1 {
       margin: 0 0 20px 0;
       font-size: 24px;
       color: white;
       text-align: left;
     }
+
     .profile-info p {
       margin: 10px 0;
       font-size: 14px;
       color: #a0a0a0;
     }
-    .edit-profile-btn {
-      background-color: #7289da;
-      color: white;
-      border: none;
-      padding: 10px 0;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-    /* 기존 스타일 유지 */
+
     .main-content {
       flex-grow: 1;
     }
+
     .section {
       margin-bottom: 30px;
     }
+
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
+
     .section-title {
       font-size: 20px;
       font-weight: bold;
     }
+
     .scroll-buttons {
       display: flex;
       gap: 10px;
     }
+
     .scroll-button {
       background-color: #2c3e50;
       border: none;
@@ -81,9 +79,11 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     .scroll-button:hover {
       background-color: #34495e;
     }
+
     .cards-container {
       display: flex;
       overflow-x: auto;
@@ -92,54 +92,18 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
+
     .cards-container::-webkit-scrollbar {
       display: none;
     }
+
     .card {
       background-color: #1e2a38;
       border-radius: 10px;
       padding: 15px;
       min-width: 250px;
     }
-    .notification-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .notification-icon {
-      width: 40px;
-      height: 40px;
-      background-color: #e0e0ff;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .post-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 5px;
-    }
-    .post-card h3 {
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    .post-info {
-      display: flex;
-      justify-content: space-between;
-      color: #7f8c8d;
-      font-size: 0.9em;
-    }
-    .tag {
-      background-color: #3498db;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.8em;
-      display: inline-block;
-      margin-bottom: 5px;
-    }
+
     .edit-profile-button {
       display: inline-block;
       padding: 10px 15px;
@@ -149,6 +113,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     .edit-profile-button {
       background-color: #6c5ce7;
       color: white;
@@ -163,69 +128,152 @@
     .edit-profile-button:hover {
       background-color: #5541d8;
     }
+
+    .profile-info input {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid #a0a0a0;
+      color: white;
+      font-size: 14px;
+      width: 100%;
+      padding: 5px 0;
+      margin-bottom: 10px;
+    }
+
+    .profile-info input:disabled {
+      color: #a0a0a0;
+      border-bottom: 1px solid transparent;
+    }
+
+    .profile-info input:focus {
+      outline: none;
+      border-bottom-color: #7289da;
+    }
+    .scroll-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .scroll-button {
+      background-color: #2c3e50;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .scroll-button:hover {
+      background-color: #34495e;
+    }
+    .scroll-button:disabled {
+      background-color: #7f8c8d;
+      cursor: not-allowed;
+    }
+
   </style>
 </head>
+
+<body>
 <div class="container">
+  <div id="header"></div>
   <div class="profile-sidebar">
     <h1>마이프로필</h1>
     <div class="profile-info">
-      <p>이름: <span id="userName"></span></p>
-      <p>닉네임: <span id="userNickname"></span></p>
+      <p>이름: <input type="text" id="userName" disabled></p>
+      <p>닉네임: <input type="text" id="userNickname" disabled></p>
+      <p>이메일: <input type="email" id="userEmail" disabled></p>
     </div>
-    <button onclick="location.href='/api/v1/profile/edit/' + document.getElementById('userNickname').textContent" class="edit-profile-button">프로필 수정</button>
+    <button id="editProfileButton" class="edit-profile-button">프로필 수정</button>
+    <div class="edit-buttons" style="display: none;">
+      <button id="saveProfileButton" class="edit-profile-button save-button">저장</button>
+      <button id="cancelEditButton" class="edit-profile-button cancel-button">취소</button>
+    </div>
+    <button id="deleteAccountButton" class="edit-profile-button" style="background-color: #e74c3c;">
+      계정 삭제
+    </button>
   </div>
 
   <div class="main-content">
     <div class="section">
       <div class="section-header">
-        <h2 id="알림-목록" class="section-title">알림 목록</h2>
-        <div class="scroll-buttons">
-          <button class="scroll-left">&lt;</button>
-          <button class="scroll-right">&gt;</button>
-        </div>
-      </div>
-      <div id="notificationCards" class="cards-container"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-header">
-        <h2 id="게시글-목록" class="section-title">게시글 목록: <span id="postCount"></span>개</h2>
-        <div class="scroll-buttons">
-          <button class="scroll-left">&lt;</button>
-          <button class="scroll-right">&gt;</button>
-        </div>
+        <h2 id="게시글-목록" class="section-title">전체 게시글 목록: <span id="postCount"></span></h2>
       </div>
       <div id="postCards" class="cards-container"></div>
+      <div id="postError" class="error-message"></div>
+      <div class="scroll-buttons">
+        <button id="prevButton" class="scroll-button">&lt;</button>
+        <button id="nextButton" class="scroll-button">&gt;</button>
+      </div>
     </div>
 
     <div class="section">
       <div class="section-header">
-        <h2 id="top3-게시글" class="section-title">TOP3 게시글</h2>
-        <div class="scroll-buttons">
-          <button class="scroll-left">&lt;</button>
-          <button class="scroll-right">&gt;</button>
-        </div>
+        <h2 id="top3-게시글" class="section-title">좋아요 TOP3 게시글</h2>
       </div>
       <div id="topPostCards" class="cards-container"></div>
+      <div id="topPostError" class="error-message"></div>
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const editProfileButton = document.getElementById('editProfileButton');
-    const userNicknameElement = document.getElementById('userNickname');
+  const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLDri6QiLCJ1c2VyX2lkIjoxLCJlbWFpbCI6InRlc3RlcjFAbmF2ZXIuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjYwMDE0NzgsIm5iZiI6MTcyNjAwMTQ3OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxIiwiZXhwIjoxNzI2MDAzMjc4fQ._LA2efPr7uuiSGLf7qGk9yVb57P2p1EOFlSrKfqaxzQ";
 
-    editProfileButton.addEventListener('click', function() {
-      const userNickname = userNicknameElement.textContent;
-      window.location.href = `/profileedit.html?nickname=${encodeURIComponent(userNickname)}`;
+  document.addEventListener('DOMContentLoaded', function () {
+
+    // 헤더 로드
+    Promise.any([
+      fetch('../static/html/header/header.html').then(response => response.text())
+    ]).then(header => {
+      document.getElementById('header').innerHTML = header;
     });
 
-    // 프로필 정보를 불러오는 함수
+    const editProfileButton = document.getElementById('editProfileButton');
+    const saveProfileButton = document.getElementById('saveProfileButton');
+    const cancelEditButton = document.getElementById('cancelEditButton');
+    const deleteAccountButton = document.getElementById('deleteAccountButton');
+    const editButtons = document.querySelector('.edit-buttons');
+    const inputs = document.querySelectorAll('.profile-info input');
+
+    let originalProfileData = {};
+
+    editProfileButton.addEventListener('click', function () {
+      inputs.forEach(input => {
+        input.disabled = false;
+        originalProfileData[input.id] = input.value;
+      });
+      editProfileButton.style.display = 'none';
+      editButtons.style.display = 'flex';
+    });
+
+    saveProfileButton.addEventListener('click', updateProfile);
+
+    cancelEditButton.addEventListener('click', function () {
+      inputs.forEach(input => {
+        input.disabled = true;
+        input.value = originalProfileData[input.id];
+      });
+      editProfileButton.style.display = 'block';
+      editButtons.style.display = 'none';
+    });
+
+    deleteAccountButton.addEventListener('click', function () {
+      if (confirm('정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+        deleteAccount();
+      }
+    });
+
     async function fetchProfileData() {
       try {
-        const response = await fetch('/api/v1/profile/' + userNicknameElement.textContent);
+        const response = await fetch('http://localhost:8080/api/v1/profile', {
+          headers: {
+            'Authorization': token
+          }
+        });
         const data = await response.json();
+        console.log('data = ', data);
         updateProfileUI(data);
       } catch (error) {
         console.error('프로필 정보를 불러오는 데 실패했습니다:', error);
@@ -233,31 +281,181 @@
     }
 
     function updateProfileUI(data) {
-      document.getElementById('userName').textContent = data.user.name;
-      userNicknameElement.textContent = data.user.nickname;
-      document.getElementById('postCount').textContent = data.totalPosts;
-      updatePostCards(data.posts, 'postCards');
-      updatePostCards(data.topLikedPosts, 'topPostCards');
-      // 알림 카드 업데이트 로직 추가 필요
+      document.getElementById('userName').value = data.username;
+      document.getElementById('userNickname').value = data.nickname;
+      document.getElementById('userEmail').value = data.email;
     }
 
-    function updatePostCards(posts, containerId) {
+    async function updateProfile() {
+      const updatedData = {
+        username: document.getElementById('userName').value,
+        nickname: document.getElementById('userNickname').value,
+        email: document.getElementById('userEmail').value
+      };
+
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/profile/edit', {
+          method: 'POST',
+          headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedData)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          updateProfileUI(data.data);
+          inputs.forEach(input => input.disabled = true);
+          editProfileButton.style.display = 'block';
+          editButtons.style.display = 'none';
+          alert('프로필이 성공적으로 업데이트되었습니다.');
+        } else {
+          throw new Error('프로필 업데이트에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('프로필 업데이트 중 오류 발생:', error);
+        alert('프로필 업데이트에 실패했습니다. 다시 시도해 주세요.');
+      }
+    }
+
+    let currentPage = 0;
+    const postsPerPage = 3;
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        fetchUserPosts();
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      currentPage++;
+      fetchUserPosts();
+    });
+
+    async function fetchUserPosts() {
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/profile/posts?page=${currentPage}&size=${postsPerPage}`, {
+          headers: {
+            'Authorization': token
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("post data = ", data);
+
+        // if (!data || !data.data || !Array.isArray(data.data)) {
+        //   throw new Error('Invalid data format received from server');
+        // }
+
+        updatePostCards('postCards', data.data);
+        updatePaginationButtons(data.data.length);
+        document.getElementById('postError').textContent = '';
+      } catch (error) {
+        console.error('게시글 목록을 불러오는 데 실패했습니다:', error);
+        document.getElementById('postError').textContent = '게시글을 불러오는 데 실패했습니다. 다시 시도해 주세요.';
+        updatePostCards('postCards', []);
+        updatePaginationButtons(0);
+      }
+    }
+
+    async function fetchUserPostCount() {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/profile/post-cnt', {
+          headers: {
+            'Authorization': token
+          }
+        });
+        const data = await response.json();
+        document.getElementById('postCount').textContent = data.data.postCnt;
+      } catch (error) {
+        console.error('게시글 개수를 불러오는 데 실패했습니다:', error);
+      }
+    }
+
+    async function fetchUserTop3Posts() {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/profile/top-3-posts', {
+          headers: {
+            'Authorization': token
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data || !data.data || !Array.isArray(data.data)) {
+          throw new Error('Invalid data format received from server');
+        }
+
+        updatePostCards('topPostCards', data.data);
+        document.getElementById('topPostError').textContent = '';
+      } catch (error) {
+        console.error('Top3 게시글을 불러오는 데 실패했습니다:', error);
+        document.getElementById('topPostError').textContent = 'Top3 게시글을 불러오는 데 실패했습니다. 다시 시도해 주세요.';
+        updatePostCards('topPostCards', []);
+      }
+    }
+
+    function updatePostCards(containerId, posts) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
+      if (posts.length === 0) {
+        container.innerHTML = '<p>표시할 게시글이 없습니다.</p>';
+        return;
+      }
       posts.forEach(post => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-                        <h3>${post.title}</h3>
-                        <p>${post.content.substring(0, 100)}...</p>
-                        <p>좋아요: ${post.likeCount}</p>
-                    `;
+          <h3>${post.title}</h3>
+          <p>${post.content ? post.content.substring(0, 100) : ''}...</p>
+          <p>조회수: ${post.viewCnt}</p>
+          <p>작성일: ${new Date(post.createdAt).toLocaleDateString()}</p>
+        `;
         container.appendChild(card);
       });
     }
 
-    // 페이지 로드 시 프로필 정보 불러오기
+
+    function updatePaginationButtons(postsCount) {
+      prevButton.disabled = currentPage === 0;
+      nextButton.disabled = postsCount < postsPerPage;
+    }
+
+    async function deleteAccount() {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/profile', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': token
+          }
+        });
+        const data = await response.json();
+        console.log("delete data = ", data);
+        if (data.data.message) {
+          alert(data.data.message);
+          window.location.href = '/mogakcote/src/main/resources/templates/post/list.html';
+        }
+      } catch (error) {
+        console.error('계정 삭제에 실패했습니다:', error);
+      }
+    }
+
     fetchProfileData();
+    fetchUserPosts();
+    fetchUserPostCount();
+    fetchUserTop3Posts();
   });
 </script>
 </body>

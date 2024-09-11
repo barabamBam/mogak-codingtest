@@ -79,6 +79,11 @@ public class Post extends BaseEntity {
     this.viewCnt++;
   }
 
+  public void decrementViewCount() {
+    if (this.viewCnt >= 0) this.viewCnt--;
+    else this.viewCnt = 0;
+  }
+
   public void incrementVoteCount() {
     this.voteCnt++;
   }

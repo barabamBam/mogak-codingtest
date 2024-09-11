@@ -43,23 +43,19 @@ public class ReportCreationOrchestrator {
         // 게시글 작성
         PostResponse postResponse = postService.createPost(user, request);
         Post savedPost = getPost(postResponse);
-        log.info("ㅁㅁㅁㅁㅁ 게시글 저장 -> 제목: {}", savedPost.getTitle());
 
         if (request.isReportRequested()) {
 
             // 분석 요청
             ReportResponse reportResponse = reportService.createReport(
                     user, buildReportRequest(savedPost));
-            log.info("ㅁㅁㅁㅁㅁ 분석 완료");
 
             // 시스템 댓글 등록
             systemCommentService.createSystemComment(
                     buildSystemCommentRequest(savedPost.getId(), reportResponse));
-            log.info("ㅁㅁㅁㅁㅁ 시스템 댓글 등록 완료");
 
             // 알림 전송
             newsService.createNews(buildNewsRequest(savedPost));
-            log.info("ㅁㅁㅁㅁㅁ 알림 전송 완료");
 
         }
 
@@ -68,6 +64,7 @@ public class ReportCreationOrchestrator {
                 savedPost.getPlatformId(), savedPost.getProblemNumber(), request.getAlgorithmId(),
                 savedPost.getLanguageId(), savedPost.getCode(), savedPost.getPostFlag().isPublic(),
                 savedPost.getReportFlag().isReportRequested(), savedPost.getViewCnt(),
+                savedPost.getVoteCnt(),
                 savedPost.getPostFlag()
                         .isBanned()
         );
@@ -104,7 +101,9 @@ public class ReportCreationOrchestrator {
                 savedPost.getPlatformId(), savedPost.getProblemNumber(), request.getAlgorithmId(),
                 savedPost.getLanguageId(), savedPost.getCode(), savedPost.getPostFlag().isPublic(),
                 savedPost.getReportFlag().isReportRequested(), savedPost.getViewCnt(),
-                savedPost.getPostFlag().isBanned()
+                savedPost.getVoteCnt(),
+                savedPost.getPostFlag()
+                        .isBanned()
         );
     }
 

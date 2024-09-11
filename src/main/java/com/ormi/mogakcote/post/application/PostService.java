@@ -1,11 +1,31 @@
 package com.ormi.mogakcote.post.application;
 
+import com.ormi.mogakcote.exception.problem.AlgorithmInvalidException;
+import com.ormi.mogakcote.exception.problem.LanguageInvalidException;
+import com.ormi.mogakcote.exception.problem.PlatformInvalidException;
+import com.ormi.mogakcote.exception.user.UserInvalidException;
+import com.ormi.mogakcote.post.dto.response.PostResponseWithNickname;
+import com.ormi.mogakcote.problem.application.AlgorithmService;
+import com.ormi.mogakcote.problem.application.LanguageService;
+import com.ormi.mogakcote.problem.application.PlatformService;
+import com.ormi.mogakcote.problem.domain.Algorithm;
+import com.ormi.mogakcote.problem.domain.Language;
+import com.ormi.mogakcote.problem.domain.Platform;
+import com.ormi.mogakcote.problem.dto.response.AlgorithmResponse;
+import com.ormi.mogakcote.problem.dto.response.LanguageResponse;
+import com.ormi.mogakcote.problem.dto.response.PlatformResponse;
+import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
+import com.ormi.mogakcote.problem.infrastructure.LanguageRepository;
+import com.ormi.mogakcote.problem.infrastructure.PlatformRepository;
+import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +41,6 @@ import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.domain.PostFlag;
 import com.ormi.mogakcote.post.domain.ReportFlag;
 import com.ormi.mogakcote.post.dto.request.PostRequest;
-import com.ormi.mogakcote.notice.infrastructure.NoticeRepository;
 import com.ormi.mogakcote.post.dto.request.PostSearchRequest;
 import com.ormi.mogakcote.post.dto.response.PostResponse;
 import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
@@ -45,9 +64,12 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final PostAlgorithmRepository postAlgorithmRepository;
-  private final NoticeRepository noticeRepository;
   private final UserService userService;
   private final UserBadgeService userBadgeService;
+  private final UserRepository userRepository;
+  private final AlgorithmRepository algorithmRepository;
+  private final LanguageRepository languageRepository;
+  private final PlatformRepository platformRepository;
 
   @Transactional
   public PostResponse createPost(AuthUser user, PostRequest request) {
@@ -55,17 +77,22 @@ public class PostService {
 
     Long algorithmId = savePostAlgorithm(savedPost.getId(), request.getAlgorithmId());
 
+    // 작성자가 해당 게시글 작성일자 하루 전 날 작성한 게시글이 있는지 확인
     boolean postExists =
         postRepository.existsPostByCreatedAt(
             LocalDateTime.of(
                 LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1), LocalTime.of(0, 0)));
-    if (postExists) {
-      userService.updateActivity(user.getId(), "increaseDay");
+    if (postExists) { // 전날 게시글을 작성하고 오늘도 작성해야 작동
+      userService.updateActivity(
+          user.getId(),
+          "increaseDay",
+          postRepository.findFirstOrderByCreatedAtDesc(),
+          LocalDateTime.now());
     } else {
       userService.updateActivity(user.getId(), "resetDay");
     }
-
     userBadgeService.makeUserBadge(user, "POST");
+
 
     return PostResponse.toResponse(
         savedPost.getId(),
@@ -79,51 +106,59 @@ public class PostService {
         savedPost.getPostFlag().isPublic(),
         savedPost.getReportFlag().isReportRequested(),
         savedPost.getViewCnt(),
+        savedPost.getVoteCnt(),
         savedPost.getPostFlag().isBanned());
   }
 
-  @Transactional(readOnly = true)
-  public PostResponse getPost(Long postId) {
+  @Transactional
+  public PostResponseWithNickname getPost(AuthUser user, Long postId) {
     Post post = getPostById(postId);
     Long algorithmId = getAlgorithmId(postId);
+
+    User findUser = getUserOrThrowIfNotExist(user);
 
     post.incrementViewCount();
     postRepository.save(post);
 
-    return PostResponse.toResponse(
+    return PostResponseWithNickname.toResponse(
         post.getId(),
+        findUser.getNickname(),
         post.getTitle(),
         post.getContent(),
-        post.getPlatformId(),
+        getPlatformOrThrowIfNotExist(post.getPlatformId()).getName(),
         post.getProblemNumber(),
-        algorithmId,
-        post.getLanguageId(),
+        getAlgorithmOrThrowIfNotExist(algorithmId).getName(),
+        getLanguageOrThrowIfNotExist(post.getLanguageId()).getName(),
         post.getCode(),
         post.getPostFlag().isPublic(),
         post.getReportFlag().isReportRequested(),
         post.getViewCnt(),
-        post.getPostFlag().isBanned());
+        post.getVoteCnt(),
+        post.getPostFlag().isBanned(),
+        post.getCreatedAt(),
+        post.getModifiedAt()
+    );
   }
 
   @Transactional(readOnly = true)
   public List<PostResponse> getAllPosts() {
     List<Post> posts = postRepository.findAll();
     return posts.stream()
-        .map(
-            post ->
-                PostResponse.toResponse(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getPlatformId(),
-                    post.getProblemNumber(),
-                    getAlgorithmId(post.getId()),
-                    post.getLanguageId(),
-                    post.getCode(),
-                    post.getPostFlag().isPublic(),
-                    post.getReportFlag().isReportRequested(),
-                    post.getViewCnt(),
-                    post.getPostFlag().isBanned()))
+        .map(post ->
+            PostResponse.toResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getPlatformId(),
+                post.getProblemNumber(),
+                getAlgorithmId(post.getId()),
+                post.getLanguageId(),
+                post.getCode(),
+                post.getPostFlag().isPublic(),
+                post.getReportFlag().isReportRequested(),
+                post.getViewCnt(),
+                post.getVoteCnt(),
+                post.getPostFlag().isBanned()))
         .collect(Collectors.toList());
   }
 
@@ -155,6 +190,7 @@ public class PostService {
         updatedPost.getPostFlag().isPublic(),
         updatedPost.getReportFlag().isReportRequested(),
         updatedPost.getViewCnt(),
+        updatedPost.getVoteCnt(),
         updatedPost.getPostFlag().isBanned());
   }
 
@@ -175,7 +211,8 @@ public class PostService {
   private Post buildAndSavePost(Long userId, PostRequest request) {
     log.info("userId = {}", userId);
     PostFlag postFlag =
-        PostFlag.builder().isPublic(request.isPublic()).isSuccess(false).isBanned(false).build();
+        PostFlag.builder().isPublic(request.isPublic()).isSuccess(false).isBanned(false)
+            .build();
     ReportFlag reportFlag =
         ReportFlag.builder()
             .isReportRequested(request.isReportRequested())
@@ -257,6 +294,31 @@ public class PostService {
         findPost.getPostFlag().isPublic(),
         findPost.getReportFlag().isReportRequested(),
         findPost.getViewCnt(),
+        findPost.getVoteCnt(),
         findPost.getPostFlag().isBanned());
+  }
+
+  private User getUserOrThrowIfNotExist(AuthUser user) {
+    return userRepository.findById(user.getId()).orElseThrow(
+        () -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR)
+    );
+  }
+
+  private Algorithm getAlgorithmOrThrowIfNotExist(Long id) {
+    return  algorithmRepository.findById(id).orElseThrow(
+        () -> new AlgorithmInvalidException(ErrorType.ALGORITHM_NOT_FOUND_ERROR)
+    );
+  }
+
+  private Language getLanguageOrThrowIfNotExist(Long languageId) {
+    return languageRepository.findById(languageId).orElseThrow(
+        () -> new LanguageInvalidException(ErrorType.LANGUAGE_NOT_FOUND_ERROR)
+    );
+  }
+
+  private Platform getPlatformOrThrowIfNotExist(Long platformId){
+    return platformRepository.findById(platformId).orElseThrow(
+        () -> new PlatformInvalidException(ErrorType.PLATFORM_NOT_FOUND_ERROR)
+    );
   }
 }

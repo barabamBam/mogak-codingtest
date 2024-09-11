@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RegisterResponse {
+public class UserResponse {
     @JsonProperty("userId")
     private Long id;
     private String username;
@@ -15,9 +15,9 @@ public class RegisterResponse {
     private String password;
 
 
-    public static RegisterResponse toResponse(
+    public static UserResponse toResponse(
             Long userId, String username, String nickname, String email, String password
             ) {
-        return new RegisterResponse(userId, username, nickname, email, password);
+        return new UserResponse(userId, username, nickname, email, password);
     }
 }

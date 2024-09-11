@@ -1,5 +1,7 @@
 package com.ormi.mogakcote.problem.presentation;
 
+import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRESS;
+
 import com.ormi.mogakcote.problem.application.AlgorithmService;
 import com.ormi.mogakcote.problem.dto.request.AlgorithmRequest;
 import com.ormi.mogakcote.common.model.ResponseDto;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = CROSS_ORIGIN_ADDRESS)
 @RestController
 @RequestMapping(path = "/api/v1/admin/algorithms")
 @RequiredArgsConstructor

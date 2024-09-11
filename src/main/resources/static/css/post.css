@@ -161,3 +161,22 @@ hr {
   padding: 5px 10px;
   cursor: pointer;
 }
+
+#post-edit-btn, #post-delete-btn {
+  background: #34495e;
+  opacity: 0.6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 93%;
+}
+
+#post-edit-btn {
+  display: flex;
+}
+
+/*#post-delete-btn {*/
+/*  display: flex;*/
+/*}*/
