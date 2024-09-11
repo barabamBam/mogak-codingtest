@@ -57,8 +57,8 @@ public class PostController {
   }
 
   @PostMapping
-/*  @RateLimit(key = "'createPost:' + #user.id", limit = 1, period = 24 * 60 * 60,
-          exceptionClass = DailyRateLimitExceededException.class)*/
+  @RateLimit(key = "'createPostWithReport:' + #user.id", limit = 5, period = 24 * 60 * 60,
+          exceptionClass = DailyRateLimitExceededException.class)
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
         var response = reportCreationOrchestrator.createPostWithReportAndComment(
                 user, request);

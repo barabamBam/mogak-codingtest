@@ -1,13 +1,17 @@
-package com.ormi.mogakcote.profile.vote;
+package com.ormi.mogakcote.post_activity.domain;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "vote")
 public class Vote {
     @Id

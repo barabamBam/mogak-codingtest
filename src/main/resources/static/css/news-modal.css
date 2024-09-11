@@ -1,4 +1,3 @@
-
 .modal {
   display: none;
   position: fixed;
@@ -8,7 +7,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
@@ -56,7 +55,7 @@
 .news-item.unviewed {
   font-weight: bold;
   color: #1F364D;
-  background-color: rgba(255,255,255,0.9);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .news-item.viewed {
@@ -98,4 +97,29 @@
 #news-info-related-btn:hover {
   background-color: white;
   color: #34495e;
+}
+
+#title {
+  display: inline-block;
+  p {
+    font-size: 30px;
+    color: white;
+  }
+}
+
+#news {
+  display: inline-block;
+  padding-left: 200px;
+}
+
+#news-bell-btn {
+  border: none;
+  background: none;
+  /*background-image: url("../../img/bell/bell-yellow.png");*/
+  /*width: 30px;*/
+  /*height: 30px;*/
+}
+
+#news-bell-btn:hover {
+  cursor: pointer;
 }
