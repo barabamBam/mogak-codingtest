@@ -1,8 +1,8 @@
 package com.ormi.mogakcote.post.presentation;
 
+
 import com.ormi.mogakcote.exception.rate_limit.DailyRateLimitExceededException;
 import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -35,7 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @RestController
-@RequestMapping("/api/v1/post")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 

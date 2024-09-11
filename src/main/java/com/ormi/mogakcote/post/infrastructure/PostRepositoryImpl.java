@@ -5,7 +5,6 @@ import static com.ormi.mogakcote.problem.domain.QAlgorithm.*;
 import static com.ormi.mogakcote.problem.domain.QLanguage.*;
 import static com.ormi.mogakcote.problem.domain.QPostAlgorithm.*;
 import static com.ormi.mogakcote.problem.domain.QProblemReportAlgorithm.*;
-import static com.ormi.mogakcote.profile.vote.QVote.*;
 import static com.querydsl.jpa.JPAExpressions.*;
 
 import java.util.Arrays;
@@ -25,7 +24,6 @@ import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import com.ormi.mogakcote.problem.infrastructure.AlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository;
-import com.ormi.mogakcote.profile.vote.QVote;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -56,13 +54,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
   public Page<PostSearchResponse> searchPosts(
       AuthUser authUser, PostSearchRequest postSearchRequest, Pageable pageable) {
 
-    // import com.ormi.mogakcote.problem.infrastructure.ProblemReportAlgorithmRepository; 추가
-    // Post 도메인 probReportId 추가
     JPAQuery<Post> query =
         jpaQueryFactory
             .selectFrom(post)
-            .leftJoin(vote)
-            .on(vote.postId.eq(post.id)) // 게시글의 추천 수 를 확인하기 위해 join
             .where(
                 // 공개 게시글과 자신의 비공개 게시글, 숨김 처리되지 않은 게시글만 추출
                 (post.postFlag
@@ -104,10 +98,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         postSearchRequest.isCheckSuccess()
                             ? post.postFlag.isSuccess.eq(true)
                             : null))
-            .groupBy(post.id)
             // 정렬 키워드에 맞게 정렬하고, 같은 값이 있으면 최신순으로 정렬
             .orderBy(
-                getSortByResult(postSearchRequest.getSortBy(), post, vote), post.createdAt.desc());
+                getSortByResult(postSearchRequest.getSortBy(), post), post.createdAt.desc());
 
 		// 출력될 쿼리 결과가 총 몇 개인지 확인 -> 게시물 개수 확인 해서 페이징
 		long totalCount = query.fetch().size();
@@ -182,7 +175,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	// 사용자가 원하는 정렬 기준을 가지고 정렬
-	private OrderSpecifier<?> getSortByResult(String sortBy, QPost post, QVote vote) {
+	private OrderSpecifier<?> getSortByResult(String sortBy, QPost post) {
 		return switch (sortBy) {
 
 			// 게시글을 오래된 순으로 정렬
@@ -192,7 +185,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			case "MOST_VIEWED" -> post.viewCnt.desc();
 
 			// 게시글을 추천 순으로 정렬
-		  	case "MOST_LIKED" -> vote.count().desc();
+		  	case "MOST_LIKED" -> post.voteCnt.desc();
 
 			// 게시글을 최신 순으로 정렬
 			default -> post.createdAt.desc();

@@ -146,6 +146,7 @@ public class JwtService {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(refreshTokenExpirationSecond);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         AccessTokenWrapper wrapper = new AccessTokenWrapper(authorizeToken.getAccessToken());
