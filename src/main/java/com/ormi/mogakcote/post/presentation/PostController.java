@@ -67,8 +67,8 @@ public class PostController {
 
   @PostMapping
   @RateLimit(
-      key = "'createPostWithReportTest:' + #user.id",
-      limit = 5,
+      key = "'createPostWithReports:' + #user.id",
+      limit = 30,
       period = 24 * 60 * 60,
       exceptionClass = DailyRateLimitExceededException.class)
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody @Valid PostRequest request) {
