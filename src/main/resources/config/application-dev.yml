@@ -4,14 +4,12 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mogakcote
     username: root
-    password: '0000'
+    password: 1234
 
-  data:
-    redis:
-      host:
-      port:
-      username:
-      password:
+  cache:
+    type: redis
+    host: localhost
+    port: 6379
 
   security:
     jwt:

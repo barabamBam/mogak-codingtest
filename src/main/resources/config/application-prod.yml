@@ -6,12 +6,10 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
 
-  data:
-    redis:
-      username: ${SPRING_DATA_REDIS_USERNAME}
-      host: ${SPRING_DATA_REDIS_HOST}
-      port: ${SPRING_DATA_REDIS_PORT}
-      password: ${SPRING_DATA_REDIS_PASSWORD}
+  cache:
+    type: redis
+    host: ${SPRING_CACHE_HOST}
+    port: ${SPRING_CACHE_PORT}
 
   security:
     jwt:
