@@ -7,39 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const bellBtn = document.getElementById('news-bell-btn');
   const closeButtons = document.getElementsByClassName('close');
   const loadMoreBtn = document.getElementById('load-more-btn');
-
-  bellBtn.onclick = () => {
-    newsModal.style.display = 'block';
-    currentPage = 0;
-    document.getElementById('news-list').innerHTML = '';
-    fetchNews();
-  }
-
-  for (let closeBtn of closeButtons) {
-    closeBtn.onclick = () => {
-      newsModal.style.display = 'none';
-      newsInfoModal.style.display = 'none';
-    }
-  }
-
-  window.onclick = (event) => {
-    if (event.target == newsModal) {
-      newsModal.style.display = 'none';
-    }
-    if (event.target == newsInfoModal) {
-      newsInfoModal.style.display = 'none';
-    }
-  }
-
-  loadMoreBtn.onclick = fetchNews;
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const newsModal = document.getElementById('news-modal');
-  const newsInfoModal = document.getElementById('news-info-modal');
-  const bellBtn = document.getElementById('news-bell-btn');
-  const closeButtons = document.getElementsByClassName('close');
-  const loadMoreBtn = document.getElementById('load-more-btn');
   const backBtn = document.getElementById('news-info-back-btn');
 
   bellBtn.onclick = () => {
@@ -77,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function fetchNews() {
   const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/news/list?page=${currentPage}&size=${pageSize}`;
+  const url = `http://localhost:8080/api/v1/news/list?page=${currentPage}&size=${pageSize}`;
 
   fetch(url, {
     method: 'GET',
@@ -114,32 +81,9 @@ function fetchNews() {
   });
 }
 
-function displayNews(newsItems) {
-  const newsList = document.getElementById('news-list');
-
-  if (!Array.isArray(newsItems)) {
-    console.error('newsItems is not an array:', newsItems);
-    newsList.innerHTML = '<p>알림을 불러오는 데 실패했습니다.</p>';
-    return;
-  }
-
-  if (newsItems.length === 0) {
-    newsList.innerHTML = '<p>알림이 없습니다.</p>';
-    return;
-  }
-
-  newsItems.forEach(news => {
-    const newsItem = document.createElement('div');
-    newsItem.className = `news-item ${news.viewed ? 'viewed' : 'unviewed'}`;
-    newsItem.textContent = news.title;
-    newsItem.onclick = () => fetchNewsDetails(news.id);
-    newsList.appendChild(newsItem);
-  });
-}
-
 function fetchNewsDetails(newsId) {
   const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/news/${newsId}`;
+  const url = `http://localhost:8080/api/v1/news/${newsId}`;
 
   fetch(url, {
     method: 'GET',

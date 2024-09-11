@@ -40,6 +40,9 @@ public class SystemCommentService {
         throwsIfPostNotExist(postId);
 
         SystemComment findSystemComment = systemCommentRepository.findByPostId(postId);
+        if(findSystemComment == null) {
+            return null;
+        }
         User systemUser = userRepository.findById(findSystemComment.getUserId()).orElseThrow(
                 () -> new UserInvalidException(ErrorType.SYSTEM_USER_NOT_FOUND_ERROR)
         );

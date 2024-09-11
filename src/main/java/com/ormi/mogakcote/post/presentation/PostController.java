@@ -1,13 +1,17 @@
 package com.ormi.mogakcote.post.presentation;
 
+import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRESS;
 
 import com.ormi.mogakcote.exception.rate_limit.DailyRateLimitExceededException;
+import com.ormi.mogakcote.post.dto.response.PostResponseWithNickname;
 import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
+import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,7 +37,7 @@ import com.ormi.mogakcote.post.dto.response.PostSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.ModelAndView;
 
-
+@CrossOrigin(origins = CROSS_ORIGIN_ADDRESS)
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
@@ -66,11 +70,11 @@ public class PostController {
   }
 
   @GetMapping("/{postId}")
-  public ResponseEntity<PostResponse> getPost(
+  public ResponseEntity<?> getPost(
           AuthUser user,
           @PathVariable(name = "postId") Long postId) {
-    PostResponse post = postService.getPost(user, postId);
-    return ResponseEntity.ok(post);
+    PostResponseWithNickname response = postService.getPost(user, postId);
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping
@@ -84,7 +88,7 @@ public class PostController {
       AuthUser user,
       @PathVariable(name = "postId") Long postId,
       @RequestBody PostRequest postRequest) {
-    PostResponse response = reportCreationOrchestrator.updatePostWithReportAndComment(user,
+    var response = reportCreationOrchestrator.updatePostWithReportAndComment(user,
                 postId, postRequest);
     return ResponseEntity.ok(response);
   }
@@ -93,6 +97,9 @@ public class PostController {
   public ResponseEntity<SuccessResponse> deletePost(
       AuthUser user, @PathVariable(name = "postId") Long postId) {
     SuccessResponse response = postService.deletePost(user, postId);
+
     return ResponseEntity.ok(response);
   }
+
+
 }

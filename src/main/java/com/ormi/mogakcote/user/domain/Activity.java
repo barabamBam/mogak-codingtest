@@ -26,8 +26,9 @@ public class Activity {
 		else this.commentCount = 0;
 	}
 
-	public void increaseDayCount() {
-		this.dayCount++;
+	public void increaseDayCount(LocalDate prevPostDate, LocalDate createPostDate) {
+		// 오늘 한번 작성했으면 더이상 오늘 날짜에는 count 하지 않음
+		if(prevPostDate != createPostDate) this.dayCount++;
 	}
 
 	public void decreaseDayCount(LocalDateTime deletePostDate) {

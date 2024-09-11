@@ -1,17 +1,28 @@
 package com.ormi.mogakcote.profile.application;
 
 
+import com.ormi.mogakcote.auth.model.AuthUser;
+import com.ormi.mogakcote.common.dto.SuccessResponse;
+import com.ormi.mogakcote.exception.dto.ErrorType;
+import com.ormi.mogakcote.exception.user.UserInvalidException;
 import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
+import com.ormi.mogakcote.profile.dto.request.UserProfileUpdateRequest;
+import com.ormi.mogakcote.profile.dto.response.PostCntResponse;
+import com.ormi.mogakcote.profile.dto.response.PostProfileInfoResponse;
+import com.ormi.mogakcote.profile.dto.response.UserProfileInfoResponse;
 import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.dto.response.UserResponse;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -22,47 +33,97 @@ public class UserProfileService {
     private final PostRepository postRepository;
 
     @Transactional(readOnly = true)
-    public User getUserProfile(String nickname) {
-        return userRepository.findByNickname(nickname);
+    public UserResponse getUserProfile(AuthUser user) {
+
+        User findUser = getUserOrThrowIfNotExist(user);
+
+        return UserResponse.toResponse(
+                findUser.getId(), findUser.getName(), findUser.getNickname(), findUser.getEmail(),
+                findUser.getPassword()
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getUserPosts(User user) {
-        return postRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+    public List<PostProfileInfoResponse> getUserPosts(AuthUser user, int page, int size) {
+        User findUser = getUserOrThrowIfNotExist(user);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Post> findPosts = postRepository.findByUserIdOrderByCreatedAtDesc(findUser.getId(), pageRequest);
+
+        return findPosts.stream()
+                .map(post -> PostProfileInfoResponse.toResponse(
+                        post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
+                        post.getViewCnt()
+                ))
+                .collect(Collectors.toList());
+    }
+//    public List<PostProfileInfoResponse> getUserPosts(AuthUser user) {
+//        User findUser = getUserOrThrowIfNotExist(user);
+//
+//        List<PostProfileInfoResponse> responses = new ArrayList<>();
+//
+//        List<Post> findPosts = postRepository.findByUserIdOrderByCreatedAtDesc(
+//                findUser.getId(), PageRequest.of(0, 3));
+//
+//        findPosts.forEach(post -> {
+//            responses.add(PostProfileInfoResponse.toResponse(
+//                    post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
+//                    post.getViewCnt()
+//            ));
+//        });
+//
+//        return responses;
+//    }
+
+    @Transactional(readOnly = true)
+    public PostCntResponse getUserPostCnt(AuthUser user) {
+        User findUser = getUserOrThrowIfNotExist(user);
+        long postCnt = postRepository.countByUserId(findUser.getId());
+
+        return PostCntResponse.toResponse(postCnt);
     }
 
     @Transactional(readOnly = true)
-    public long getTotalPostCount(User user) {
-        return postRepository.countByUserId(user.getId());
-    }
+    public List<PostProfileInfoResponse> getUserTop3LikedPosts(AuthUser user) {
+        List<Post> top3Posts = postRepository.findTop3ByUserIdOrderByViewsDesc(
+                user.getId(), PageRequest.of(0, 3));
 
+        List<PostProfileInfoResponse> postProfileInfoResponses = new ArrayList<>();
+        top3Posts.forEach(post -> {
+            postProfileInfoResponses.add(
+                    PostProfileInfoResponse.toResponse(post.getId(), post.getTitle(),post.getContent(), post.getCreatedAt(), post.getViewCnt())
+            );
+        });
 
-    public List<Post> getTopLikedPosts(User user) {
-        return postRepository.findTop3ByUserIdOrderByViewsDesc(user.getId(), PageRequest.of(0, 3));
-    }
-
-    @Transactional
-    public User updateProfile(String nickname, String name, String email, String password) {
-        User existingUser = userRepository.findByNickname(nickname);
-        if (existingUser == null) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
-        }
-
-        existingUser.updateProfile(name, nickname, email);
-
-        if (password != null && !password.isEmpty()) {
-            existingUser.updatePassword(password);
-        }
-
-        return userRepository.save(existingUser);
+        return postProfileInfoResponses;
     }
 
     @Transactional
-    public void deleteAccount(String nickname) {
-        User user = userRepository.findByNickname(nickname);
-        if (user == null) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+    public UserProfileInfoResponse updateProfile(AuthUser user, UserProfileUpdateRequest request) {
+        User findUser = getUserOrThrowIfNotExist(user);
+        findUser.updateProfile(request.getUsername(), request.getNickname(), request.getEmail());
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            findUser.updatePassword(request.getPassword());
         }
-        userRepository.delete(user);
+
+        User savedUser = userRepository.save(findUser);
+
+        return UserProfileInfoResponse.toResponse(savedUser.getName(), savedUser.getNickname(),
+                savedUser.getEmail(), savedUser.getPassword());
     }
+
+    @Transactional
+    public SuccessResponse deleteAccount(AuthUser user) {
+        User findUser = getUserOrThrowIfNotExist(user);
+        userRepository.deleteById(findUser.getId());
+
+        return new SuccessResponse("회원 탈퇴 성공");
+    }
+
+    private User getUserOrThrowIfNotExist(AuthUser user) {
+        return userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR)
+        );
+    }
+
 }
