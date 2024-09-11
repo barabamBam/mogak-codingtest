@@ -6,7 +6,7 @@ import com.ormi.mogakcote.exception.user.UserInvalidException;
 import com.ormi.mogakcote.user.domain.Activity;
 import com.ormi.mogakcote.user.domain.User;
 import com.ormi.mogakcote.user.dto.request.RegisterRequest;
-import com.ormi.mogakcote.user.dto.response.RegisterResponse;
+import com.ormi.mogakcote.user.dto.response.UserResponse;
 import com.ormi.mogakcote.user.dto.response.UserAuthResponse;
 import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public RegisterResponse registerUser(RegisterRequest request) {
+    public UserResponse registerUser(RegisterRequest request) {
         validatePassword(request.getPassword());
 
 
@@ -36,7 +36,7 @@ public class UserService {
 
         User savedUser = buildAndSaveUser(request);
 
-        return RegisterResponse.toResponse(
+        return UserResponse.toResponse(
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getNickname(),

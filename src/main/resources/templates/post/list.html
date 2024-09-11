@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
+<head
   <meta charset="UTF-8">
   <title class="postTitle">Main Page</title>
   <link rel="stylesheet" th:href="@{/css/post/list.css}">
@@ -8,6 +8,7 @@
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
+<div id="header"></div>
 <div id="content-wrapper">
 
   <!-- 헤더 -->
@@ -40,7 +41,7 @@
       </div>
     </div>
   </div>
-
+  
   <section id="notice-container">
     <h3 class="notice-container-title">공지사항</h3>
     <article class="notice-item" th:each="notice: ${notices}">
@@ -50,8 +51,8 @@
       </a>
     </article>
   </section>
-  <a th:href="@{|/api/v1/post|}" class="create-post-btn">게시글 작성</a>
-  <form class="post-search" th:action="@{/api/v1/post/list}" method="get">
+  <a href="../../static/html/post/post-create.html" class="create-post-btn">게시글 작성</a>
+  <form class="post-search" th:action="@{/api/v1/posts/list}" method="get">
     <label for="search-input"></label>
     <input class="post-search-keyword" id="search-input" type="text" name="keyword" placeholder="검색"
            th:value="${postSearchRequest.keyword != null} ? ${postSearchRequest.keyword}">
@@ -224,7 +225,7 @@
     urlParams.set("page", (parseInt(pageNum) + 2).toString())
     nextButton.href = window.location.pathname + '?' + urlParams.toString();
   }
-
+  
   if (!location.search.includes("checkSuccess")) {
     document.querySelector(".select-checkSuccess .label").textContent = '코드 결과';
   }
@@ -245,8 +246,18 @@
     location.href = urlParams.toString() !== '' ? newUrl : window.location.pathname;
 
   }
+</script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 컴포넌트 로드
+    Promise.any([
+      fetch('../../static/html/header/header.html').then(response => response.text())
+    ]).then(header => {
+      document.getElementById('header').innerHTML = header;
 
+    });
+  })
 </script>
 
 <!-- 알림 모달 script -->

@@ -1,5 +1,7 @@
 package com.ormi.mogakcote.user.presentation;
 
+import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRESS;
+
 import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.user.application.UserService;
 import com.ormi.mogakcote.user.domain.User;
@@ -12,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = CROSS_ORIGIN_ADDRESS)
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -20,13 +23,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users/check-nickname")
-    public ResponseEntity<?> checkNickname(@RequestParam String username) {
+    public ResponseEntity<?> checkNickname(@RequestParam(name = "username") String username) {
         var response = userService.checkNickname(username);
         return ResponseDto.ok(response);
     }
 
     @GetMapping("/users/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+    public ResponseEntity<?> checkEmail(@RequestParam(name = "email") String email) {
         var response = userService.existsByEmail(email);
         return ResponseDto.ok(response);
     }

@@ -1,90 +1,98 @@
 package com.ormi.mogakcote.profile.presentation;
 
+import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRESS;
+
+import com.ormi.mogakcote.auth.model.AuthUser;
+import com.ormi.mogakcote.common.dto.SuccessResponse;
+import com.ormi.mogakcote.common.model.ResponseDto;
 import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.profile.application.UserProfileService;
-import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.profile.dto.request.UserProfileUpdateRequest;
+import com.ormi.mogakcote.profile.dto.response.PostCntResponse;
+import com.ormi.mogakcote.profile.dto.response.PostProfileInfoResponse;
+import com.ormi.mogakcote.profile.dto.response.UserProfileInfoResponse;
+import com.ormi.mogakcote.user.dto.response.UserResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+@CrossOrigin(origins = CROSS_ORIGIN_ADDRESS)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/profile")
 public class UserProfileController {
 
-    private UserProfileService userProfileService;
+    private final UserProfileService userProfileService;
 
-    @GetMapping("/{nickname}")
-    public ResponseEntity<?> getUserProfile(@PathVariable String nickname) {
-        User user = userProfileService.getUserProfile(nickname);
-        if (user == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "User not found");
-            return ResponseEntity.status(404).body(error);
-        }
-
-        List<Post> userPosts = userProfileService.getUserPosts(user);
-        long totalPosts = userProfileService.getTotalPostCount(user);
-        List<Post> topLikedPosts = userProfileService.getTopLikedPosts(user);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("posts", userPosts);
-        response.put("totalPosts", totalPosts);
-        response.put("topLikedPosts", topLikedPosts);
-
+    /**
+     * 사용자의 정보 조회
+     */
+    @GetMapping
+    public ResponseEntity<?> getUserProfile(
+            AuthUser user
+    ) {
+        UserResponse response = userProfileService.getUserProfile(
+                user);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 사용자의 게시글 목록 조회
+     */
+    @GetMapping("/posts")
+    public ResponseEntity<?> getUserPosts(
+            AuthUser user,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size
+    ) {
+        List<PostProfileInfoResponse> response = userProfileService.getUserPosts(user, page, size);
+        return ResponseDto.ok(response);
+    }
+
+    /**
+     * 사용자의 게시글 개수 조회
+     */
+    @GetMapping("/post-cnt")
+    public ResponseEntity<?> getUserPostCnt(
+            AuthUser user
+    ) {
+        PostCntResponse response = userProfileService.getUserPostCnt(
+                user);
+        return ResponseDto.ok(response);
+    }
+
+    /**
+     * 사용자의 Top3 목록 조회
+     */
+    @GetMapping("/top-3-posts")
+    public ResponseEntity<?> getUserTop3LikedPosts(
+            AuthUser user
+    ) {
+        List<PostProfileInfoResponse> response = userProfileService.getUserTop3LikedPosts(user);
+        return ResponseDto.ok(response);
+    }
+
+    /**
+     * 사용자 프로필 수정
+     */
     @PostMapping("/edit")
-    public ResponseEntity<Map<String, Object>> updateProfile(@RequestBody Map<String, String> updateData) {
-        try {
-            String nickname = updateData.get("nickname");
-            String name = updateData.get("name");
-            String email = updateData.get("email");
-            String password = updateData.get("password");
-
-            User updatedUser = userProfileService.updateProfile(nickname, name, email, password);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("user", updatedUser);
-            response.put("message", "프로필이 성공적으로 업데이트되었습니다.");
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            Map<String, Object> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(400).body(error);
-        }
+    public ResponseEntity<?> getEditProfilePage(
+            AuthUser user, @RequestBody UserProfileUpdateRequest request
+    ) {
+        UserProfileInfoResponse response = userProfileService.updateProfile(
+                user, request);
+        return ResponseDto.ok(response);
     }
 
-    @DeleteMapping("/{nickname}")
-    public ResponseEntity<Map<String, Object>> deleteAccount(@PathVariable String nickname) {
-        try {
-            userProfileService.deleteAccount(nickname);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "계정이 성공적으로 삭제되었습니다.");
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            Map<String, Object> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(400).body(error);
-        }
-
-    }
-    @GetMapping("/edit/{nickname}")
-    public ResponseEntity<?> getEditProfilePage(@PathVariable String nickname) {
-        User user = userProfileService.getUserProfile(nickname);
-        if (user == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "User not found");
-            return ResponseEntity.status(404).body(error);
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        return ResponseEntity.ok(response);
+    /**
+     * 사용자 계정 삭제(탈퇴)
+     */
+    @DeleteMapping
+    public ResponseEntity<?> deleteAccount(
+            AuthUser user
+    ) {
+        SuccessResponse response = userProfileService.deleteAccount(user);
+        return ResponseDto.ok(response);
     }
 }

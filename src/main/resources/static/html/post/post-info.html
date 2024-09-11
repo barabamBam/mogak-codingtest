@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 상세</title>
-  <link rel="stylesheet" href="../../static/css/post.css">
+  <link rel="stylesheet" href="../../css/post.css">
+  <link rel="stylesheet" href="../../css/header.css">
 </head>
 <body>
 
@@ -14,11 +15,18 @@
 
 <div class="container">
   <div id="post-detail"></div>
+  <div>
+    <button id="post-edit-btn">수정</button>
+  </div>
+  <div>
+    <button id="post-delete-btn">삭제</button>
+  </div>
   <div id="system-comment"></div>
   <div id="comment-section"></div>
 </div>
 
-<script src="../../static/js/post.js"></script>
-<script src="../../static/js/comment/system-comment.js"></script>
+<script src="../../js/comment/system-comment.js"></script>
+<script src="../../js/post-detail.js"></script>
+<script src="../../js/post-info.js"></script>
 </body>
 </html>
