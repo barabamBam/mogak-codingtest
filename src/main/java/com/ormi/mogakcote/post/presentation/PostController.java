@@ -49,7 +49,9 @@ public class PostController {
 
   @GetMapping("/list")
   public ModelAndView mainPosts(
-      @RequestBody(required = false) AuthUser user, @ModelAttribute PostSearchRequest postSearchRequest, Model model) {
+      @RequestBody(required = false) AuthUser user,
+      @ModelAttribute PostSearchRequest postSearchRequest,
+      Model model) {
     List<NoticeResponse> noticeResponse = noticeService.getNoticeLatestFive();
     Page<PostSearchResponse> postResponse = postService.searchPost(user, postSearchRequest);
 
@@ -61,18 +63,18 @@ public class PostController {
   }
 
   @PostMapping
-  @RateLimit(key = "'createPostWithReport:' + #user.id", limit = 5, period = 24 * 60 * 60,
-          exceptionClass = DailyRateLimitExceededException.class)
+  @RateLimit(
+      key = "'createPostWithReport:' + #user.id",
+      limit = 5,
+      period = 24 * 60 * 60,
+      exceptionClass = DailyRateLimitExceededException.class)
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
-        var response = reportCreationOrchestrator.createPostWithReportAndComment(
-                user, request);
-        return ResponseDto.created(response);
+    var response = reportCreationOrchestrator.createPostWithReportAndComment(user, request);
+    return ResponseDto.created(response);
   }
 
   @GetMapping("/{postId}")
-  public ResponseEntity<?> getPost(
-          AuthUser user,
-          @PathVariable(name = "postId") Long postId) {
+  public ResponseEntity<?> getPost(AuthUser user, @PathVariable(name = "postId") Long postId) {
     PostResponseWithNickname response = postService.getPost(user, postId);
     return ResponseEntity.ok(response);
   }
@@ -88,8 +90,8 @@ public class PostController {
       AuthUser user,
       @PathVariable(name = "postId") Long postId,
       @RequestBody PostRequest postRequest) {
-    var response = reportCreationOrchestrator.updatePostWithReportAndComment(user,
-                postId, postRequest);
+    var response =
+        reportCreationOrchestrator.updatePostWithReportAndComment(user, postId, postRequest);
     return ResponseEntity.ok(response);
   }
 
@@ -100,6 +102,4 @@ public class PostController {
 
     return ResponseEntity.ok(response);
   }
-
-
 }
