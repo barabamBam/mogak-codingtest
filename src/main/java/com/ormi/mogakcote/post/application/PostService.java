@@ -31,6 +31,7 @@ import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.problem.domain.PostAlgorithm;
 import com.ormi.mogakcote.problem.infrastructure.PostAlgorithmRepository;
 import com.ormi.mogakcote.user.application.UserService;
+import com.ormi.mogakcote.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,15 +53,16 @@ public class PostService {
   @Transactional
   public PostResponse createPost(AuthUser user, PostRequest request) {
     Post savedPost = buildAndSavePost(user.getId(), request);
-
     Long algorithmId = savePostAlgorithm(savedPost.getId(), request.getAlgorithmId());
 
+    // 작성자가 해당 게시글 작성일자 하루 전 날 작성한 게시글이 있는지 확인
     boolean postExists =
         postRepository.existsPostByCreatedAt(
             LocalDateTime.of(
                 LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1), LocalTime.of(0, 0)));
-    if (postExists) {
-      userService.updateActivity(user.getId(), "increaseDay");
+    if (postExists) { // 전날 게시글을 작성하고 오늘도 작성해야 작동
+      userService.updateActivity(user.getId(), "increaseDay",
+          postRepository.findFirstOrderByCreatedAtDesc(), LocalDateTime.now());
     } else {
       userService.updateActivity(user.getId(), "resetDay");
     }

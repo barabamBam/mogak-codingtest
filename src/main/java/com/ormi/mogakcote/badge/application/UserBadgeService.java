@@ -57,7 +57,7 @@ public class UserBadgeService {
 
     Integer cnt = 0;  // 뱃지에서 개수를 지정하기 위한 변수
     BadgeType satisfiedBadgeType = null;  // 뱃지의 타입을 찾기 위한 변수
-    boolean checkExists = false; // 현재 할당하려는 뱃지가 존재하는지 확인을 위한 변수
+    boolean checkExists = true; // 현재 할당하려는 뱃지가 존재하는지 확인을 위한 변수
 
     // 사용자에게 해당 뱃지를 주어도 될 지 확인하는 작업 수행
     // 이때 사용자에게 할당할 뱃지의 타입을 체크하는 작업이 같이 수행됨
@@ -85,7 +85,8 @@ public class UserBadgeService {
         break;
     }
 
-    checkExists = existBadgeAlready(user.getId(), satisfiedBadgeType);
+    if(satisfiedBadgeType != null)
+      checkExists = existBadgeAlready(user.getId(), satisfiedBadgeType);
 
     System.out.println(cnt);
     System.out.println(satisfiedBadgeType);
@@ -104,7 +105,6 @@ public class UserBadgeService {
 
   // 일치하는 뱃지를 현재 사용자가 가지고 있는지 확인을 위한 메서드
   private boolean existBadgeAlready(Long userId, BadgeType badgeType) {
-    if(badgeType == null) return true;
 
     String badgeName = badgeType.toString();
     Badge findBadge = getBadgeByName(badgeName);

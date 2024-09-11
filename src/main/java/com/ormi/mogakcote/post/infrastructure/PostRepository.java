@@ -29,4 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     @Query("select (count(p) > 0) from Post p where p.createdAt >= ?1")
     boolean existsPostByCreatedAt(LocalDateTime date);
+
+    @Query("SELECT p.createdAt FROM Post p ORDER BY p.createdAt DESC Limit 1")
+    LocalDateTime findFirstOrderByCreatedAtDesc();
 }

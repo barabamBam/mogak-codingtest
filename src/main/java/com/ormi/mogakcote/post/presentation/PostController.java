@@ -57,8 +57,8 @@ public class PostController {
   }
 
   @PostMapping
-  @RateLimit(key = "'createPost:' + #user.id", limit = 1, period = 24 * 60 * 60,
-          exceptionClass = DailyRateLimitExceededException.class)
+/*  @RateLimit(key = "'createPost:' + #user.id", limit = 1, period = 24 * 60 * 60,
+          exceptionClass = DailyRateLimitExceededException.class)*/
   public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
         var response = reportCreationOrchestrator.createPostWithReportAndComment(
                 user, request);
@@ -90,7 +90,7 @@ public class PostController {
   @DeleteMapping("/{postId}")
   public ResponseEntity<SuccessResponse> deletePost(
       AuthUser user, @PathVariable(name = "postId") Long postId) {
-    postService.deletePost(user, postId);
-    return ResponseEntity.ok(new SuccessResponse("게시글 삭제 성공"));
+    var response = postService.deletePost(user, postId);
+    return ResponseEntity.ok(response);
   }
 }

@@ -39,7 +39,7 @@ public class BadgeController {
 
 	@GetMapping(path="/{badgeId}")
 	public ResponseEntity<?> getBadgeById(
-		@PathVariable("badgeId") Long badgeId, Model model)
+		@PathVariable("badgeId") Long badgeId)
 	{
 		BadgeResponse response = badgeService.getBadgeById(badgeId);
 
