@@ -3,13 +3,13 @@ package com.ormi.mogakcote.security.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class AccessTokenWrapper implements Serializable {
+public class AccessTokenWrapper {
 
     @JsonProperty("access_token")
     @NotBlank

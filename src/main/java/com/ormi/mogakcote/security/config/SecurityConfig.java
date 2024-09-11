@@ -77,7 +77,7 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*/system-comments").permitAll();
 
             // 게시글
-            auth.requestMatchers(HttpMethod.GET, "/api/*/posts/*").permitAll();
+            auth.requestMatchers(HttpMethod.GET, "/api/*/posts/**").permitAll();
             auth.requestMatchers("/api/*/posts", "/api/*/posts/*").hasRole("USER");
 
             // 회원가입
