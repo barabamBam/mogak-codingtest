@@ -114,15 +114,14 @@ public class PostService {
   public PostResponseWithNickname getPost(AuthUser user, Long postId) {
     Post post = getPostById(postId);
     Long algorithmId = getAlgorithmId(postId);
-
-    User findUser = getUserOrThrowIfNotExist(user);
+    String nickname = userRepository.findNicknameById(post.getUserId());
 
     post.incrementViewCount();
     postRepository.save(post);
 
     return PostResponseWithNickname.toResponse(
         post.getId(),
-        findUser.getNickname(),
+        nickname,
         post.getTitle(),
         post.getContent(),
         getPlatformOrThrowIfNotExist(post.getPlatformId()).getName(),
@@ -299,9 +298,9 @@ public class PostService {
   }
 
   private User getUserOrThrowIfNotExist(AuthUser user) {
-    return userRepository.findById(user.getId()).orElseThrow(
+    return user != null ? userRepository.findById(user.getId()).orElseThrow(
         () -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR)
-    );
+    ) : null;
   }
 
   private Algorithm getAlgorithmOrThrowIfNotExist(Long id) {

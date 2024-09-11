@@ -5,15 +5,14 @@
     fetchSystemComment(postId);
   }
 
-  const token = localStorage.getItem('authToken');
 
   function fetchSystemComment(postId) {
-    const url = `http://localhost:8080/api/v1/posts/${postId}/system-comments`;
+    const url = baseUrl+`/api/v1/posts/${postId}/system-comments`;
     fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token
       }
     })
     .then(response => {

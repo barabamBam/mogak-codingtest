@@ -1,4 +1,4 @@
 export function getBaseUrl() {
     // TODO: BaseURL 설정
-    return "http://localhost:8081"
+    return 'http://' + window.location.host;
 }

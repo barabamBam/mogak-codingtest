@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 컴포넌트 로드
   Promise.all([
-    fetch('../header/header.html').then(response => response.text()),
+    fetch('../../../html/header/header.html').then(response => response.text()),
     fetch('post-detail.html').then(response => response.text()),
     fetch('system-comment.html').then(response => response.text()),
     fetch('comment.html').then(response => response.text())
@@ -74,14 +74,13 @@ function deletePost() {
     return;
   }
 
-  // const token = localStorage.getItem('authToken');
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTgyNjczLCJuYmYiOjE3MjU5ODI2NzMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4NDQ3M30.tux31PzPQgN_j3dPj5AAF4see2NE1xkR70U3O0DT1JA";
+  //const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTgyNjczLCJuYmYiOjE3MjU5ODI2NzMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4NDQ3M30.tux31PzPQgN_j3dPj5AAF4see2NE1xkR70U3O0DT1JA";
 
-  fetch(`http://localhost:8080/api/v1/posts/${postId}`, {
+  fetch(baseUrl+`/api/v1/posts/${postId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer ' + token
     }
   })
   .then(response => {
@@ -92,7 +91,7 @@ function deletePost() {
   })
   .then(data => {
     alert(data.message);
-    window.location.href = '/mogakcote/src/main/resources/templates/post/list.html';
+    window.location.href = '../../templates/post/list.html';
   })
   .catch(error => {
     console.error('Error:', error);

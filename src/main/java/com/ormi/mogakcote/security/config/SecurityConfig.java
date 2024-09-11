@@ -92,7 +92,7 @@ public class SecurityConfig {
             // 마이페이지
             auth.requestMatchers("/api/*/users", "/api/*/users/**").hasRole("USER");
 
-            auth.requestMatchers("/css/**", "/js/**", "/img/**").permitAll(); //정적파일
+            auth.requestMatchers("/css/**", "/html/**", "/js/**", "/img/**").permitAll(); //정적파일
 
             // 나머지 요청은 인증 필요
             auth.anyRequest().authenticated();

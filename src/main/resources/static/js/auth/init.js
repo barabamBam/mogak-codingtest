@@ -1,10 +1,11 @@
 export function init() {
-    document.addEventListener('DOMContentLoaded', async () => {
-        const headerResponse = await fetch('../header/header.html');
-        const headerHtml = await headerResponse.text();
-        const headerContainer = document.createElement('div');
-        headerContainer.classList.add('container');
-        headerContainer.innerHTML = headerHtml;
-        document.querySelector('header').appendChild(headerContainer);
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML = header;
+
+        });
     })
 };
