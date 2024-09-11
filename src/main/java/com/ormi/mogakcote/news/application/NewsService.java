@@ -2,7 +2,7 @@ package com.ormi.mogakcote.news.application;
 
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
-import com.ormi.mogakcote.exception.NewsInvalidException;
+import com.ormi.mogakcote.exception.news.NewsInvalidException;
 import com.ormi.mogakcote.exception.auth.AuthInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.user.UserInvalidException;
