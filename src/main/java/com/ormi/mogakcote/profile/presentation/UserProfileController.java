@@ -5,14 +5,15 @@ import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRES
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.common.dto.SuccessResponse;
 import com.ormi.mogakcote.common.model.ResponseDto;
-import com.ormi.mogakcote.post.domain.Post;
 import com.ormi.mogakcote.profile.application.UserProfileService;
 import com.ormi.mogakcote.profile.dto.request.UserProfileUpdateRequest;
 import com.ormi.mogakcote.profile.dto.response.PostCntResponse;
 import com.ormi.mogakcote.profile.dto.response.PostProfileInfoResponse;
 import com.ormi.mogakcote.profile.dto.response.UserProfileInfoResponse;
 import com.ormi.mogakcote.user.dto.response.UserResponse;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

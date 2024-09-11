@@ -11,10 +11,14 @@ import com.ormi.mogakcote.exception.auth.AuthInvalidException;
 import com.ormi.mogakcote.exception.comment.CommentInvalidException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.post.PostInvalidException;
+import com.ormi.mogakcote.exception.user.UserInvalidException;
 import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.user.application.UserService;
+import com.ormi.mogakcote.user.domain.User;
+import com.ormi.mogakcote.user.infrastructure.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserBadgeService userBadgeService;
+    private final UserRepository userRepository;
 
     /**
      * 답변 생성
@@ -34,8 +39,6 @@ public class CommentService {
     @Transactional
     public CommentResponse createComment(AuthUser user, Long postId, CommentRequest request) {
         throwsIfPostNotExist(postId);
-
-        String nickname = "tester"; // TODO user 정보 등록
 
         Comment comment = buildComment(request, user.getId(), postId);
         Comment savedComment = commentRepository.save(comment);
@@ -46,28 +49,9 @@ public class CommentService {
 
         return CommentResponse.toResponse(
                 savedComment.getId(),
-                nickname,
+                getNicknameOrThrowIfNotExist(savedComment),
                 savedComment.getContent(),
                 savedComment.getCreatedAt()
-        );
-    }
-
-    /**
-     * 답변 조회
-     */
-    @Transactional(readOnly = true)
-    public CommentResponse getComment(Long postId, Long commentId) {
-        throwsIfPostNotExist(postId);
-
-        Comment findComment = getCommentById(commentId);
-
-        String nickname = "tester"; // TODO user 정보 등록
-
-        return CommentResponse.toResponse(
-                findComment.getId(),
-                nickname,
-                findComment.getContent(),
-                findComment.getCreatedAt()
         );
     }
 
@@ -125,12 +109,10 @@ public class CommentService {
         List<CommentResponse> commentResponses = new ArrayList<>();
         List<Comment> findComments = commentRepository.findAllByPostId(postId);
 
-        String nickname = "tester"; // TODO user 정보 등록
-
         findComments.forEach(findComment -> {
             commentResponses.add(CommentResponse.toResponse(
                     findComment.getId(),
-                    nickname,
+                    getNicknameOrThrowIfNotExist(findComment),
                     findComment.getContent(),
                     findComment.getCreatedAt()
             ));
@@ -163,5 +145,11 @@ public class CommentService {
         if (!commentUserId.equals(userId)) {
             throw new AuthInvalidException(ErrorType.NON_IDENTICAL_USER_ERROR);
         }
+    }
+
+    private String getNicknameOrThrowIfNotExist(Comment comment) {
+        return userRepository.findById(comment.getUserId()).orElseThrow(
+                () -> new UserInvalidException(ErrorType.USER_NOT_FOUND_ERROR)
+        ).getNickname();
     }
 }

@@ -5,7 +5,6 @@
     fetchSystemComment(postId);
   }
 
-
   function fetchSystemComment(postId) {
     const url = baseUrl+`/api/v1/posts/${postId}/system-comments`;
     fetch(url, {

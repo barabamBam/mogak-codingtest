@@ -2,9 +2,17 @@ spring:
 
   # DB
   datasource:
-    url: jdbc:mysql://localhost:3306/mogakcote
-    username: root
-    password: 1234
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.H2Dialect
 
   cache:
     type: redis
@@ -22,20 +30,6 @@ spring:
         secretKey: "secretKeysecretKeysecretKeysecretKey"
         reset:
           registerTimeoutSecond: 1800
-  mail:
-    host:
-    port:
-    username:
-    password:
-    properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          starttls:
-            enable: true
-
 logging:
   level:
-    web: debug
+    sql: debug
