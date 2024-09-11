@@ -165,7 +165,7 @@
       document.getElementById('header').innerHTML = header;
     });
 
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTc4ODkxLCJuYmYiOjE3MjU5Nzg4OTEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4MDY5MX0.PzbRbRZ_2jMrM0h3akgL7SytV5tZtF1mn-itA9eqg3I";
+    const token = "Bearer " + localStorage.getItem('access_token');
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('postId');
 

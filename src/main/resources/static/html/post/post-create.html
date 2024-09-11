@@ -163,9 +163,7 @@
       document.getElementById('header').innerHTML = header;
     });
 
-    // TODO 토큰 가져오기
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTgxOTM4LCJuYmYiOjE3MjU5ODE5MzgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4MzczOH0.jN8R2Uf8TM5TVQ3b-1tas3x6pcHvTV3xOfV4ZwSEaxw";
-    // const token = localStorage.getItem('authToken');
+    const token = "Bearer " + localStorage.getItem('access_token');
     console.log("token = " + token);
 
     // 플랫폼, 알고리즘, 언어 목록 가져오기
@@ -245,17 +243,18 @@
         }
 
         const contentType = response.headers.get("content-type");
+        console.log("contentType = ", contentType);
         if (contentType && contentType.indexOf("application/json") !== -1) {
           return response.json().then(data => ({ status: response.status, data }));
         } else {
           return response.text().then(text => {
             console.error('Unexpected response:', text);
-            throw new Error('서버에서 예상치 못한 응답을 받았습니다.');
+            throw new Error('서버에서 예상치 못한 응답을 받았습니다!!');
           });
         }
       })
       .then(({ status, data }) => {
-        console.log('Received data: ', data);
+        console.log('Received Create data: ', data);
 
         if (data.errorCode || data.errorMessage) {
           // 오류 응답 처리

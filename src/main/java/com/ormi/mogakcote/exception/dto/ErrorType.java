@@ -31,6 +31,9 @@ public enum ErrorType {
     // comment 예외
     COMMENT_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
 
+    // async 예외
+    ASYNC_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "비동기 예외 발생"),
+
     // auth 예외
     NON_IDENTICAL_USER_ERROR(HttpStatus.BAD_REQUEST, "작성자와 접근자가 동일하지 않습니다."),
     WRONG_PASSWORD_ERROR(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다"),

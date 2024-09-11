@@ -3,6 +3,7 @@ package com.ormi.mogakcote.orchestration.application;
 import com.ormi.mogakcote.auth.model.AuthUser;
 import com.ormi.mogakcote.comment.application.SystemCommentService;
 import com.ormi.mogakcote.comment.dto.request.SystemCommentRequest;
+import com.ormi.mogakcote.exception.async.AsyncException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 import com.ormi.mogakcote.exception.post.PostInvalidException;
 import com.ormi.mogakcote.news.domain.Type;
@@ -16,10 +17,11 @@ import com.ormi.mogakcote.post.infrastructure.PostRepository;
 import com.ormi.mogakcote.report.application.ReportService;
 import com.ormi.mogakcote.report.dto.request.ReportRequest;
 import com.ormi.mogakcote.report.dto.response.ReportResponse;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -33,30 +35,16 @@ public class ReportCreationOrchestrator {
     private final NewsService newsService;
     private final PostRepository postRepository;
 
-    /**
-     * 게시글 생성히먀 최초 보고서 요청 시(게시글 수정 시 코드는 수정 불가능하게!)
-     */
     @Transactional
-    public PostResponse createPostWithReportAndComment(AuthUser user,
-            PostRequest request) {
+    public PostResponse createPostWithReportAndComment(AuthUser user, PostRequest request) {
 
         // 게시글 작성
         PostResponse postResponse = postService.createPost(user, request);
         Post savedPost = getPost(postResponse);
 
+        // 리포트 요청 시 비동기 처리, 비동기 작업 즉시 반환
         if (request.isReportRequested()) {
-
-            // 분석 요청
-            ReportResponse reportResponse = reportService.createReport(
-                    user, buildReportRequest(savedPost));
-
-            // 시스템 댓글 등록
-            systemCommentService.createSystemComment(
-                    buildSystemCommentRequest(savedPost.getId(), reportResponse));
-
-            // 알림 전송
-            newsService.createNews(buildNewsRequest(savedPost));
-
+            CompletableFuture.runAsync(() -> createReportAndSystemCommentAndNews(user, savedPost));
         }
 
         return PostResponse.toResponse(
@@ -70,31 +58,18 @@ public class ReportCreationOrchestrator {
         );
     }
 
-    /**
-     * 게시글 엔티티에 시스템 댓글이 이미 등록된 적 있는지 체크하는 플래그 필드 등을 추가해서, 2회차부터는 조회를 하도록!
-     * TODO 게시글에 hasPreviousReportRequested 필드 추가 후에, 이거는 일단 true 가 되면 isReportRequested 에 상관없이 쭉 true 로 유지.
-     *  그리고 게시글 수정 컨트롤러에서  hasPreviousReportRequested 가 false 인데, isReportRequested 가 true 다?(=수정할 때 최초 리포트 요청) createPostWithReportAndComment 호출
-     *                               나머지의 경우(hasPreviousReportRequested 가 true 등) 평범한 commentService 의 수정 메서드 호출.
-     */
-
     @Transactional
     public PostResponse updatePostWithReportAndComment(AuthUser user, Long postId,
             PostRequest request) {
+
         // 게시글 수정
         PostResponse postResponse = postService.updatePost(user, postId, request);
         Post savedPost = getPost(postResponse);
 
         // 이전에 리포트를 요청한 적 없는데 게시글을 수정하며 새로 요청하는 경우
         if (request.isReportRequested() && !request.isHasPreviousReportRequested()) {
-            // 분석 요청
-            ReportResponse reportResponse = reportService.createReport(
-                    user, buildReportRequest(savedPost));
-            // 시스템 댓글 등록
-            systemCommentService.createSystemComment(
-                    buildSystemCommentRequest(savedPost.getId(), reportResponse));
-            // 수정 시에는 알림을 전송하지 않는다.
+            CompletableFuture.runAsync(() -> createReportAndSystemCommentAndNews(user, savedPost));
         }
-        // 이전에 리포트를 요청한 적이 있고, 다시 요청하는 경우 이미 존재하는 시스템 댓글을 불러오기만 한다.
 
         return PostResponse.toResponse(
                 savedPost.getId(), savedPost.getTitle(), savedPost.getContent(),
@@ -107,6 +82,23 @@ public class ReportCreationOrchestrator {
         );
     }
 
+    // 비동기 작업의 경우 @Async 로 하였을 때, 메인 트랜잭션이 완료되기 전에 비동기 작업이 실행될 수 있어서 트랜잭션의 경계를 관리한다.
+    // 따라서 해당 메서드가 참조되는 메서드의 Transactional 과 별도의 트랜잭션으로 분리한다.
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void createReportAndSystemCommentAndNews(AuthUser user, Post post) {
+        try {
+            // 분석 요청
+            ReportResponse reportResponse = reportService.createReport(
+                    user, buildReportRequest(post));
+            // 시스템 댓글 등록
+            systemCommentService.createSystemComment(
+                    buildSystemCommentRequest(post.getId(), reportResponse));
+            // 알림 전송
+            newsService.createNews(buildNewsRequest(post));
+        } catch (Exception e) {
+            throw new AsyncException(ErrorType.ASYNC_ERROR);
+        }
+    }
 
     private Post getPost(PostResponse postResponse) {
         return postRepository.findById(postResponse.getId()).orElseThrow(

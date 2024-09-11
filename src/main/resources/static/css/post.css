@@ -31,19 +31,15 @@ hr {
 }
 
 
-
-/**
-  post-detail.html
- */
-
 .post-content {
-  /*margin: 0 5px 30px 5px;*/
-  margin-bottom: 30px;
+  margin: 0 5px 30px 5px;
 }
 
 .post-code {
   background-color: #34495e;
   border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .vote-button {
@@ -172,28 +168,29 @@ hr {
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
-/*   min-width: 50px; */
+  /*   min-width: 50px; */
 
-.update-comment-btn, .cancel-edit-btn , .edit-comment-btn, .delete-comment-btn {
+  .update-comment-btn, .cancel-edit-btn, .edit-comment-btn, .delete-comment-btn {
+  }
+
+  #post-edit-btn, #post-delete-btn {
+    background: #34495e;
+    opacity: 0.6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    min-width: 50px;
+    margin: 10px 10px 10px 0;
+    margin-left: 93%;
+  }
+
+  #post-edit-btn {
+    display: inline-block;
+  }
+
+  #post-delete-btn {
+    display: flex;
+  }
 }
-
-#post-edit-btn, #post-delete-btn {
-  background: #34495e;
-  opacity: 0.6;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  min-width: 50px;
-  margin: 10px 10px 10px 0;
-  margin-left: 93%;
-}
-
-#post-edit-btn {
-  display: flex;
-}
-
-/*#post-delete-btn {*/
-/*  display: flex;*/
-/*}*/
