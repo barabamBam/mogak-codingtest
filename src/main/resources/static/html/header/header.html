@@ -1,4 +1,26 @@
-<div id="header">
-<!--  <a href="../../../templates/post/list.html" class="mogakcote-logo">MOGAKCOTE</a>-->
-  <a href="/mogakcote/src/main/resources/templates/post/list.html" class="mogakcote-logo">MOGAKCOTE</a>
+<a href="/api/v1/posts/list" class="mogakcote-logo">MOGAKCOTE</a>
+<div class="header-container">
+<div id="auth"></div>
+<div id="news">
+  <button id="news-bell-btn">🔔</button>
+  <div id="news-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>알림</h2>
+      <div id="news-list"></div>
+      <button id="load-more-btn">더 보기</button>
+    </div>
+  </div>
+  <div id="news-info-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="news-info-title"></h2>
+      <p id="news-info-type"></p>
+      <p id="news-info-created-at"></p>
+      <p id="news-info-content"></p>
+      <button id="news-info-related-btn" style="display: none;">바로가기</button>
+      <button id="news-info-back-btn">되돌아가기</button>
+    </div>
+  </div>
+</div>
 </div>

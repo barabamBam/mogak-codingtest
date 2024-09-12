@@ -1,0 +1,322 @@
+<div class="sidebar">
+    <h2>관리자 페이지</h2>
+
+    <button class="sidebar-button" onclick="location.href='../notice/create.html'">
+        공지사항 생성
+    </button>
+
+    <button class="sidebar-button" onclick="location.href='/change-password'">
+        비밀번호 변경
+    </button>
+</div>
+
+<div id="main-content">
+    <div id="user-management" class="card">
+        <h3>사용자 관리</h3>
+        <div th:each="user : ${userList}">
+            <span th:text="${user.username}"></span>
+            <input type="checkbox" th:checked="${user}" th:attr="data-id=${user.id}"
+                   onchange="toggleUserPermission(this)">
+        </div>
+    </div>
+
+    <div id="notice-list" class="card">
+        <h3>공지사항 top 5</h3>
+        <div th:each="notice : ${noticeLatest5List}">
+            <p th:text="${notice.getTitle()}"></p>
+        </div>
+    </div>
+
+    <div id="post-list" class="card">
+        <h3>게시글 목록 (총 <span th:text="${#lists.size(postList)}"></span>개)</h3>
+        <input type="text" id="post-search" placeholder="게시글 ID 검색">
+        <button onclick="searchPosts()">검색</button>
+        <div id="posts-container">
+            <div th:each="post : ${postList}" th:attr="data-id=${post.id}">
+                <span th:text="${post.title}"></span>
+                <button onclick="togglePostVisibility(this)" th:attr="data-id=${post.id}">숨기기</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="algorithm-management" class="card">
+        <h3>알고리즘 관리</h3>
+        <button onclick="addAlgorithm()">추가</button>
+        <div id="algorithms-container">
+            <div th:each="algorithm : ${algorithmList}" th:attr="data-id=${algorithm.id}">
+                <span th:text="${algorithm.algorithmName}"></span>
+                <button onclick="editAlgorithm(this)" th:attr="data-id=${algorithm.id}">수정</button>
+                <button onclick="deleteAlgorithm(this)" th:attr="data-id=${algorithm.id}">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="language-management" class="card">
+        <h3>작성 언어 관리</h3>
+        <button onclick="addLanguage()">추가</button>
+        <div id="language-container">
+            <div th:each="language : ${languageList}" th:attr="data-id=${language.id}">
+                <span th:text="${language.languageName}"></span>
+                <button onclick="editLanguage(this)" th:attr="data-id=${language.languageName}">수정</button>
+                <button onclick="deleteLanguage(this)" th:attr="data-id=${language.id}">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="platform-management" class="card">
+        <h3>플랫폼 관리</h3>
+        <button onclick="addPlatform()">추가</button>
+        <div id="platform-container">
+            <div th:each="platform : ${platformList}" th:attr="data-id=${platform.id}">
+                <span th:text="${platform.platformName}"></span>
+                <button onclick="editPlatform(this)" th:attr="data-id=${platform.id}">수정</button>
+                <button onclick="deletePlatform(this)" th:attr="data-id=${platform.id}">삭제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+    function toggleUserPermission(checkbox) {
+        const userId = checkbox.getAttribute('data-id');
+        const hasPermission = checkbox.checked;
+        // 여기에 서버로 권한 변경 요청을 보내는 코드 추가
+        console.log(`User ${userId} permission changed to ${hasPermission}`);
+    }
+    async function sendRequest(url, method, data) {
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("API 요청 중 오류 발생:", error);
+            // 오류 처리를 위해 null을 반환하거나 오류를 다시 throw할 수 있습니다
+            return null;
+        }
+    }
+
+    function searchPosts() {
+        const searchId = document.getElementById('post-search').value;
+        // 여기에 서버로 검색 요청을 보내는 코드 추가
+        console.log(`Searching for post with ID: ${searchId}`);
+    }
+
+    function togglePostVisibility(button) {
+        const postId = button.getAttribute('data-id');
+        const isHidden = button.textContent === '숨기기';
+        button.textContent = isHidden ? '불러오기' : '숨기기';
+        // 여기에 서버로 게시글 숨김/불러오기 요청을 보내는 코드 추가
+        console.log(`Post ${postId} visibility toggled to ${isHidden ? 'hidden' : 'visible'}`);
+    }
+
+    async function addAlgorithm() {
+        const name = prompt("새 알고리즘 이름을 입력하세요:");
+        if (name) {
+            const result = await sendRequest('/api/v1/admin/algorithms', 'POST', { name: name });
+            if (result && result.id) {
+                const container = document.getElementById('algorithms-container');
+                const newAlgo = document.createElement('div');
+                newAlgo.innerHTML = `
+                <span>${name}</span>
+                <button onclick="editAlgorithm(this)" data-id="${result.id}">수정</button>
+                <button onclick="deleteAlgorithm(this)" data-id="${result.id}">삭제</button>
+            `;
+                container.appendChild(newAlgo);
+            }
+        }
+    }
+
+    // editAlgorithm 함수 업데이트
+    async function editAlgorithm(button) {
+        const algoId = button.getAttribute('data-id');
+        const newName = prompt("새 이름을 입력하세요:");
+        if (newName) {
+            const result = await sendRequest(`/api/v1/admin/algorithms/${algoId}`, 'PUT', { name: newName });
+            if (result && result.success) {
+                button.previousElementSibling.textContent = newName;
+            }
+        }
+    }
+
+    // deleteAlgorithm 함수 업데이트
+    async function deleteAlgorithm(button) {
+        const algoId = button.getAttribute('data-id');
+        if (confirm("정말로 삭제하시겠습니까?")) {
+            const result = await sendRequest(`/api/v1/admin/algorithms/${algoId}`, 'DELETE');
+            if (result && result.success) {
+                button.parentElement.remove();
+            }
+        }
+    }
+
+
+    // 언어 관련 함수
+    async function addLanguage() {
+        const name = prompt("새 언어 이름을 입력하세요:");
+        if (name) {
+            const result = await sendRequest('/api/v1/admin/languages', 'POST', { name: name });
+            if (result && result.id) {
+                const container = document.getElementById('languages-container');
+                container.appendChild(createElementWithButtons(result, 'Language'));
+            }
+        }
+    }
+
+    async function editLanguage(button) {
+        const langId = button.getAttribute('data-id');
+        const newName = prompt("새 언어 이름을 입력하세요:");
+        if (newName) {
+            const result = await sendRequest(`/api/v1/admin/languages/${langId}`, 'PUT', { name: newName });
+            if (result && result.success) {
+                button.previousElementSibling.textContent = newName;
+            }
+        }
+    }
+
+    async function deleteLanguage(button) {
+        const langId = button.getAttribute('data-id');
+        if (confirm("정말로 이 언어를 삭제하시겠습니까?")) {
+            const result = await sendRequest(`/api/v1/admin/languages/${langId}`, 'DELETE');
+            if (result && result.success) {
+                button.parentElement.remove();
+            }
+        }
+    }
+
+    // 플랫폼 관련 함수
+    async function addPlatform() {
+        const name = prompt("새 플랫폼 이름을 입력하세요:");
+        if (name) {
+            const result = await sendRequest('/api/v1/admin/platforms', 'POST', { name: name });
+            if (result && result.id) {
+                const container = document.getElementById('platforms-container');
+                container.appendChild(createElementWithButtons(result, 'Platform'));
+            }
+        }
+    }
+
+    async function editPlatform(button) {
+        const platformId = button.getAttribute('data-id');
+        const newName = prompt("새 플랫폼 이름을 입력하세요:");
+        if (newName) {
+            const result = await sendRequest(`/api/v1/admin/platforms/${platformId}`, 'PUT', { name: newName });
+            if (result && result.success) {
+                button.previousElementSibling.textContent = newName;
+            }
+        }
+    }
+
+    async function deletePlatform(button) {
+        const platformId = button.getAttribute('data-id');
+        if (confirm("정말로 이 플랫폼을 삭제하시겠습니까?")) {
+            const result = await sendRequest(`/api/v1/admin/platforms/${platformId}`, 'DELETE');
+            if (result && result.success) {
+                button.parentElement.remove();
+            }
+        }
+    }
+
+    // // 페이지 로드 시 데이터 가져오기
+    // async function loadData() {
+    //     const algorithmsResult = await sendRequest('/api/v1/admin/algorithms/list', 'GET');
+    //     const languagesResult = await sendRequest('/api/v1/admin/languages/list', 'GET');
+    //     const platformsResult = await sendRequest('/api/v1/admin/platforms/list', 'GET');
+    //
+    //     if (algorithmsResult && Array.isArray(algorithmsResult)) {
+    //         const container = document.getElementById('algorithms-container');
+    //         algorithmsResult.forEach(algo => {
+    //             container.appendChild(createElementWithButtons(algo, 'Algorithm'));
+    //         });
+    //     }
+    //
+    //     if (languagesResult && Array.isArray(languagesResult)) {
+    //         const container = document.getElementById('languages-container');
+    //         languagesResult.forEach(lang => {
+    //             container.appendChild(createElementWithButtons(lang, 'Language'));
+    //         });
+    //     }
+    //
+    //     if (platformsResult && Array.isArray(platformsResult)) {
+    //         const container = document.getElementById('platforms-container');
+    //         platformsResult.forEach(platform => {
+    //             container.appendChild(createElementWithButtons(platform, 'Platform'));
+    //         });
+    //     }
+    // }
+    function createElementWithButtons(item, type) {
+        const div = document.createElement('div');
+        div.className = `${type.toLowerCase()}-item`;
+        div.dataset.id = item.id;
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = item.name;
+        div.appendChild(nameSpan);
+
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'button-container';
+
+        const editButton = document.createElement('button');
+        editButton.textContent = '수정';
+        editButton.className = 'edit-button';
+        editButton.onclick = () => editItem(item.id, type);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '삭제';
+        deleteButton.className = 'delete-button';
+        deleteButton.onclick = () => deleteItem(item.id, type);
+
+        buttonsDiv.appendChild(editButton);
+        buttonsDiv.appendChild(deleteButton);
+
+        div.appendChild(buttonsDiv);
+
+        return div;
+    }
+
+    function editItem(id, type) {
+        const newName = prompt(`${type} 이름을 수정하세요:`);
+        if (newName) {
+            sendRequest(`/api/v1/admin/${type.toLowerCase()}s/${id}`, 'PUT', { name: newName })
+                .then(result => {
+                    if (result) {
+                        const item = document.querySelector(`.${type.toLowerCase()}-item[data-id="${id}"]`);
+                        if (item) {
+                            item.querySelector('span').textContent = newName;
+                        }
+                    }
+                })
+                .catch(error => console.error(`${type} 수정 중 오류 발생:`, error));
+        }
+    }
+
+    function deleteItem(id, type) {
+        if (confirm(`정말로 이 ${type}을(를) 삭제하시겠습니까?`)) {
+            sendRequest(`/api/v1/admin/${type.toLowerCase()}s/${id}`, 'DELETE')
+                .then(result => {
+                    if (result) {
+                        const item = document.querySelector(`.${type.toLowerCase()}-item[data-id="${id}"]`);
+                        if (item) {
+                            item.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error(`${type} 삭제 중 오류 발생:`, error));
+        }
+    }
+
+    // 페이지 로드 시 실행
+    //document.addEventListener('DOMContentLoaded', loadData);
+
+</script>

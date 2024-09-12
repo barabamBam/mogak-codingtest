@@ -1,11 +1,10 @@
-import { getBaseUrl } from "./apiConfig";
-
-const logoutBtn = document.querySelector('#logoutBtn');
-logoutBtn.addEventListener('click', async () => {
-    const url = getBaseUrl() + "/api/v1/auth/logout";
-    await fetch(url, {
-        method: 'POST'
+setTimeout(function () {
+    logoutBtn.addEventListener('click', async () => {
+        const url = baseUrl + "/api/v1/auth/logout";
+        await fetch(url, {
+            method: 'POST'
+        });
+        localStorage.removeItem('access_token');
+        location.href = baseUrl + "/api/v1/posts/list";
     });
-    localStorage.removeItem('access_token');
-    location.href = "/"
-});
+}, 2000);

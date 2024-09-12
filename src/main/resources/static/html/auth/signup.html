@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>회원가입</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-  <link rel="stylesheet" href="../static/css/header.css">
+  <link rel="stylesheet" href="../../css/header.css">
   <style>
 
     .container {
@@ -164,13 +164,15 @@
   </form>
 </div>
 
-<script th:inline="javascript">
+<script>
+
+  const baseUrl = 'http://' + location.host;
 
   document.addEventListener('DOMContentLoaded', function () {
 
     // 헤더 로드
     Promise.any([
-      fetch('../static/html/header/header.html').then(response => response.text())
+      fetch('../../../html/header/header.html').then(response => response.text())
     ]).then(header => {
       document.getElementById('header').innerHTML = header;
     });
@@ -202,7 +204,7 @@
   nicknameInput.addEventListener('blur', async () => {
     try {
       const response = await axios.get(
-          `http://localhost:8080/api/v1/users/check-nickname?username=${nicknameInput.value}`);
+          baseUrl+`/api/v1/users/check-nickname?username=${nicknameInput.value}`);
       console.log('Nickname check response:', response.data);
       const isAvailable = response.data.data;
       setFeedback('nicknameFeedback',
@@ -221,7 +223,7 @@
     }
     try {
       const response = await axios.get(
-          `http://localhost:8080/api/v1/users/check-email?email=${emailInput.value}`);
+          baseUrl+`/api/v1/users/check-email?email=${emailInput.value}`);
       console.log('Email check response:', response.data);
       const isAvailable = response.data;
       setFeedback('emailFeedback',
@@ -261,15 +263,22 @@
     console.log('data = ', data);
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/users/register', data);
+      const response = await axios.post(baseUrl+'/api/v1/users/register', data);
       console.log('Registration response:', response.data);
       alert('회원가입이 완료되었습니다.');
-      window.location.href = '/auth/login';  // TODO 로그인 페이지로 리다이렉트
+      window.location.href = '../static/html/auth/login';  // TODO 로그인 페이지로 리다이렉트
     } catch (error) {
       console.error('Registration error:', error);
       alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   });
 </script>
+
+<script src="../../js/header.js"></script>
+<script src="../../js/auth/logout.js"></script>
+
+<!-- 알림 모달 script -->
+<script src="../../js/news-modal.js"></script>
+
 </body>
 </html>

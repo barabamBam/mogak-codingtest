@@ -10,16 +10,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// const token = localStorage.getItem('authToken');
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTgxOTM4LCJuYmYiOjE3MjU5ODE5MzgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4MzczOH0.jN8R2Uf8TM5TVQ3b-1tas3x6pcHvTV3xOfV4ZwSEaxw";
+// const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLthYzsiqTthLAxIiwidXNlcl9pZCI6MSwiZW1haWwiOiJ0ZXN0ZXIxQG5hdmVyLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzI1OTgxOTM4LCJuYmYiOjE3MjU5ODE5MzgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MSIsImV4cCI6MTcyNTk4MzczOH0.jN8R2Uf8TM5TVQ3b-1tas3x6pcHvTV3xOfV4ZwSEaxw";
 
 function fetchPostDetails(postId) {
-  const url = `http://localhost:8080/api/v1/posts/${postId}`;
+  const url = baseUrl+`/api/v1/posts/${postId}`;
   fetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer ' + token
     }
   })
   .then(response =>

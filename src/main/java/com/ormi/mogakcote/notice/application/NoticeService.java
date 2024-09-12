@@ -148,7 +148,7 @@ public class NoticeService {
                 .build();
     }
 
-    private Notice getNoticeById(Long noticeId) {
+    public Notice getNoticeById(Long noticeId) {
         return noticeRepository.findByNoticeId(noticeId).orElseThrow(
                 () -> new NoticeInvalidException(ErrorType.NOTICE_NOT_FOUND_ERROR)
         );

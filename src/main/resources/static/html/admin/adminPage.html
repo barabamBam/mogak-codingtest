@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: #1e2a3a;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            margin-bottom: 20px;
+        }
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #3a4b5c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .sidebar-button:hover {
+            background-color: #4a5b6c;
+        }
+
+        #main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 15px;
+            width: 70%;
+            float: right;
+            margin-bottom: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id = "header"></div>
+<div id = "main"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML += header;
+        });
+    })
+
+</script>
+
+<script src="../../js/header.js"></script>
+<script src="../../js/auth/logout.js"></script>
+<!-- 알림 모달 script -->
+<script src="../../js/news-modal.js"></script>
+
+<script>
+setTimeout(function () {
+    if (!token) {
+        alert('No token found! Please log in.');
+    }
+
+    fetch('http://' + location.host + '/api/v1/admin', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.text(); // 성공 시 HTML 페이지를 받아옴
+            } else if (response.status === 401) {
+                alert('Unauthorized: Invalid token');
+            } else {
+                throw new Error('Request failed with status ' + response.status);
+            }
+        })
+        .then(async htmlContent => {
+            if (htmlContent) {
+                // 받아온 HTML을 현재 페이지에 표시
+                document.querySelector("#main").innerHTML = await htmlContent; // 서버에서 받아온 HTML 페이지 렌더링
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+}, 500);
+
+
+</script>
+</body>
+</html>
