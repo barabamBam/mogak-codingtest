@@ -62,7 +62,7 @@ public class NoticeController {
     public ModelAndView showEditForm(@PathVariable("noticeId") Long noticeId, Model model) {
         Notice noticeResponse = noticeService.getNoticeById(noticeId);
         if (noticeResponse == null) {
-            return new ModelAndView("admin/adminPage");
+            return new ModelAndView("admin/adminPageHtml");
         }
         model.addAttribute("notice", noticeResponse);
         return new ModelAndView("notice/edit");  // 이는 수정 페이지의 Thymeleaf 템플릿 이름입니다.
@@ -89,7 +89,7 @@ public class NoticeController {
     ) {
         List<NoticeResponse> responses = noticeService.getNoticeLatestFive();
         model.addAttribute("noticeLatest5List", responses);
-        return new ModelAndView( "admin/adminPage");
+        return new ModelAndView( "admin/adminPageHtml");
     }
 
     @GetMapping("/list")
@@ -98,6 +98,6 @@ public class NoticeController {
     ){
         List<NoticeResponse> responses = noticeService.getNoticeList();
         model.addAttribute("noticeList", responses);
-        return new ModelAndView("notice");
+        return new ModelAndView("notice/list");
     }
 }

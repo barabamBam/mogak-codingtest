@@ -38,14 +38,34 @@
             background-color: #2980b9;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/news-modal.css}">
 </head>
 <body>
+<div id="header"></div>
 <h1>공지사항 생성</h1>
 <div class="container">
     <input type="text" id="titleInput" placeholder="제목">
     <textarea id="contentInput" placeholder="내용"></textarea>
     <button class="btn" onclick="saveNotice()">저장</button>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML += header;
+
+        });
+    })
+
+</script>
+
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/auth/logout.js}"></script>
+<!-- 알림 모달 script -->
+<script th:src="@{/js/news-modal.js}"></script>
 
 <script th:inline="javascript">
     function saveNotice() {

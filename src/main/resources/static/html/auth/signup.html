@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>회원가입</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-  <link rel="stylesheet" href="../../css/header.css">
   <style>
 
     .container {
@@ -129,6 +128,8 @@
       border: 1px solid #F44336;
     }
   </style>
+  <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/news-modal.css">
 </head>
 
 <body>
@@ -266,7 +267,7 @@
       const response = await axios.post(baseUrl+'/api/v1/users/register', data);
       console.log('Registration response:', response.data);
       alert('회원가입이 완료되었습니다.');
-      window.location.href = '../static/html/auth/login';  // TODO 로그인 페이지로 리다이렉트
+      window.location.href = '../../../html/auth/login.html';  // TODO 로그인 페이지로 리다이렉트
     } catch (error) {
       console.error('Registration error:', error);
       alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');

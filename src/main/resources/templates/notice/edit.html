@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항 수정</title>
-    <link rel="stylesheet" th:href="@{/css/noticeStyle.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/noticeStyle.css}">-->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,23 +39,44 @@
             background-color: #2980b9;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/news-modal.css}">
 </head>
 <body>
+<div id="header"></div>
 <h1>공지사항 수정하기</h1>
 <div class="container">
     <div class="notice-edit">
-        <form id="noticeForm" onsubmit="return updateNotice(event)">
+        <form id="noticeForm">
             <input type="hidden" id="noticeId" th:value="${notice.noticeId}">
             <input type="text" id="titleInput" placeholder="제목" th:value="${notice.title}">
             <textarea id="contentInput" placeholder="내용" th:text="${notice.content}"></textarea>
-            <button type="submit" class="btn">수정</button>
-            <button type="button" class="btn" onclick="location.href='/admin/adminPage'">관리자페이지로 가기</button>
+            <button type="submit" class="submit btn">수정</button>
+            <button type="button" class="btn" onclick="location.href='api/v1/admin'">관리자페이지로 가기</button>
         </form>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML += header;
+
+        });
+    })
+
+</script>
+
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/auth/logout.js}"></script>
+<!-- 알림 모달 script -->
+<script th:src="@{/js/news-modal.js}"></script>
 
 <script th:inline="javascript">
-    function updateNotice(event) {
+    document.querySelector('.submit').addEventListener('submit',
+        event => {
         event.preventDefault(); // 폼의 기본 동작을 막습니다.
 
         const noticeId = document.getElementById('noticeId').value;
@@ -85,7 +106,7 @@
                 console.error('오류 발생:', error);
                 alert('수정 중 오류가 발생했습니다.');
             });
-    }
+    })
 </script>
 </body>
 </html>

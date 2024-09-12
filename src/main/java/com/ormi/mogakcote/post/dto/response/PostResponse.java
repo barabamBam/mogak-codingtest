@@ -14,7 +14,7 @@ public class PostResponse {
     private String content;
     private Long platformId;
     private int problemNumber;
-    private Long algorithmIds;
+    private Long algorithmId;
     private Long languageId;
     private String code;
     private boolean isPublic;

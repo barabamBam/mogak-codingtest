@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="${notice.title}">공지사항 상세</title>
-    <link rel="stylesheet" th:href="@{/css/noticeStyle.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/noticeStyle.css}">-->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,18 +39,37 @@
             background-color: #2980b9;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/news-modal.css}">
 </head>
 <body>
+<div id="header"></div>
 <h1>공지사항 상세보기</h1>
 <div class="container">
     <div class="notice-details">
         <h2 id="noticeTitle" th:text="${notice.title}">공지사항 제목</h2>
         <p id="noticeContent" th:text="${notice.content}">공지사항 내용</p>
-        <button class="btn" onclick="location.href='/notice/edit'">수정</button>
-        <button class="btn btn-danger" onclick="deleteNotice()">삭제</button>
-        <button class="btn" onclick="location.href='/admin/adminPage'">뒤로가기</button>
+        <button class="btn" onclick="location.href = location.href+'/edit'" sec:authorize="hasRole('ROLE_ADMIN')">수정</button>
+        <button class="btn btn-danger" onclick="deleteNotice()" sec:authorize="hasRole('ROLE_ADMIN')">삭제</button>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML += header;
+
+        });
+    })
+
+</script>
+
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/auth/logout.js}"></script>
+<!-- 알림 모달 script -->
+<script th:src="@{/js/news-modal.js}"></script>
 
 <script th:inline="javascript">
     function deleteNotice() {
