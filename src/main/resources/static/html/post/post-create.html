@@ -152,41 +152,49 @@
   </div>
 </div>
 
+<script src="../../js/header.js"></script>
+<script src="../../js/auth/logout.js"></script>
+
+<!-- 알림 모달 script -->
+<script src="../../js/news-modal.js"></script>
 
 <script>
+
+
   document.addEventListener('DOMContentLoaded', function() {
 
     // 헤더 로드
     Promise.any([
-      fetch('../header/header.html').then(response => response.text())
+      fetch('../../../html/header/header.html').then(response => response.text())
     ]).then(header => {
       document.getElementById('header').innerHTML = header;
     });
 
     const token = "Bearer " + localStorage.getItem('access_token');
+
     console.log("token = " + token);
 
     // 플랫폼, 알고리즘, 언어 목록 가져오기
     Promise.all([
-      fetch('http://localhost:8080/api/v1/admin/platforms/list', {
+      fetch(baseUrl + '/api/v1/admin/platforms/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       }),
-      fetch('http://localhost:8080/api/v1/admin/algorithms/list', {
+      fetch(baseUrl+'/api/v1/admin/algorithms/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       }),
-      fetch('http://localhost:8080/api/v1/admin/languages/list', {
+      fetch(baseUrl+'/api/v1/admin/languages/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       })
     ])
@@ -228,13 +236,13 @@
       postData.algorithmId = parseInt(postData.algorithmId) || null;
 
 
-      fetch('http://localhost:8080/api/v1/posts', {
+      fetch(baseUrl+'/api/v1/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         },
-        body: JSON.stringify(postData)
+        body: JSON.stringify({"key": "USER", postData})
       })
       .then(response => {
         if (response.redirected) {
@@ -277,5 +285,6 @@
     });
   });
 </script>
+
 </body>
 </html>

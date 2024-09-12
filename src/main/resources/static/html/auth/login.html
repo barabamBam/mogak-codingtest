@@ -5,37 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="../../static/css/auth.css">
+    <link rel="stylesheet" href="../../css/auth.css">
 </head>
 
 <body>
-    <header></header>
+    <div id="header">
+        <a href="/api/v1/posts/list" class="mogakcote-logo">MOGAKCOTE</a>
+    </div>
     <main>
         <section>
             <div class="container">
                 <h2 class="text-center">로그인</h2>
-                <form id="loginForm" method="post">
+                <form id="loginForm">
                     <div class="input-group">
-                        <label for="email">이메일</label>
+                        <label for="emailInput">이메일</label>
                         <input type="email" id="emailInput" name="email" required>
                     </div>
                     <div class="input-group">
-                        <label for="password">비밀번호</label>
+                        <label for="passwordInput">비밀번호</label>
                         <input type="password" id="passwordInput" name="password" required>
                     </div>
 
                     <button type="submit" class="button button-primary">로그인</button>
-
+                </form>
                     <!-- TODO: URL 변경 -->
                     <a href="signup.html" type="button" class="button button-secondary">회원가입</a>
-                    <a href="./findEmail.html" type="button" class="button button-secondary">이메일 찾기</a>
-                    <a href="./findPassword.html" type="button" class="button button-secondary">비밀번호 찾기</a>
-                </form>
+                    <a href="findEmail.html" type="button" class="button button-secondary">이메일 찾기</a>
+                    <a href="findPassword.html" type="button" class="button button-secondary">비밀번호 찾기</a>
+
             </div>
         </section>
     </main>
     
-    <script type="module" src="../../static/js/auth/login.js"></script>
+    <script type="module" src="../../js/auth/login.js"></script>
+
 </body>
 
 </html>

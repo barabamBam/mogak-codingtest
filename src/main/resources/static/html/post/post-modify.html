@@ -154,42 +154,48 @@
     </form>
   </div>
 </div>
+<script src="../../js/header.js"></script>
+<script src="../../js/auth/logout.js"></script>
+
+<!-- 알림 모달 script -->
+<script src="../../js/news-modal.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
 
     // 헤더 로드
     Promise.any([
-      fetch('../header/header.html').then(response => response.text())
+      fetch('../../../html/header/header.html').then(response => response.text())
     ]).then(header => {
       document.getElementById('header').innerHTML = header;
     });
 
     const token = "Bearer " + localStorage.getItem('access_token');
+
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('postId');
 
     // 플랫폼, 알고리즘, 언어 목록 가져오기
     Promise.all([
-      fetch('http://localhost:8080/api/v1/admin/platforms/list', {
+      fetch(baseUrl+'/api/v1/admin/platforms/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       }),
-      fetch('http://localhost:8080/api/v1/admin/algorithms/list', {
+      fetch(baseUrl+'/api/v1/admin/algorithms/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       }),
-      fetch('http://localhost:8080/api/v1/admin/languages/list', {
+      fetch(baseUrl+'/api/v1/admin/languages/list', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         }
       })
     ])
@@ -214,11 +220,11 @@
     }
 
     // 기존 게시글 데이터 불러오기
-    fetch(`http://localhost:8080/api/v1/posts/${postId}`, {
+    fetch(baseUrl+`/api/v1/posts/${postId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token
       }
     })
     .then(response => response.json())
@@ -256,11 +262,11 @@
       postData.languageId = parseInt(postData.languageId) || null;
       postData.algorithmId = parseInt(postData.algorithmId) || null;
 
-      fetch(`http://localhost:8080/api/v1/posts/${postId}`, {
+      fetch(baseUrl+`/api/v1/posts/${postId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(postData)
       })
@@ -280,5 +286,6 @@
     });
   });
 </script>
+
 </body>
 </html>

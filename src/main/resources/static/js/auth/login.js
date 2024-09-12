@@ -1,9 +1,7 @@
 import { getBaseUrl } from "./apiConfig.js";
 import { showError } from "./error.js";
 import * as Jwt from "./jwt.js";
-import { init } from "./init.js";
 
-init();
 const container = document.querySelector('.container');
 const loginForm = document.querySelector('#loginForm');
 const emailInput = document.querySelector('#emailInput');
@@ -27,11 +25,11 @@ loginForm.addEventListener('submit', async (e) => {
     );
 
     if (!response.ok) {
-        showError(container, response);
+        await showError(container, response);
     } else {
         const json = await response.json();
         const accessToken = json.access_token;
         Jwt.setAccessToken(accessToken);
-        location.href = '/';
+        location.href = '/api/v1/posts/list';
     }
 });

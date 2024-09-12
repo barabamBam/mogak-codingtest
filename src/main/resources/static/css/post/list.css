@@ -22,6 +22,7 @@ a {
 ul, li {
     list-style: none;
 }
+
 #content-wrapper {
     display: flex;
     width: 100%;
@@ -80,13 +81,15 @@ ul, li {
     font: 400 26px Actor, sans-serif;
 }
 
-.post-search > label {
+.post-search > .search-input-btn {
     width: auto;
     height: auto;
     padding-top: 4px;
+    background-color: transparent;
+    border: none;
 }
 
-.post-search > label:after {
+.post-search > .search-input-btn:after {
     width: 26px;
     height: 26px;
     display: block;
@@ -156,7 +159,7 @@ ul, li {
     padding: 11px 10px 11px 25px;
 }
 
-.select-sortBy label,
+.select-sortBy .label,
 .sort-option {
     margin-right: 0;
 }

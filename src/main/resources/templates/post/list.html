@@ -1,157 +1,129 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head
-  <meta charset="UTF-8">
-  <title class="postTitle">Main Page</title>
-  <link rel="stylesheet" th:href="@{/css/post/list.css}">
-  <link rel="stylesheet" href="../../static/css/news-modal.css">
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<head>
+    <meta charset="UTF-8">
+    <title class="postTitle">Main Page</title>
+    <link rel="stylesheet" th:href="@{/css/post/list.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/news-modal.css}">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
-<div id="header"></div>
+<!-- 헤더 -->
+<div id="header">
+    <a id="move-admin-page" href="../../../html/admin/adminPage.html">관리자페이지로 이동</a>
+</div>
 <div id="content-wrapper">
-
-  <!-- 헤더 -->
-  <div id="header">
-    <div id="title">
-      <p>MOGAKCOTE</p>
-    </div>
-    <div id="news">
-      <button id="news-bell-btn">🔔</button>
-
-      <div id="news-modal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>알림</h2>
-          <div id="news-list"></div>
-          <button id="load-more-btn">더 보기</button>
+    <section id="notice-container">
+        <h3 class="notice-container-title">공지사항</h3>
+        <article class="notice-item" th:each="notice: ${notices}">
+            <a class="notice-item-link" th:href="@{|/api/v1/notice/${notice.noticeId}|}">
+                <p class="notice-title" th:text="${notice.title}">title</p>
+                <p class="notice-date" th:text="${notice.createdAt.toLocalDate}">date</p>
+            </a>
+        </article>
+    </section>
+    <a th:href="@{/html/post/post-create.html}" class="create-post-btn">게시글 작성</a>
+    <form class="post-search" th:action="@{/api/v1/posts/list}" method="get">
+        <button class="search-input-btn"></button>
+        <input class="post-search-keyword" id="search-input" type="text" name="keyword" placeholder="검색"
+               th:value="${postSearchRequest.keyword != null} ? ${postSearchRequest.keyword}">
+    </form>
+    <div id="post-selector">
+        <div class="selector-options">
+            <div class="select-algorithm">
+                <button class="label"
+                        th:text="${postSearchRequest.algorithm == null} ?
+                          '알고리즘' : ${postSearchRequest.algorithm}">알고리즘
+                </button>
+                <ul class="selector-option hidden" id="algorithm">
+                    <li value="null">선택</li>
+                    <li value="Bellman-ford">Bellman-ford</li>
+                    <li value="BFS">BFS</li>
+                    <li value="DFS">DFS</li>
+                    <li value="BruteForce">BruteForce</li>
+                    <li value="DP">DP</li>
+                    <li value="Dijkstra's">Dijkstra's</li>
+                    <li value="Graph">Graph</li>
+                    <li value="Greedy">Greedy</li>
+                    <li value="Hash">Hash</li>
+                    <li value="Heap">Heap</li>
+                    <li value="Stack">Stack</li>
+                    <li value="Queue">Queue</li>
+                    <li value="String">String</li>
+                    <li value="Sort">Sort</li>
+                    <li value="SQL">SQL</li>
+                    <li value="Tree">Tree</li>
+                    <li value="Recursion">Recursion</li>
+                </ul>
+            </div>
+            <div class="select-language">
+                <button class="label"
+                        th:text="${postSearchRequest.language == null} ?
+                          '작성 언어' : ${postSearchRequest.language}">작성 언어
+                </button>
+                <ul class="selector-option hidden" id="language">
+                    <li value="null">선택</li>
+                    <li value="Java">Java</li>
+                    <li value="Python">Python</li>
+                    <li value="C">C</li>
+                    <li value="C++">C++</li>
+                    <li value="C#">C#</li>
+                    <li value="Go">Go</li>
+                    <li value="JavaScript">Javascript</li>
+                    <li value="Kotlin">Kotlin</li>
+                    <li value="Ruby">Ruby</li>
+                    <li value="Swift">Swift</li>
+                    <li value="SQL">SQL</li>
+                </ul>
+            </div>
+            <div class="select-checkSuccess">
+                <button class="label"
+                        th:text="${postSearchRequest.checkSuccess} ? '성공' : '무관'">
+                    코드 결과
+                </button>
+                <ul class="selector-option hidden" id="checkSuccess">
+                    <li value="null">선택</li>
+                    <li value="false">무관</li>
+                    <li value="true">성공</li>
+                </ul>
+            </div>
         </div>
-      </div>
+        <div class="pagination-sort">
+            <!-- ${posts.totalPages <= 1 ? (posts.number / 10) * 10 + 1 : -->
+            <div class="page-container" th:data-page="${posts.number}">
+                <p th:text="${((posts.number / 10) * 10 + 1) + ' - ' + ((posts.number / 10) * 10 + 10)}"></p>
+                <a th:href="${posts.hasPrevious() ? '?page='+posts.number : null}"
+                   class="page_prev" th:classappend="${!posts.hasPrevious()} ? disabled : null ">
+                    <span class="arrow"></span>
+                </a>
+                <a th:href="${posts.hasNext() ? '?page='+(posts.number+2): null}"
+                   class="page_next" th:classappend="${!posts.hasNext()} ? disabled : null ">
+                    <span class="arrow"></span>
+                </a>
+            </div>
+            <div class="select-sortBy">
+                <button class="label" th:if="${postSearchRequest.sortBy == 'OLDEST'}">오래된 순</button>
+                <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_VIEWED'}">조회수 순</button>
+                <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_LIKED'}">추천 순</button>
+                <button class="label"
+                        th:if="${postSearchRequest.sortBy == null || postSearchRequest.sortBy == 'LATEST'}">
+                    최신 순
+                </button>
+                <ul class="sort-option hidden" id="sortBy">
+                    <li value="LATEST">최신 순</li>
+                    <li value="OLDEST">오래된 순</li>
+                    <li value="MOST_VIEWED">조회수 순</li>
+                    <li value="MOST_LIKED">추천 순</li>
+                </ul>
+            </div>
 
-      <div id="news-info-modal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2 id="news-info-title"></h2>
-          <p id="news-info-type"></p>
-          <p id="news-info-created-at"></p>
-          <p id="news-info-content"></p>
-          <button id="news-info-related-btn" style="display: none;">바로가기</button>
-          <button id="news-info-back-btn">되돌아가기</button>
         </div>
-      </div>
     </div>
-  </div>
-  
-  <section id="notice-container">
-    <h3 class="notice-container-title">공지사항</h3>
-    <article class="notice-item" th:each="notice: ${notices}">
-      <a class="notice-item-link" th:href="@{|/api/v1/notice/${notice.noticeId}|}">
-        <p class="notice-title" th:text="${notice.title}">title</p>
-        <p class="notice-date" th:text="${notice.createdAt.toLocalDate}">date</p>
-      </a>
-    </article>
-  </section>
-  <a href="../../static/html/post/post-create.html" class="create-post-btn">게시글 작성</a>
-  <form class="post-search" th:action="@{/api/v1/posts/list}" method="get">
-    <label for="search-input"></label>
-    <input class="post-search-keyword" id="search-input" type="text" name="keyword" placeholder="검색"
-           th:value="${postSearchRequest.keyword != null} ? ${postSearchRequest.keyword}">
-  </form>
-  <div id="post-selector">
-    <div class="selector-options">
-      <div class="select-algorithm">
-        <button class="label"
-                th:text="${postSearchRequest.algorithm == null} ?
-                        '알고리즘' : ${postSearchRequest.algorithm}">알고리즘
-        </button>
-        <ul class="selector-option hidden" id="algorithm">
-          <li value="null">선택</li>
-          <li value="Bellman-ford">Bellman-ford</li>
-          <li value="BFS">BFS</li>
-          <li value="DFS">DFS</li>
-          <li value="BruteForce">BruteForce</li>
-          <li value="DP">DP</li>
-          <li value="Dijkstra's">Dijkstra's</li>
-          <li value="Graph">Graph</li>
-          <li value="Greedy">Greedy</li>
-          <li value="Hash">Hash</li>
-          <li value="Heap">Heap</li>
-          <li value="Stack">Stack</li>
-          <li value="Queue">Queue</li>
-          <li value="String">String</li>
-          <li value="Sort">Sort</li>
-          <li value="SQL">SQL</li>
-          <li value="Tree">Tree</li>
-          <li value="Recursion">Recursion</li>
-        </ul>
-      </div>
-      <div class="select-language">
-        <button class="label"
-                th:text="${postSearchRequest.language == null} ?
-                        '작성 언어' : ${postSearchRequest.language}">작성 언어
-        </button>
-        <ul class="selector-option hidden" id="language">
-          <li value="null">선택</li>
-          <li value="Java">Java</li>
-          <li value="Python">Python</li>
-          <li value="C">C</li>
-          <li value="C++">C++</li>
-          <li value="C#">C#</li>
-          <li value="Go">Go</li>
-          <li value="JavaScript">Javascript</li>
-          <li value="Kotlin">Kotlin</li>
-          <li value="Ruby">Ruby</li>
-          <li value="Swift">Swift</li>
-          <li value="SQL">SQL</li>
-        </ul>
-      </div>
-      <div class="select-checkSuccess">
-        <button class="label"
-                th:text="${postSearchRequest.checkSuccess} ? '성공' : '무관'">
-          코드 결과
-        </button>
-        <ul class="selector-option hidden" id="checkSuccess">
-          <li value="null">선택</li>
-          <li value="false">무관</li>
-          <li value="true">성공</li>
-        </ul>
-      </div>
-    </div>
-    <div class="pagination-sort">
-      <!-- ${posts.totalPages <= 1 ? (posts.number / 10) * 10 + 1 : -->
-      <div class="page-container" th:data-page="${posts.number}">
-        <p th:text="${((posts.number / 10) * 10 + 1) + ' - ' + ((posts.number / 10) * 10 + 10)}"></p>
-        <a th:href="${posts.hasPrevious() ? '?page='+posts.number : null}"
-           class="page_prev" th:classappend="${!posts.hasPrevious()} ? disabled : null ">
-          <span class="arrow"></span>
-        </a>
-        <a th:href="${posts.hasNext() ? '?page='+(posts.number+2): null}"
-           class="page_next" th:classappend="${!posts.hasNext()} ? disabled : null ">
-          <span class="arrow"></span>
-        </a>
-      </div>
-      <div class="select-sortBy">
-        <button class="label" th:if="${postSearchRequest.sortBy == 'OLDEST'}">오래된 순</button>
-        <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_VIEWED'}">조회수 순</button>
-        <button class="label" th:if="${postSearchRequest.sortBy == 'MOST_LIKED'}">추천 순</button>
-        <button class="label"
-                th:if="${postSearchRequest.sortBy == null || postSearchRequest.sortBy == 'LATEST'}">
-          최신 순
-        </button>
-        <ul class="sort-option hidden" id="sortBy">
-          <li value="LATEST">최신 순</li>
-          <li value="OLDEST">오래된 순</li>
-          <li value="MOST_VIEWED">조회수 순</li>
-          <li value="MOST_LIKED">추천 순</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
     <main id="post-list">
         <p th:if="${posts.isEmpty()}" id="no-post">검색 조건과 일치하는 게시글이 없습니다.</p>
         <article class="post-item" th:each="post: ${posts}">
-            <a th:href="@{|/api/v1/posts/${post.id}|}">
+            <a th:href="@{|/html/post/post-info.html?postId=${post.id}|}">
                 <h2 class="post-title" th:text="${post.title}">title</h2>
                 <!-- user nickname 받아오기 -->
                 <p class="post-author" th:text="${post.nickname}">nickname</p>
@@ -171,95 +143,98 @@
 
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
 
-  const labels = document.querySelectorAll(".label");
-  const pageNum = document.querySelector(".page-container").dataset.page;
-  let prevButton = document.querySelector(".page_prev");
-  let nextButton = document.querySelector(".page_next");
+    const labels = document.querySelectorAll(".label");
+    const pageNum = document.querySelector(".page-container").dataset.page;
+    let prevButton = document.querySelector(".page_prev");
+    let nextButton = document.querySelector(".page_next");
 
-  document.querySelector("form").action += location.search;
+    document.querySelector("form").action += location.search;
 
-  labels.forEach(label => {
-    label.addEventListener('click', function () {
-      const select = label.nextElementSibling;
-      select.classList.toggle("hidden");
-      select.childNodes.forEach(option => {
-        option.addEventListener('click', function () {
-          const key = select.id;
-          const value = option.getAttribute('value');
+    labels.forEach(label => {
+        label.addEventListener('click', function () {
+            const select = label.nextElementSibling;
+            select.classList.toggle("hidden");
+            select.childNodes.forEach(option => {
+                option.addEventListener('click', function () {
+                    const key = select.id;
+                    const value = option.getAttribute('value');
 
-          updateQueryParam(key, value);
+                    updateQueryParam(key, value);
 
+                });
+            })
         });
-      })
     });
-  });
 
-  const existPageString = location.search.includes("page");
+    const existPageString = location.search.includes("page");
 
-  if (!existPageString) {
-    prevButton.href = location.search;
+    if (!existPageString) {
+        prevButton.href = location.search;
 
-    if (location.search.length > 0) {
-      prevButton.href += "&page=" + parseInt(pageNum);
+        if (location.search.length > 0) {
+            prevButton.href += "&page=" + parseInt(pageNum);
+        } else {
+            prevButton.href += "?page=" + parseInt(pageNum);
+        }
+
     } else {
-      prevButton.href += "?page=" + parseInt(pageNum);
+        urlParams.set("page", pageNum);
+        prevButton.href = window.location.pathname + '?' + urlParams.toString();
     }
 
-  } else {
-    urlParams.set("page", pageNum);
-    prevButton.href = window.location.pathname + '?' + urlParams.toString();
-  }
+    if (!existPageString) {
+        nextButton.href = location.search;
 
-  if (!existPageString) {
-    nextButton.href = location.search;
+        if (location.search.length > 0) {
+            nextButton.href += "&page=" + (parseInt(pageNum) + 2);
+        } else {
+            nextButton.href += "?page=" + (parseInt(pageNum) + 2);
+        }
 
-    if (location.search.length > 0) {
-      nextButton.href += "&page=" + (parseInt(pageNum) + 2);
     } else {
-      nextButton.href += "?page=" + (parseInt(pageNum) + 2);
+        urlParams.set("page", (parseInt(pageNum) + 2).toString())
+        nextButton.href = window.location.pathname + '?' + urlParams.toString();
     }
 
-  } else {
-    urlParams.set("page", (parseInt(pageNum) + 2).toString())
-    nextButton.href = window.location.pathname + '?' + urlParams.toString();
-  }
-  
-  if (!location.search.includes("checkSuccess")) {
-    document.querySelector(".select-checkSuccess .label").textContent = '코드 결과';
-  }
-
-  // 현재 URL에서 쿼리 파라미터를 추출하고 관리하기 위한 함수
-  function updateQueryParam(key, value) {
-
-    // 기존 쿼리 파라미터에서 동일한 키가 있으면 값을 업데이트, 없으면 추가
-    if (value && value !== "null") {
-      urlParams.set(key, value);
-    } else {
-      urlParams.delete(key);
+    if (!location.search.includes("checkSuccess")) {
+        document.querySelector(".select-checkSuccess .label").textContent = '코드 결과';
     }
-    urlParams.delete("page");
 
-    // 쿼리 파라미터를 업데이트한 URL로 변경
-    const newUrl = window.location.pathname + '?' + urlParams.toString();
-    location.href = urlParams.toString() !== '' ? newUrl : window.location.pathname;
+    // 현재 URL에서 쿼리 파라미터를 추출하고 관리하기 위한 함수
+    function updateQueryParam(key, value) {
 
-  }
+        // 기존 쿼리 파라미터에서 동일한 키가 있으면 값을 업데이트, 없으면 추가
+        if (value && value !== "null") {
+            urlParams.set(key, value);
+        } else {
+            urlParams.delete(key);
+        }
+        urlParams.delete("page");
+
+        // 쿼리 파라미터를 업데이트한 URL로 변경
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        location.href = urlParams.toString() !== '' ? newUrl : window.location.pathname;
+
+    }
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // 컴포넌트 로드
-    Promise.any([
-      fetch('../../static/html/header/header.html').then(response => response.text())
-    ]).then(header => {
-      document.getElementById('header').innerHTML = header;
+    document.addEventListener('DOMContentLoaded', function () {
+        // 컴포넌트 로드
+        Promise.any([
+            fetch('../../../html/header/header.html').then(response => response.text())
+        ]).then(header => {
+            document.getElementById('header').innerHTML += header;
 
-    });
-  })
+        });
+    })
+
 </script>
 
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/auth/logout.js}"></script>
 <!-- 알림 모달 script -->
 <script th:src="@{/js/news-modal.js}"></script>
 

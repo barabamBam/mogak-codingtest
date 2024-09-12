@@ -5,7 +5,7 @@ import static com.ormi.mogakcote.common.CrossOriginConstants.CROSS_ORIGIN_ADDRES
 import com.ormi.mogakcote.exception.rate_limit.DailyRateLimitExceededException;
 import com.ormi.mogakcote.post.dto.response.PostResponseWithNickname;
 import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
-import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.slf4j.Logger;

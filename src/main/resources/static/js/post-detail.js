@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
 const token = "Bearer " + localStorage.getItem('access_token');
 
 function fetchPostDetails(postId) {
-  const url = `http://localhost:8080/api/v1/posts/${postId}`;
+  const url = baseUrl+`/api/v1/posts/${postId}`;
   fetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer ' + token
     }
   })
   .then(response =>
