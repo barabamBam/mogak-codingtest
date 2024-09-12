@@ -8,6 +8,8 @@ import com.ormi.mogakcote.rate_limiter.annotation.RateLimit;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -43,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class PostController {
 
+  private static final Logger log = LoggerFactory.getLogger(PostController.class);
   private final PostService postService;
   private final ReportCreationOrchestrator reportCreationOrchestrator;
   private final NoticeService noticeService;
@@ -64,11 +67,11 @@ public class PostController {
 
   @PostMapping
   @RateLimit(
-      key = "'createPostWithReport:' + #user.id",
-      limit = 5,
+      key = "'createPostWithReports:' + #user.id",
+      limit = 30,
       period = 24 * 60 * 60,
       exceptionClass = DailyRateLimitExceededException.class)
-  public ResponseEntity<?> createPost(AuthUser user, @RequestBody PostRequest request) {
+  public ResponseEntity<?> createPost(AuthUser user, @RequestBody @Valid PostRequest request) {
     var response = reportCreationOrchestrator.createPostWithReportAndComment(user, request);
     return ResponseDto.created(response);
   }

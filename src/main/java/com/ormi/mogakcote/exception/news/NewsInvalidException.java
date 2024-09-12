@@ -1,5 +1,6 @@
-package com.ormi.mogakcote.exception;
+package com.ormi.mogakcote.exception.news;
 
+import com.ormi.mogakcote.exception.BusinessException;
 import com.ormi.mogakcote.exception.dto.ErrorType;
 
 public class NewsInvalidException extends BusinessException {
