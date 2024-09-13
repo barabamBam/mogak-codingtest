@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 <head>
     <meta charset="UTF-8">
     <title class="postTitle">Main Page</title>
@@ -10,9 +11,7 @@
 </head>
 <body>
 <!-- 헤더 -->
-<div id="header">
-    <a id="move-admin-page" href="../../../html/admin/adminPage.html">관리자페이지로 이동</a>
-</div>
+<div id="header"></div>
 <div id="content-wrapper">
     <section id="notice-container">
         <h3 class="notice-container-title">공지사항</h3>
@@ -219,7 +218,10 @@
 
     }
 </script>
-
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/auth/logout.js}"></script>
+<!-- 알림 모달 script -->
+<script th:src="@{/js/news-modal.js}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // 컴포넌트 로드
@@ -227,15 +229,8 @@
             fetch('../../../html/header/header.html').then(response => response.text())
         ]).then(header => {
             document.getElementById('header').innerHTML += header;
-
-        });
+            setHeader();
+        })
     })
-
 </script>
-
-<script th:src="@{/js/header.js}"></script>
-<script th:src="@{/js/auth/logout.js}"></script>
-<!-- 알림 모달 script -->
-<script th:src="@{/js/news-modal.js}"></script>
-
 </body>

@@ -7,12 +7,17 @@ export function setAccessToken(token) {
 }
 
 export function getAccessTokenOrNull() {
-    localStorage.getItem('access_token');
+    return localStorage.getItem('access_token');
 }
 
-export function setAuthorizeHeader() {
-    
+export function setAuthorizeHeader(headers = {}) {
+    const accessToken = getAccessTokenOrNull();
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return headers;
 }
+
 
 export async function refresh() {
     const accessToken = getAccessTokenOrNull();
@@ -23,7 +28,10 @@ export async function refresh() {
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({ 'access_token': accessToken }),
-            credentials: "include"
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         const json = await response.json();
@@ -34,3 +42,4 @@ export async function refresh() {
         }
     }
 }
+

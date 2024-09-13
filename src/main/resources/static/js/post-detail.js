@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-const token = "Bearer " + localStorage.getItem('access_token');
 
 function fetchPostDetails(postId) {
   const url = baseUrl+`/api/v1/posts/${postId}`;
@@ -44,7 +43,7 @@ function updatePostDetails(post) {
   const content = `
     <p>${ post.title || '알수 없음'}</p>
     <div class="post-info">
-      <p>작성자: ${ post.userNickname || '알수 없음'}</p>
+      <p class="author">작성자: ${ post.userNickname || '알수 없음'}</p>
       <p>작성일: ${ post.createdAt ? new Date(post.createdAt).toLocaleString() : '알수 없음'}</p>
       <p>수정일: ${ post.modifiedAt ? new Date(post.modifiedAt).toLocaleString() : '알수 없음'}</p>
       <p>사용 언어: ${ post.languageName || '알수 없음'}</p>
@@ -70,5 +69,5 @@ function updatePostDetails(post) {
   `;
 
   document.getElementById('post-detail').innerHTML = content
-
+  btnActive();
 }

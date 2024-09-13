@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('post-detail').innerHTML = postDetail;
     document.getElementById('system-comment').innerHTML = systemComment;
     document.getElementById('comment-section').innerHTML = comment;
+    setHeader();
 
     // 모든 컴포넌트가 로드된 후 system-comment.js의 초기화 함수 호출
     if (typeof window.initSystemComment === 'function') {
@@ -97,4 +98,20 @@ function deletePost() {
     console.error('Error:', error);
     alert('게시글 삭제 중 오류가 발생했습니다.');
   });
+}
+
+function btnActive() {
+  fetch(baseUrl+'/api/v1/profile', {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response.nickname);
+        if(response.nickname === document.querySelector('.author').textContent.split(': ')[1]) {
+          document.querySelector('#post-edit-btn').style.display = 'block';
+          document.querySelector('#post-delete-btn').style.display = 'block';
+        }
+      })
 }

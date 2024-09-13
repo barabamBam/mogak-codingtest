@@ -49,8 +49,8 @@
     <div class="notice-details">
         <h2 id="noticeTitle" th:text="${notice.title}">공지사항 제목</h2>
         <p id="noticeContent" th:text="${notice.content}">공지사항 내용</p>
-        <button class="btn" onclick="location.href = location.href+'/edit'" sec:authorize="hasRole('ROLE_ADMIN')">수정</button>
-        <button class="btn btn-danger" onclick="deleteNotice()" sec:authorize="hasRole('ROLE_ADMIN')">삭제</button>
+        <button class="btn edit-notice-btn" style="display:none" onclick="location.href = location.href+'/edit'">수정</button>
+        <button class="btn delete-notice-btn" style="display: none" onclick="deleteNotice()">삭제</button>
     </div>
 </div>
 <script>
@@ -60,7 +60,11 @@
             fetch('../../../html/header/header.html').then(response => response.text())
         ]).then(header => {
             document.getElementById('header').innerHTML += header;
-
+            setHeader();
+            if(userRole === 'ADMIN') {
+                document.querySelector('.edit-notice-btn').style.display = 'block';
+                document.querySelector('.delete-notice-btn').style.display = 'block';
+            }
         });
     })
 
@@ -80,7 +84,8 @@
             fetch(`/api/v1/notice/${noticeId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 }
             })
                 .then(response => response.json())

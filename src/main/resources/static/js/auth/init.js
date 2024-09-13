@@ -5,7 +5,7 @@ export function init() {
             fetch('../../../html/header/header.html').then(response => response.text())
         ]).then(header => {
             document.getElementById('header').innerHTML = header;
-
+            setHeader();
         });
     })
 };

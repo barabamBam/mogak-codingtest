@@ -4,8 +4,7 @@ function getPostIdFromUrl() {
 }
 
 function fetchComments(postId) {
-  const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/posts/${postId}/comments/list`;
+  const url = baseUrl+`/api/v1/posts/${postId}/comments/list`;
 
   console.log("댓글 목록");
 
@@ -13,7 +12,7 @@ function fetchComments(postId) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer '+token
     }
   })
   .then(response => {
@@ -102,14 +101,13 @@ function handleCancelEdit(event) {
 
 function updateComment(commentId, newContent) {
   const postId = getPostIdFromUrl();
-  const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/posts/${postId}/comments/${commentId}`;
+  const url = baseUrl+`/api/v1/posts/${postId}/comments/${commentId}`;
 
   fetch(url, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer '+ token
     },
     body: JSON.stringify({ content: newContent })
   })
@@ -140,14 +138,13 @@ function handleDeleteComment(event) {
 
 function deleteComment(commentId) {
   const postId = getPostIdFromUrl();
-  const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/posts/${postId}/comments/${commentId}`;
+  const url = baseUrl+`/api/v1/posts/${postId}/comments/${commentId}`;
 
   fetch(url, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer '+ token
     }
   })
   .then(response => {
@@ -199,8 +196,7 @@ function setupCommentForm(postId) {
 }
 
 function submitComment(postId, comment) {
-  const token = localStorage.getItem('authToken');
-  const url = `http://localhost:8081/api/v1/posts/${postId}/comments`;
+  const url = baseUrl+`/api/v1/posts/${postId}/comments`;
 
   console.log("댓글 작성");
 
@@ -208,7 +204,7 @@ function submitComment(postId, comment) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': 'Bearer '+token
     },
     body: JSON.stringify({ content: comment })
   })

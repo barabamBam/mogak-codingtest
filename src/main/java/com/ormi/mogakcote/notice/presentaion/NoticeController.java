@@ -92,12 +92,10 @@ public class NoticeController {
         return new ModelAndView( "admin/adminPageHtml");
     }
 
-    @GetMapping("/list")
-    public ModelAndView noticeList(
+    @GetMapping("/create")
+    public ModelAndView noticeCreateForm(
         Model model
     ){
-        List<NoticeResponse> responses = noticeService.getNoticeList();
-        model.addAttribute("noticeList", responses);
-        return new ModelAndView("notice/list");
+        return new ModelAndView("notice/create");
     }
 }
